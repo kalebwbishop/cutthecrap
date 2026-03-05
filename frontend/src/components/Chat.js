@@ -164,7 +164,7 @@ function Chat() {
     let cancelled = false;
     const checkHealth = async () => {
       try {
-        const res = await fetch('http://localhost:8000/health');
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/health`);
         if (!cancelled) {
           setApiStatus(res.ok ? 'healthy' : 'unreachable');
         }
@@ -225,7 +225,7 @@ function Chat() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('http://localhost:8000/summarize', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/summarize`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: trimmed }),

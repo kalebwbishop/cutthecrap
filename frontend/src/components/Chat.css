@@ -1,0 +1,608 @@
+/* ── Layout ── */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 100%;
+  background: transparent;
+  position: relative;
+}
+
+/* ── Header ── */
+.chat-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  position: relative;
+  min-height: 48px;
+}
+
+.back-button {
+  position: absolute;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.08);
+  color: #2d2d2d;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.back-button:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.chat-header h1 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2d2d2d;
+}
+
+.chat-header .page-title {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* ── Messages area ── */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 0;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.empty-state h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2d2d2d;
+  margin: 0 0 8px 0;
+}
+
+.empty-state-subtitle {
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.5);
+  line-height: 1.5;
+  max-width: 420px;
+  margin: 0;
+}
+
+/* ── Input hero (title + subtitle above input) ── */
+.input-hero {
+  text-align: center;
+  margin-bottom: 20px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.input-hero h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2d2d2d;
+  margin: 0 0 8px 0;
+}
+
+.input-hero p {
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.5);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Response view ── */
+.response-wrapper {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 24px 24px;
+}
+
+.response-content {
+  line-height: 1.7;
+  font-size: 15px;
+  color: #2d2d2d;
+  text-align: center;
+}
+
+.response-content p {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.response-content .try-again-button {
+  margin-top: 24px;
+}
+
+/* ── Loading state ── */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* ── Typing indicator ── */
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #999;
+  animation: blink 1.4s infinite both;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 80%, 100% {
+    opacity: 0.3;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+/* ── Input area ── */
+.chat-input-area {
+  padding: 0 24px 16px;
+}
+
+/* When there are no messages, push the input to the vertical center */
+.chat-container:has(.empty-state) .chat-input-area {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 768px;
+  padding: 0 24px;
+}
+
+.chat-container:has(.empty-state) .empty-state {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 80px);
+  transform: translate(-50%, -100%);
+}
+
+.chat-input-form {
+  max-width: 768px;
+  margin: 0 auto;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: flex-end;
+  background: rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  padding: 8px 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.input-wrapper:focus-within {
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.12);
+}
+
+.input-wrapper-error {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.3);
+}
+
+.input-wrapper-error:focus-within {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.4);
+}
+
+.url-error {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin-top: 6px;
+  padding-left: 4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.chat-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #2d2d2d;
+  font-size: 15px;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: none;
+  max-height: 200px;
+  padding: 4px 8px;
+}
+
+.chat-input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.send-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background-color: #2d2d2d;
+  color: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s;
+}
+
+.send-button:hover:not(:disabled) {
+  background-color: #444;
+}
+
+.send-button:disabled {
+  background-color: rgba(0, 0, 0, 0.15);
+  color: rgba(0, 0, 0, 0.3);
+  cursor: not-allowed;
+}
+
+/* ── API Status Footer ── */
+.api-status-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-dot--checking {
+  background: #ffa726;
+  animation: pulse 1.4s infinite;
+}
+
+.status-dot--healthy {
+  background: #66bb6a;
+}
+
+.status-dot--unreachable {
+  background: #ef5350;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.status-text {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+
+
+/* ── Disclaimer ── */
+.disclaimer {
+  text-align: center;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+  margin-top: 8px;
+}
+
+/* ── Scrollbar styling ── */
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ══════════════════════════════════════════
+   Recipe Card
+   ══════════════════════════════════════════ */
+.recipe-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Header section (title + description) ── */
+.recipe-header-section {
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 0;
+}
+
+.recipe-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  line-height: 1.25;
+}
+
+.recipe-description {
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Meta badges (prep, cook, total, servings) ── */
+.recipe-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.meta-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.meta-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.meta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.meta-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* ── Generic recipe section ── */
+.recipe-section {
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.recipe-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+}
+
+.section-icon {
+  font-size: 20px;
+}
+
+/* ── Ingredients list ── */
+.ingredients-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ingredient-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  user-select: none;
+}
+
+.ingredient-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.ingredient-item.checked {
+  background: rgba(76, 175, 80, 0.08);
+}
+
+.ingredient-item.checked .ingredient-text {
+  text-decoration: line-through;
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.ingredient-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ingredient-text {
+  font-size: 15px;
+  color: #2d2d2d;
+  line-height: 1.4;
+  transition: color 0.15s;
+}
+
+/* ── Steps list ── */
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2d2d2d;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-text {
+  font-size: 15px;
+  color: #2d2d2d;
+  line-height: 1.65;
+  margin: 0;
+  padding-top: 3px;
+}
+
+/* ── Notes list ── */
+.notes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.note-item {
+  position: relative;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 1.6;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.03);
+  border-left: 3px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0 8px 8px 0;
+}
+
+/* ══════════════════════════════════════════
+   Not a Recipe Page
+   ══════════════════════════════════════════ */
+.not-recipe {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 60px 24px;
+}
+
+.not-recipe-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.not-recipe-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+}
+
+.not-recipe-message {
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.55);
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 0 28px 0;
+}
+
+.not-recipe-message strong {
+  color: #2d2d2d;
+}
+
+.try-again-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.08);
+  color: #2d2d2d;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.try-again-button:hover {
+  background: rgba(0, 0, 0, 0.15);
+}

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './Chat.css';
 
 function RecipeCard({ recipe, url }) {
@@ -221,27 +221,25 @@ function Chat() {
     setSubmittedUrl('');
     setInput('');
     setUrlError('');
+    // Clear the URL query param
+    window.history.replaceState(null, '', window.location.pathname);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const trimmed = input.trim();
-    if (!trimmed || isLoading) return;
-
-    if (!isValidUrl(trimmed)) {
-      setUrlError('Please enter a valid URL (e.g. https://example.com)');
-      return;
-    }
+  const fetchRecipe = useCallback(async (url) => {
     setUrlError('');
     setSubmitted(true);
-    setSubmittedUrl(trimmed);
+    setSubmittedUrl(url);
     setIsLoading(true);
+
+    // Sync URL into the browser address bar
+    const params = new URLSearchParams({ url });
+    window.history.replaceState(null, '', `${window.location.pathname}?${params}`);
 
     try {
       const res = await fetch(`${process.env.REACT_APP_API_URL}/summarize`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: trimmed }),
+        body: JSON.stringify({ url }),
       });
 
       if (!res.ok) {
@@ -253,7 +251,7 @@ function Chat() {
         setPageTitle(data.title);
       }
       if (data.is_recipe === false) {
-        setNotRecipe({ title: data.title, url: trimmed });
+        setNotRecipe({ title: data.title, url });
         setRecipe(null);
         setResponse(null);
       } else if (data.recipe) {
@@ -272,6 +270,28 @@ function Chat() {
     } finally {
       setIsLoading(false);
     }
+  }, []);
+
+  // Auto-fetch if a ?url= query param is present on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlParam = params.get('url');
+    if (urlParam && isValidUrl(urlParam)) {
+      setInput(urlParam);
+      fetchRecipe(urlParam);
+    }
+  }, [fetchRecipe]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const trimmed = input.trim();
+    if (!trimmed || isLoading) return;
+
+    if (!isValidUrl(trimmed)) {
+      setUrlError('Please enter a valid URL (e.g. https://example.com)');
+      return;
+    }
+    fetchRecipe(trimmed);
   };
 
   const handleKeyDown = (e) => {

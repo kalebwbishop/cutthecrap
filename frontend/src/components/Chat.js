@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Chat.css';
 
-function RecipeCard({ recipe }) {
+function RecipeCard({ recipe, url }) {
   const [checkedIngredients, setCheckedIngredients] = useState({});
 
   const toggleIngredient = (index) => {
@@ -18,6 +18,16 @@ function RecipeCard({ recipe }) {
         <h2 className="recipe-title">{recipe.title}</h2>
         {recipe.description && (
           <p className="recipe-description">{recipe.description}</p>
+        )}
+        {url && (
+          <a
+            className="original-url"
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {url}
+          </a>
         )}
       </div>
 
@@ -156,6 +166,7 @@ function Chat() {
   const [urlError, setUrlError] = useState('');
   const [pageTitle, setPageTitle] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submittedUrl, setSubmittedUrl] = useState('');
   const [apiStatus, setApiStatus] = useState('checking'); // 'checking' | 'healthy' | 'unreachable'
   const textareaRef = useRef(null);
 
@@ -207,6 +218,7 @@ function Chat() {
     setNotRecipe(null);
     setPageTitle('');
     setSubmitted(false);
+    setSubmittedUrl('');
     setInput('');
     setUrlError('');
   };
@@ -222,6 +234,7 @@ function Chat() {
     }
     setUrlError('');
     setSubmitted(true);
+    setSubmittedUrl(trimmed);
     setIsLoading(true);
 
     try {
@@ -303,7 +316,7 @@ function Chat() {
           </div>
         ) : recipe ? (
           <div className="response-wrapper">
-            <RecipeCard recipe={recipe} />
+            <RecipeCard recipe={recipe} url={submittedUrl} />
           </div>
         ) : notRecipe ? (
           <div className="response-wrapper">

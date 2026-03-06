@@ -46,6 +46,23 @@
   width: 100%;
 }
 
+.original-url {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.45);
+  text-decoration: none;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.original-url:hover {
+  color: rgba(0, 0, 0, 0.7);
+  text-decoration: underline;
+}
+
 .chat-header h1 {
   font-size: 16px;
   font-weight: 600;

@@ -41,9 +41,21 @@ Set is_recipe to false if the page is not a recipe (e.g. a blog post, news artic
 If is_recipe is false, still provide a short title describing what the page is, and leave all other fields as null or empty arrays.
 
 If is_recipe is true, extract the full recipe:
-- ingredients should be individual items with quantities included.
-- steps should be clear, concise instructions in order.
+- ingredients should be the complete list of individual items with quantities included.
+- steps should be clear, concise instructions in order. Each step is an object with:
+  - "instruction": the step text.
+  - "ingredients": a list of the specific ingredients (with quantities) used in that step. If no ingredients are used in a step, use an empty list.
 - notes can include tips, substitutions, storage info, etc. Use an empty array if none.
+- Extract all relevant time categories when available:
+  - prep_time: hands-on preparation time (chopping, mixing, etc.)
+  - cook_time: active cooking time (on the stove, in the oven, etc.)
+  - cool_time: time for cooling down after cooking
+  - chill_time: refrigeration or chilling time
+  - rest_time: resting time (for dough rising, meat resting, etc.)
+  - marinate_time: time spent marinating
+  - soak_time: time spent soaking ingredients
+  - total_time: the overall total time from start to finish
+- Only include a time category if it genuinely applies. Do not fabricate times.
 - If something is truly not findable, use null for strings or empty arrays for lists.
 - Clean up any ad copy, SEO filler, or life-story content — just the recipe facts."""
 
@@ -94,16 +106,26 @@ class SummarizeRequest(BaseModel):
     url: HttpUrl
 
 
+class StepDetail(BaseModel):
+    instruction: str
+    ingredients: list[str] = []
+
+
 class RecipeData(BaseModel):
     is_recipe: bool
     title: str
     description: str | None = None
     prep_time: str | None = None
     cook_time: str | None = None
+    cool_time: str | None = None
+    chill_time: str | None = None
+    rest_time: str | None = None
+    marinate_time: str | None = None
+    soak_time: str | None = None
     total_time: str | None = None
     servings: str | None = None
     ingredients: list[str] = []
-    steps: list[str] = []
+    steps: list[StepDetail] = []
     notes: list[str] = []
 
 
@@ -145,7 +167,12 @@ async def summarize(request: SummarizeRequest):
     url = str(request.url)
 
     try:
-        async with httpx.AsyncClient(follow_redirects=True, timeout=15.0, verify=False) as client:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+        }
+        async with httpx.AsyncClient(follow_redirects=True, timeout=15.0, verify=False, headers=headers) as client:
             resp = await client.get(url)
 
         if resp.status_code == 200:

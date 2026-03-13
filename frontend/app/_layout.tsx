@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -35,5 +35,6 @@ export default function RootLayout() {
 const s = StyleSheet.create({
     gradient: {
         flex: 1,
+        ...(Platform.OS === 'web' ? { minHeight: '100vh' as any } : {}),
     },
 });

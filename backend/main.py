@@ -15,8 +15,13 @@ load_dotenv()
 app = FastAPI(title="CutTheCrap API")
 
 # OpenAI client
-openai_client = None
-# openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+_api_key = os.getenv("OPENAI_API_KEY")
+if not _api_key:
+    raise RuntimeError(
+        "OPENAI_API_KEY is not set. "
+        "Add it to backend/.env or export it as an environment variable."
+    )
+openai_client = AsyncOpenAI(api_key=_api_key)
 
 # Allow the React dev server (or any configured origin) to call this API
 allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")

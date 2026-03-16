@@ -1,6 +1,0 @@
-fastapi
-uvicorn[standard]
-httpx
-beautifulsoup4
-openai
-python-dotenv

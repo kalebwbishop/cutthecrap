@@ -87,10 +87,10 @@ export default function InputScreen() {
 
   const statusLabel =
     apiStatus === 'checking'
-      ? 'Connecting to API…'
+      ? 'Connecting to extraction API…'
       : apiStatus === 'healthy'
-        ? 'API connected'
-        : 'API unreachable — make sure the backend is running';
+        ? 'Extraction API connected'
+        : 'Extraction API unreachable - make sure chatgpt_api is running';
 
   const canSubmit = url.trim() && !isLoading && apiStatus === 'healthy';
 

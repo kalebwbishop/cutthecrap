@@ -6,7 +6,7 @@ import LoadingView from '@/components/LoadingView';
 import { useRecipeStore, LOADING_MESSAGES } from '@/store/recipeStore';
 
 /**
- * Full-screen loading experience while the backend scrapes & processes.
+ * Full-screen loading experience while the app scrapes & processes.
  * Auto-navigates to /result when loading completes.
  */
 export default function LoadingScreen() {

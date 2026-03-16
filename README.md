@@ -5,42 +5,34 @@ Paste a recipe URL, get just the recipe — no life stories, no ads, no pop-ups.
 ## Project Structure
 
 ```
-backend/       – FastAPI server (Python) that scrapes & extracts recipes via GPT
-app/           – React Native (Expo) mobile & web client
-frontend/      – Legacy React web app (replaced by app/)
+frontend/      – React Native (Expo) client that fetches page HTML locally and sends cleaned text to chatgpt_api
 ```
-
-## Backend
-
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
-
-The API runs on `http://localhost:8000` by default.
 
 ## Mobile / Web App (Expo)
 
 ### Prerequisites
 
 - Node.js ≥ 18
-- Expo CLI (`npm install -g expo-cli` or use `npx expo`)
+- A running `chatgpt_api` host, locally or deployed
 
 ### Getting started
 
 ```bash
-cd app
+cd frontend
 npm install
 ```
 
-Create a `.env` file in `app/` (or edit the existing one) with your backend URL:
+Create a `.env` file in `frontend/` (or edit the existing one) with your chatgpt_api settings:
 
 ```
-API_URL=http://localhost:8000
+EXPO_PUBLIC_CHATGPT_API_BASE=http://localhost:7071
+EXPO_PUBLIC_CHATGPT_API_KEY=pk_your_public_key_here
 ```
+
+If you are using the local Azure Function from the sibling workspace folder, run it from `deploy-box-apis-core/src` with `func host start`.
 
 > **Tip:** On a physical device use your machine's LAN IP instead of `localhost`.
+> **Note:** Frontend-only scraping works best on iOS/Android. Browser builds can only fetch recipe pages that allow cross-origin requests.
 
 ### Running
 

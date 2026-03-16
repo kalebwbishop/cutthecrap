@@ -33,9 +33,10 @@ export interface SummarizeResponse {
   title?: string;
   recipe?: Recipe;
   summary?: string;
+  error_code?: number;
 }
 
-/** Response from GET /health */
+/** Response from GET /api/health */
 export interface HealthCheckResponse {
   status: string;
 }

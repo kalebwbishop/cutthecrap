@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,8 @@ import RecipeCard from '@/components/RecipeCard';
 import NotRecipePage from '@/components/NotRecipePage';
 import { ArrowLeftIcon } from '@/components/Icons';
 import { useRecipeStore } from '@/store/recipeStore';
-import { colors, fontSizes, spacing, radii } from '@/theme';
+import { useThemeColors, fontSizes, spacing, radii } from '@/theme';
+import type { ThemeColors } from '@/theme';
 
 /**
  * Displays the recipe result, "not a recipe" page, or an error fallback.
@@ -20,6 +21,8 @@ import { colors, fontSizes, spacing, radii } from '@/theme';
  */
 export default function ResultScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
+  const s = useMemo(() => createStyles(colors), [colors]);
   const { result, error, url, reset } = useRecipeStore();
 
   const handleBack = () => {
@@ -93,79 +96,80 @@ export default function ResultScreen() {
   );
 }
 
-const s = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    minHeight: 48,
-  },
-  backButton: {
-    position: 'absolute',
-    left: 16,
-    zIndex: 1,
-    width: 34,
-    height: 34,
-    borderRadius: radii.sm,
-    backgroundColor: colors.bgInput,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerCenter: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  headerTitle: {
-    fontSize: fontSizes.xl,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  headerPageTitle: {
-    fontSize: fontSizes.base,
-    color: colors.textMuted,
-    flexShrink: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    maxWidth: 768,
-    alignSelf: 'center',
-    width: '100%',
-    paddingHorizontal: spacing.xxl,
-    paddingVertical: spacing.xxl,
-  },
-  responseContent: {
-    alignItems: 'center',
-  },
-  responseText: {
-    fontSize: fontSizes.lg,
-    color: colors.text,
-    lineHeight: 25,
-    textAlign: 'center',
-  },
-  tryAgainButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 24,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: radii.md,
-    backgroundColor: colors.bgInput,
-  },
-  tryAgainText: {
-    fontSize: fontSizes.base,
-    fontWeight: '600',
-    color: colors.text,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      minHeight: 48,
+    },
+    backButton: {
+      position: 'absolute',
+      left: 16,
+      zIndex: 1,
+      width: 34,
+      height: 34,
+      borderRadius: radii.sm,
+      backgroundColor: colors.bgInput,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    headerCenter: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8,
+    },
+    headerTitle: {
+      fontSize: fontSizes.xl,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    headerPageTitle: {
+      fontSize: fontSizes.base,
+      color: colors.textMuted,
+      flexShrink: 1,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      maxWidth: 768,
+      alignSelf: 'center',
+      width: '100%',
+      paddingHorizontal: spacing.xxl,
+      paddingVertical: spacing.xxl,
+    },
+    responseContent: {
+      alignItems: 'center',
+    },
+    responseText: {
+      fontSize: fontSizes.lg,
+      color: colors.text,
+      lineHeight: 25,
+      textAlign: 'center',
+    },
+    tryAgainButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      marginTop: 24,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: radii.md,
+      backgroundColor: colors.bgInput,
+    },
+    tryAgainText: {
+      fontSize: fontSizes.base,
+      fontWeight: '600',
+      color: colors.text,
+    },
+  });

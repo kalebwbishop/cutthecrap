@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, Switch, StyleSheet } from 'react-native';
 import * as Linking from 'expo-linking';
 import { Recipe, RecipeStep } from '@/types/recipe';
-import { colors, fontSizes, spacing, radii } from '@/theme';
+import { useThemeColors, fontSizes, spacing, radii } from '@/theme';
+import type { ThemeColors } from '@/theme';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -33,6 +34,8 @@ function MetaBadge({ icon, label, value }: MetaBadgeProps) {
  */
 export default function RecipeCard({ recipe, url }: RecipeCardProps) {
   const [showStepIngredients, setShowStepIngredients] = useState(false);
+  const colors = useThemeColors();
+  const s = useMemo(() => createStyles(colors), [colors]);
 
   const hasMeta =
     recipe.prep_time ||
@@ -177,180 +180,181 @@ export default function RecipeCard({ recipe, url }: RecipeCardProps) {
   );
 }
 
-const s = StyleSheet.create({
-  card: {
-    flexDirection: 'column',
-  },
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    card: {
+      flexDirection: 'column',
+    },
 
-  /* Header */
-  headerSection: {
-    paddingBottom: spacing.xl,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-  },
-  title: {
-    fontSize: fontSizes['4xl'],
-    fontWeight: '700',
-    color: colors.textDark,
-    marginBottom: 6,
-    lineHeight: 32,
-  },
-  description: {
-    fontSize: fontSizes.lg,
-    color: colors.textSubtle,
-    lineHeight: 24,
-  },
-  originalUrl: {
-    marginTop: 6,
-    fontSize: fontSizes.md,
-    color: colors.textLight,
-  },
+    /* Header */
+    headerSection: {
+      paddingBottom: spacing.xl,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.borderLight,
+    },
+    title: {
+      fontSize: fontSizes['4xl'],
+      fontWeight: '700',
+      color: colors.textDark,
+      marginBottom: 6,
+      lineHeight: 32,
+    },
+    description: {
+      fontSize: fontSizes.lg,
+      color: colors.textSubtle,
+      lineHeight: 24,
+    },
+    originalUrl: {
+      marginTop: 6,
+      fontSize: fontSizes.md,
+      color: colors.textLight,
+    },
 
-  /* Meta badges */
-  metaRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    paddingVertical: spacing.xl,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-  },
-  metaBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    backgroundColor: colors.bgSubtle,
-    borderRadius: radii.lg,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    flex: 1,
-    minWidth: 120,
-  },
-  metaIcon: { fontSize: 20 },
-  metaTextGroup: { flexDirection: 'column', gap: 1 },
-  metaLabel: {
-    fontSize: fontSizes.xs,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    color: colors.textLight,
-  },
-  metaValue: {
-    fontSize: fontSizes.base,
-    fontWeight: '600',
-    color: colors.textDark,
-  },
+    /* Meta badges */
+    metaRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 12,
+      paddingVertical: spacing.xl,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.borderLight,
+    },
+    metaBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      backgroundColor: colors.bgSubtle,
+      borderRadius: radii.lg,
+      paddingVertical: 12,
+      paddingHorizontal: 14,
+      flex: 1,
+      minWidth: 120,
+    },
+    metaIcon: { fontSize: 20 },
+    metaTextGroup: { flexDirection: 'column', gap: 1 },
+    metaLabel: {
+      fontSize: fontSizes.xs,
+      fontWeight: '600',
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      color: colors.textLight,
+    },
+    metaValue: {
+      fontSize: fontSizes.base,
+      fontWeight: '600',
+      color: colors.textDark,
+    },
 
-  /* Section */
-  section: {
-    paddingVertical: spacing.xl,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-  },
-  sectionHeadingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: spacing.lg,
-  },
-  sectionIcon: { fontSize: 20 },
-  sectionHeading: {
-    fontSize: fontSizes['2xl'],
-    fontWeight: '700',
-    color: colors.textDark,
-    flex: 1,
-  },
-  toggleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  toggleLabel: {
-    fontSize: fontSizes.sm,
-    color: colors.textLight,
-    fontWeight: '600',
-  },
+    /* Section */
+    section: {
+      paddingVertical: spacing.xl,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.borderLight,
+    },
+    sectionHeadingRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      marginBottom: spacing.lg,
+    },
+    sectionIcon: { fontSize: 20 },
+    sectionHeading: {
+      fontSize: fontSizes['2xl'],
+      fontWeight: '700',
+      color: colors.textDark,
+      flex: 1,
+    },
+    toggleRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+    },
+    toggleLabel: {
+      fontSize: fontSizes.sm,
+      color: colors.textLight,
+      fontWeight: '600',
+    },
 
-  /* Ingredients */
-  ingredientItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: radii.md,
-  },
-  ingredientBullet: {
-    fontSize: fontSizes.lg,
-    color: colors.textLight,
-    lineHeight: 21,
-  },
-  ingredientText: {
-    fontSize: fontSizes.lg,
-    color: colors.text,
-    lineHeight: 21,
-    flexShrink: 1,
-  },
+    /* Ingredients */
+    ingredientItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderRadius: radii.md,
+    },
+    ingredientBullet: {
+      fontSize: fontSizes.lg,
+      color: colors.textLight,
+      lineHeight: 21,
+    },
+    ingredientText: {
+      fontSize: fontSizes.lg,
+      color: colors.text,
+      lineHeight: 21,
+      flexShrink: 1,
+    },
 
-  /* Steps */
-  stepWrapper: {
-    marginBottom: spacing.lg,
-  },
-  stepItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 14,
-  },
-  stepNumber: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.bgButton,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 1,
-  },
-  stepNumberText: {
-    color: colors.white,
-    fontSize: fontSizes.md,
-    fontWeight: '700',
-  },
-  stepText: {
-    flex: 1,
-    fontSize: fontSizes.lg,
-    color: colors.text,
-    lineHeight: 25,
-    paddingTop: 3,
-  },
-  stepIngredients: {
-    marginLeft: 42,
-    marginTop: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    backgroundColor: colors.bgSubtle,
-    borderRadius: radii.sm,
-  },
-  stepIngredientText: {
-    fontSize: fontSizes.base,
-    color: colors.textLight,
-    lineHeight: 20,
-    paddingVertical: 1,
-  },
+    /* Steps */
+    stepWrapper: {
+      marginBottom: spacing.lg,
+    },
+    stepItem: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: 14,
+    },
+    stepNumber: {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      backgroundColor: colors.bgButton,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 1,
+    },
+    stepNumberText: {
+      color: colors.white,
+      fontSize: fontSizes.md,
+      fontWeight: '700',
+    },
+    stepText: {
+      flex: 1,
+      fontSize: fontSizes.lg,
+      color: colors.text,
+      lineHeight: 25,
+      paddingTop: 3,
+    },
+    stepIngredients: {
+      marginLeft: 42,
+      marginTop: 6,
+      paddingVertical: 6,
+      paddingHorizontal: 10,
+      backgroundColor: colors.bgSubtle,
+      borderRadius: radii.sm,
+    },
+    stepIngredientText: {
+      fontSize: fontSizes.base,
+      color: colors.textLight,
+      lineHeight: 20,
+      paddingVertical: 1,
+    },
 
-  /* Notes */
-  noteItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    backgroundColor: 'rgba(0,0,0,0.03)',
-    borderLeftWidth: 3,
-    borderLeftColor: 'rgba(0,0,0,0.15)',
-    borderTopRightRadius: radii.sm,
-    borderBottomRightRadius: radii.sm,
-    marginBottom: 10,
-  },
-  noteText: {
-    fontSize: fontSizes.base,
-    color: 'rgba(0,0,0,0.65)',
-    lineHeight: 22,
-  },
-});
+    /* Notes */
+    noteItem: {
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+      backgroundColor: colors.noteItemBg,
+      borderLeftWidth: 3,
+      borderLeftColor: colors.noteItemBorder,
+      borderTopRightRadius: radii.sm,
+      borderBottomRightRadius: radii.sm,
+      marginBottom: 10,
+    },
+    noteText: {
+      fontSize: fontSizes.base,
+      color: colors.noteText,
+      lineHeight: 22,
+    },
+  });

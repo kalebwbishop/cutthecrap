@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import { colors, fontSizes } from '@/theme';
+import { useThemeColors, fontSizes } from '@/theme';
+import type { ThemeColors } from '@/theme';
 
 interface LoadingViewProps {
   message: string;
@@ -12,6 +13,8 @@ interface LoadingViewProps {
  * progress bar, and bouncing dots.
  */
 export default function LoadingView({ message, progress }: LoadingViewProps) {
+  const colors = useThemeColors();
+  const s = useMemo(() => createStyles(colors), [colors]);
   const spinAnim = useRef(new Animated.Value(0)).current;
   const messageFade = useRef(new Animated.Value(1)).current;
   const dot1 = useRef(new Animated.Value(0.3)).current;
@@ -123,41 +126,42 @@ export default function LoadingView({ message, progress }: LoadingViewProps) {
   );
 }
 
-const s = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 20,
-  },
-  icon: {
-    fontSize: 48,
-  },
-  message: {
-    fontSize: fontSizes.lg,
-    color: colors.textMuted,
-    fontWeight: '500',
-  },
-  progressTrack: {
-    width: 200,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.bgInput,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 2,
-    backgroundColor: colors.text,
-  },
-  dots: {
-    flexDirection: 'row',
-    gap: 4,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#999',
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 20,
+    },
+    icon: {
+      fontSize: 48,
+    },
+    message: {
+      fontSize: fontSizes.lg,
+      color: colors.textMuted,
+      fontWeight: '500',
+    },
+    progressTrack: {
+      width: 200,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: colors.bgInput,
+      overflow: 'hidden',
+    },
+    progressFill: {
+      height: '100%',
+      borderRadius: 2,
+      backgroundColor: colors.text,
+    },
+    dots: {
+      flexDirection: 'row',
+      gap: 4,
+    },
+    dot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: colors.loadingDot,
+    },
+  });

@@ -14,15 +14,16 @@ interface MetaBadgeProps {
   icon: string;
   label: string;
   value: string;
+  styles: ReturnType<typeof createStyles>;
 }
 
-function MetaBadge({ icon, label, value }: MetaBadgeProps) {
+function MetaBadge({ icon, label, value, styles }: MetaBadgeProps) {
   return (
-    <View style={s.metaBadge}>
-      <Text style={s.metaIcon}>{icon}</Text>
-      <View style={s.metaTextGroup}>
-        <Text style={s.metaLabel}>{label}</Text>
-        <Text style={s.metaValue}>{value}</Text>
+    <View style={styles.metaBadge}>
+      <Text style={styles.metaIcon}>{icon}</Text>
+      <View style={styles.metaTextGroup}>
+        <Text style={styles.metaLabel}>{label}</Text>
+        <Text style={styles.metaValue}>{value}</Text>
       </View>
     </View>
   );
@@ -71,31 +72,31 @@ export default function RecipeCard({ recipe, url }: RecipeCardProps) {
       {hasMeta && (
         <View style={s.metaRow}>
           {recipe.prep_time ? (
-            <MetaBadge icon="🔪" label="Prep" value={recipe.prep_time} />
+            <MetaBadge icon="🔪" label="Prep" value={recipe.prep_time} styles={s} />
           ) : null}
           {recipe.cook_time ? (
-            <MetaBadge icon="🍳" label="Cook" value={recipe.cook_time} />
+            <MetaBadge icon="🍳" label="Cook" value={recipe.cook_time} styles={s} />
           ) : null}
           {recipe.cool_time ? (
-            <MetaBadge icon="🌡️" label="Cool" value={recipe.cool_time} />
+            <MetaBadge icon="🌡️" label="Cool" value={recipe.cool_time} styles={s} />
           ) : null}
           {recipe.chill_time ? (
-            <MetaBadge icon="❄️" label="Chill" value={recipe.chill_time} />
+            <MetaBadge icon="❄️" label="Chill" value={recipe.chill_time} styles={s} />
           ) : null}
           {recipe.rest_time ? (
-            <MetaBadge icon="😴" label="Rest" value={recipe.rest_time} />
+            <MetaBadge icon="😴" label="Rest" value={recipe.rest_time} styles={s} />
           ) : null}
           {recipe.marinate_time ? (
-            <MetaBadge icon="🫙" label="Marinate" value={recipe.marinate_time} />
+            <MetaBadge icon="🫙" label="Marinate" value={recipe.marinate_time} styles={s} />
           ) : null}
           {recipe.soak_time ? (
-            <MetaBadge icon="💧" label="Soak" value={recipe.soak_time} />
+            <MetaBadge icon="💧" label="Soak" value={recipe.soak_time} styles={s} />
           ) : null}
           {recipe.total_time ? (
-            <MetaBadge icon="⏱️" label="Total" value={recipe.total_time} />
+            <MetaBadge icon="⏱️" label="Total" value={recipe.total_time} styles={s} />
           ) : null}
           {recipe.servings ? (
-            <MetaBadge icon="🍽️" label="Servings" value={recipe.servings} />
+            <MetaBadge icon="🍽️" label="Servings" value={recipe.servings} styles={s} />
           ) : null}
         </View>
       )}

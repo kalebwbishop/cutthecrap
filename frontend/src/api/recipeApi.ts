@@ -17,7 +17,7 @@ If is_recipe is false, still provide a short title describing what the page is, 
 
 If is_recipe is true, extract the full recipe:
 - ingredients should be the complete list of individual items with quantities included.
-- steps should be clear, concise instructions in order. Each step has:
+- steps should be clear, concise instructions in the same order as the original recipe. Each step has:
   - "instruction": the step text.
   - "ingredients": a list of the specific ingredients (with quantities) used in that step. If no ingredients are used in a step, use an empty list.
 - notes can include tips, substitutions, storage info, etc. Use an empty array if none.

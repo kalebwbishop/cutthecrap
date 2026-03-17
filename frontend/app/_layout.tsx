@@ -7,14 +7,16 @@ import { ThemeProvider, useThemeColors, useIsDarkMode } from '../src/theme';
 function RootLayoutInner() {
     const colors = useThemeColors();
     const isDark = useIsDarkMode();
+    console.log('Current theme colors:', colors);
+    console.log('Is dark mode:', isDark);
 
     return (
-        <View style={[s.container, { backgroundColor: colors.background }]}>
+        <View style={s.container}>
             <StatusBar style={isDark ? 'light' : 'dark'} />
             <Stack
                 screenOptions={{
                     headerShown: false,
-                    contentStyle: { backgroundColor: 'transparent' },
+                    contentStyle: { backgroundColor: colors.background },
                     animation: 'fade',
                 }}
             />

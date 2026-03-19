@@ -42,6 +42,12 @@ export const lightColors = {
   checkboxFill: '#4caf50',
   checkboxCheck: '#ffffff',
   checkboxUnchecked: '#999',
+
+  sidebarOverlay: 'rgba(0,0,0,0.4)',
+  sidebarBg: '#ffffff',
+  sidebarDivider: 'rgba(0,0,0,0.1)',
+  sidebarRecipeTitle: '#2d2d2d',
+  sidebarRecipeSubtitle: 'rgba(0,0,0,0.45)',
 } as const;
 
 export const darkColors: ThemeColors = {
@@ -83,6 +89,12 @@ export const darkColors: ThemeColors = {
   checkboxFill: '#66bb6a',
   checkboxCheck: '#ffffff',
   checkboxUnchecked: '#777',
+
+  sidebarOverlay: 'rgba(0,0,0,0.5)',
+  sidebarBg: '#1e1e1e',
+  sidebarDivider: 'rgba(255,255,255,0.1)',
+  sidebarRecipeTitle: '#e0e0e0',
+  sidebarRecipeSubtitle: 'rgba(255,255,255,0.45)',
 };
 
 export type ThemeColors = { [K in keyof typeof lightColors]: string };

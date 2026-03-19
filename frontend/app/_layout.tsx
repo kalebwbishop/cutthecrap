@@ -1,14 +1,25 @@
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { Platform, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, useThemeColors, useIsDarkMode } from '../src/theme';
+import { configureRevenueCat } from '../src/config/revenuecat';
+import { useAuthStore } from '../src/store/authStore';
+import { useSubscriptionStore } from '../src/store/subscriptionStore';
 
 function RootLayoutInner() {
     const colors = useThemeColors();
     const isDark = useIsDarkMode();
-    console.log('Current theme colors:', colors);
-    console.log('Is dark mode:', isDark);
+    const user = useAuthStore((s) => s.user);
+    const refreshCustomerInfo = useSubscriptionStore((s) => s.refreshCustomerInfo);
+
+    // Initialize RevenueCat once on mount, then re-identify when the user changes
+    useEffect(() => {
+        configureRevenueCat(user?.id).then(() => {
+            refreshCustomerInfo();
+        });
+    }, [user?.id]);
 
     return (
         <View style={s.container}>

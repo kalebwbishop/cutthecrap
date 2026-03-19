@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { recipeApi } from '@/api/recipeApi';
-import { SummarizeResponse, ApiStatus } from '@/types/recipe';
+import { SummarizeResponse, SavedRecipeDetail, ApiStatus } from '@/types/recipe';
 
 const LOADING_MESSAGES = [
   'Scraping the page…',
@@ -23,6 +23,7 @@ interface RecipeState {
   /* Result */
   result: SummarizeResponse | null;
   error: string | null;
+  savedRecipeId: string | null;
 
   /* API health */
   apiStatus: ApiStatus;
@@ -30,6 +31,7 @@ interface RecipeState {
   /* Actions */
   setUrl: (url: string) => void;
   submitUrl: () => Promise<void>;
+  openSavedRecipe: (id: string) => Promise<void>;
   reset: () => void;
   checkHealth: () => Promise<void>;
   cycleLoadingMessage: () => void;
@@ -52,6 +54,7 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
   loadingMessageIndex: 0,
   result: null,
   error: null,
+  savedRecipeId: null,
   apiStatus: 'checking',
 
   setUrl: (url: string) => set({ url, urlError: '' }),
@@ -74,6 +77,7 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
       result: null,
       error: null,
       urlError: '',
+      savedRecipeId: null,
     });
 
     try {
@@ -86,6 +90,37 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
     }
   },
 
+  openSavedRecipe: async (id: string) => {
+    try {
+      const detail = await recipeApi.getRecipeById(id);
+      const recipe = {
+        title: detail.title,
+        description: detail.description,
+        prep_time: detail.prepTime,
+        cook_time: detail.cookTime,
+        cool_time: detail.coolTime,
+        chill_time: detail.chillTime,
+        rest_time: detail.restTime,
+        marinate_time: detail.marinateTime,
+        soak_time: detail.soakTime,
+        total_time: detail.totalTime,
+        servings: detail.servings,
+        ingredients: detail.ingredients,
+        steps: detail.steps,
+        notes: detail.notes,
+      };
+      set({
+        result: { is_recipe: true, title: detail.title, recipe },
+        url: detail.sourceUrl ?? '',
+        error: null,
+        isLoading: false,
+        savedRecipeId: detail.id,
+      });
+    } catch {
+      set({ error: 'Failed to load saved recipe.', result: null, isLoading: false });
+    }
+  },
+
   reset: () =>
     set({
       url: '',
@@ -94,6 +129,7 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
       loadingMessageIndex: 0,
       result: null,
       error: null,
+      savedRecipeId: null,
     }),
 
   checkHealth: async () => {

@@ -1,0 +1,702 @@
+{"time": "2026-03-18 13:42:45", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 13:42:45", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 13:43:55", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 13:43:55", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 13:43:55", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 13:45:35", "level": "INFO", "message": "GET /api/health — 200 (5ms)"}
+{"time": "2026-03-18 13:47:29", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 13:47:36", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 13:50:39", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-18 13:50:56", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 13:51:03", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 13:51:06", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 13:51:06", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 13:51:09", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 13:51:09", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 13:51:09", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 13:51:19", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-18 13:51:35", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 13:51:46", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 13:52:29", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (133ms)"}
+{"time": "2026-03-18 13:52:59", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 13:52:59", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (1ms)"}
+{"time": "2026-03-18 13:53:07", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 13:53:07", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 13:53:07", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM118VJQ2HWZQ5F5KWBASKGP"}
+{"time": "2026-03-18 13:53:07", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (3ms)"}
+{"time": "2026-03-18 13:53:07", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-18 13:53:07", "level": "ERROR", "message": "OAuth exchange failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self signed certificate in certificate chain (_ssl.c:1129)"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_transports\default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_sync\connection_pool.py", line 256, in handle_request
+    raise exc from None
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_sync\connection_pool.py", line 236, in handle_request
+    response = connection.handle_request(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_sync\connection.py", line 101, in handle_request
+    raise exc
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_sync\connection.py", line 78, in handle_request
+    stream = self._connect(request)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_sync\connection.py", line 156, in _connect
+    stream = stream.start_tls(**kwargs)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_backends\sync.py", line 170, in start_tls
+    raise exc
+  File "C:\Program Files\Python39\lib\contextlib.py", line 137, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self signed certificate in certificate chain (_ssl.c:1129)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 134, in exchange
+    auth_response = workos.user_management.authenticate_with_code(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\workos\user_management.py", line 1270, in authenticate_with_code
+    return self._authenticate_with(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\workos\user_management.py", line 1208, in _authenticate_with
+    response = self._http_client.request(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\workos\utils\http_client.py", line 113, in request
+    response = self._client.request(**prepared_request_parameters)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_client.py", line 825, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_transports\default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+  File "C:\Program Files\Python39\lib\contextlib.py", line 137, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self signed certificate in certificate chain (_ssl.c:1129)
+{"time": "2026-03-18 13:53:07", "level": "INFO", "message": "POST /api/v1/auth/exchange — 500 (76ms)"}
+{"time": "2026-03-18 13:53:07", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 13:54:42", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 13:54:42", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 13:54:45", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 13:54:45", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 13:54:45", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 13:58:07", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 13:58:07", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 13:58:10", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 13:58:10", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 13:58:10", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 13:59:22", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (81ms)"}
+{"time": "2026-03-18 13:59:24", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 13:59:24", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 13:59:24", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM11MC90YR99EQ3XHTXVN5VE"}
+{"time": "2026-03-18 13:59:24", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (1ms)"}
+{"time": "2026-03-18 13:59:25", "level": "ERROR", "message": "Database query failed: relation "users" does not exist"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 144, in exchange
+    db_user = await auth_service.find_user_by_workos_id(user.id)
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\services\auth_service.py", line 14, in find_user_by_workos_id
+    row = await pool.fetchrow(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\pool.py", line 628, in fetchrow
+    return await con.fetchrow(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\connection.py", line 748, in fetchrow
+    data = await self._execute(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\connection.py", line 1864, in _execute
+    result, _ = await self.__execute(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\connection.py", line 1961, in __execute
+    result, stmt = await self._do_execute(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\connection.py", line 2012, in _do_execute
+    stmt = await self._get_statement(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\connection.py", line 432, in _get_statement
+    statement = await self._protocol.prepare(
+  File "asyncpg\\protocol\\protocol.pyx", line 165, in prepare
+asyncpg.exceptions.UndefinedTableError: relation "users" does not exist
+{"time": "2026-03-18 13:59:25", "level": "INFO", "message": "POST /api/v1/auth/exchange — 500 (245ms)"}
+{"time": "2026-03-18 13:59:25", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:00:28", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (1ms)"}
+{"time": "2026-03-18 14:00:30", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 14:00:30", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 14:00:30", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM11PCC2XN7D61HCHDQWQBSR"}
+{"time": "2026-03-18 14:00:30", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (1ms)"}
+{"time": "2026-03-18 14:00:30", "level": "INFO", "message": "New user created: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 14:00:30", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 14:00:30", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (252ms)"}
+{"time": "2026-03-18 14:00:30", "level": "INFO", "message": "OPTIONS /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:00:30", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:11:12", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-18 14:11:12", "level": "INFO", "message": "GET /api/health — 200 (301ms)"}
+{"time": "2026-03-18 14:11:21", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:11:43", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:12:00", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:13:04", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:13:10", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:13:19", "level": "INFO", "message": "GET /api/health — 200 (3ms)"}
+{"time": "2026-03-18 14:13:43", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:14:03", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:14:17", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:14:23", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:14:29", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:17:45", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (1ms)"}
+{"time": "2026-03-18 14:17:45", "level": "INFO", "message": "GET /api/v1/recipes — 404 (1ms)"}
+{"time": "2026-03-18 14:20:30", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-18 14:20:30", "level": "INFO", "message": "GET /api/health — 200 (203ms)"}
+{"time": "2026-03-18 14:21:22", "level": "INFO", "message": "OPTIONS /api/v1/chatgpt/parse-url — 200 (0ms)"}
+{"time": "2026-03-18 14:21:22", "level": "INFO", "message": "chatgpt/parse-url – url=https://feelgoodfoodie.net/recipe/air-fryer-salmon/, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:21:22", "level": "ERROR", "message": "HTTP fetch error for https://feelgoodfoodie.net/recipe/air-fryer-salmon/: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self signed certificate in certificate chain (_ssl.c:1129)"}
+{"time": "2026-03-18 14:21:22", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (73ms)"}
+{"time": "2026-03-18 14:21:24", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:27:05", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:27:05", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:32:29", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:32:29", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:32:29", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:32:41", "level": "INFO", "message": "OPTIONS /api/v1/chatgpt/parse-url — 200 (2ms)"}
+{"time": "2026-03-18 14:32:41", "level": "INFO", "message": "chatgpt/parse-url – url=https://feelgoodfoodie.net/recipe/air-fryer-salmon/, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:32:42", "level": "ERROR", "message": "HTTP fetch error for https://feelgoodfoodie.net/recipe/air-fryer-salmon/: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)"}
+{"time": "2026-03-18 14:32:42", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (744ms)"}
+{"time": "2026-03-18 14:32:44", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-18 14:32:44", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:33:24", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:33:24", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:33:26", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:33:26", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:33:27", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:33:34", "level": "INFO", "message": "chatgpt/parse-url – url=https://feelgoodfoodie.net/recipe/air-fryer-salmon/, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:33:37", "level": "ERROR", "message": "Azure Function error 404: "}
+{"time": "2026-03-18 14:33:37", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (3622ms)"}
+{"time": "2026-03-18 14:33:58", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:36:26", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:36:26", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:36:28", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:36:28", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:36:28", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:36:30", "level": "INFO", "message": "chatgpt/parse-url – url=https://deploy-box-apis-func-dev.azurewebsites.net/api/v1/chatgpt, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:36:30", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (351ms)"}
+{"time": "2026-03-18 14:39:56", "level": "INFO", "message": "GET /api/health — 200 (3ms)"}
+{"time": "2026-03-18 14:40:07", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjE6ta8jKqTAxUnGhAIHQt_BPkQFnoECCAQAQ&url=https%3A%2F%2Fwww.foodnetwork.com%2Frecipes%2Ftyler-florence%2Fthe-ultimate-beef-wellington-recipe2-1952280&usg=AOvVaw0ATSvAnNHzbT14lzPPgXJP&opi=89978449, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:40:08", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (401ms)"}
+{"time": "2026-03-18 14:40:56", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:40:56", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:40:59", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:40:59", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:40:59", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:40:59", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:41:02", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjE6ta8jKqTAxUnGhAIHQt_BPkQFnoECCAQAQ&url=https%3A%2F%2Fwww.foodnetwork.com%2Frecipes%2Ftyler-florence%2Fthe-ultimate-beef-wellington-recipe2-1952280&usg=AOvVaw0ATSvAnNHzbT14lzPPgXJP&opi=89978449, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:41:02", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (224ms)"}
+{"time": "2026-03-18 14:41:57", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:41:59", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.foodnetwork.com/recipes/tyler-florence/the-ultimate-beef-wellington-recipe2-1952280, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:41:59", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (79ms)"}
+{"time": "2026-03-18 14:42:37", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:42:37", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-18 14:42:37", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:42:37", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:42:37", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:42:37", "level": "INFO", "message": "GET /api/health — 200 (3ms)"}
+{"time": "2026-03-18 14:42:37", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:42:39", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:42:40", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.foodnetwork.com/recipes/tyler-florence/the-ultimate-beef-wellington-recipe2-1952280, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:42:41", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (164ms)"}
+{"time": "2026-03-18 14:45:02", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:45:02", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:45:04", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:45:04", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:45:05", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:45:05", "level": "INFO", "message": "OPTIONS /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:45:05", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:45:07", "level": "INFO", "message": "OPTIONS /api/v1/chatgpt/parse-url — 200 (1ms)"}
+{"time": "2026-03-18 14:45:07", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.foodnetwork.com/recipes/tyler-florence/the-ultimate-beef-wellington-recipe2-1952280, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:45:07", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (229ms)"}
+{"time": "2026-03-18 14:46:45", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:46:45", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:46:45", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:46:48", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:46:48", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:46:48", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:46:52", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.foodnetwork.com/recipes/tyler-florence/the-ultimate-beef-wellington-recipe2-1952280, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:46:53", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 400 (226ms)"}
+{"time": "2026-03-18 14:47:15", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:47:18", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:47:18", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:47:23", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:47:23", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:47:23", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:47:24", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.foodnetwork.com/recipes/tyler-florence/the-ultimate-beef-wellington-recipe2-1952280, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:47:24", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 403 (215ms)"}
+{"time": "2026-03-18 14:48:47", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:48:47", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:48:49", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:48:49", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:48:50", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:49:14", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:49:22", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:49:23", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.foodnetwork.com/recipes/tyler-florence/the-ultimate-beef-wellington-recipe2-1952280, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:49:29", "level": "ERROR", "message": "Azure Function error 401: {"error": "Invalid or revoked API key"}"}
+{"time": "2026-03-18 14:49:29", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (6049ms)"}
+{"time": "2026-03-18 14:49:48", "level": "INFO", "message": "POST /api/v1/deploy-box-apis/keys/generate/ — 404 (1ms)"}
+{"time": "2026-03-18 14:49:55", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:49:55", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:52:00", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:52:00", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:52:00", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:53:11", "level": "INFO", "message": "GET /api/health — 200 (4ms)"}
+{"time": "2026-03-18 14:53:12", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.foodnetwork.com/recipes/tyler-florence/the-ultimate-beef-wellington-recipe2-1952280, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:54:12", "level": "ERROR", "message": "Azure Function timed out: https://deploy-box-apis-func-dev.azurewebsites.net/api/v1/chatgpt"}
+{"time": "2026-03-18 14:54:12", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (60531ms)"}
+{"time": "2026-03-18 14:54:18", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:54:20", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.foodnetwork.com/recipes/tyler-florence/the-ultimate-beef-wellington-recipe2-1952280, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:55:20", "level": "ERROR", "message": "Azure Function timed out: https://deploy-box-apis-func-dev.azurewebsites.net/api/v1/chatgpt"}
+{"time": "2026-03-18 14:55:20", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (60418ms)"}
+{"time": "2026-03-18 14:55:58", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:55:59", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:55:59", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:56:01", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:56:01", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:56:01", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:56:01", "level": "INFO", "message": "OPTIONS /api/v1/chatgpt/parse-url — 200 (0ms)"}
+{"time": "2026-03-18 14:56:01", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.foodnetwork.com/recipes/tyler-florence/the-ultimate-beef-wellington-recipe2-1952280, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:56:39", "level": "INFO", "message": "Azure Function response: {"success": true, "data": {"is_recipe": true, "title": "The Ultimate Beef Wellington", "description": null, "prep_time": "1 hr", "cook_time": "6 hr", "cool_time": null, "chill_time": null, "rest_time": null, "marinate_time": null, "soak_time": null, "total_time": "7 hr", "servings": "6 to 8 servings", "ingredients": ["3 pints (1 1/2 pounds) white button mushrooms", "2 shallots, peeled and roughly chopped", "4 cloves garlic, peeled and roughly chopped", "2 sprigs fresh thyme, leaves only", "2 tab"}
+{"time": "2026-03-18 14:56:39", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (38186ms)"}
+{"time": "2026-03-18 14:56:39", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:56:39", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:56:42", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:56:42", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:56:42", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:56:42", "level": "INFO", "message": "GET /api/health — 200 (3ms)"}
+{"time": "2026-03-18 14:57:07", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:57:07", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:57:07", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:57:09", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:57:09", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:57:09", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:57:13", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.foodnetwork.com/recipes/tyler-florence/the-ultimate-beef-wellington-recipe2-1952280, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:58:01", "level": "INFO", "message": "Azure Function response: {"success": true, "data": {"is_recipe": true, "title": "The Ultimate Beef Wellington", "description": null, "prep_time": "1 hr", "cook_time": "6 hr", "cool_time": null, "chill_time": null, "rest_time": null, "marinate_time": null, "soak_time": null, "total_time": "7 hr", "servings": "6 to 8 servings", "ingredients": ["3 pints (1 1/2 pounds) white button mushrooms", "2 shallots, peeled and roughly chopped", "4 cloves garlic, peeled and roughly chopped", "2 sprigs fresh thyme, leaves only", "2 tab"}
+{"time": "2026-03-18 14:58:01", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (48227ms)"}
+{"time": "2026-03-18 14:58:25", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:58:25", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 14:58:25", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 14:58:27", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 14:58:27", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 14:58:27", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 14:58:28", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (604ms)"}
+{"time": "2026-03-18 14:58:30", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 14:58:30", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 14:58:30", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM150JQN1BVRFD5R5QG520TP"}
+{"time": "2026-03-18 14:58:30", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (4ms)"}
+{"time": "2026-03-18 14:58:30", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (1ms)"}
+{"time": "2026-03-18 14:58:31", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 14:58:31", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (404ms)"}
+{"time": "2026-03-18 14:58:31", "level": "INFO", "message": "OPTIONS /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:58:31", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 14:58:39", "level": "INFO", "message": "OPTIONS /api/v1/chatgpt/parse-url — 200 (0ms)"}
+{"time": "2026-03-18 14:58:39", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.foodnetwork.com/recipes/tyler-florence/the-ultimate-beef-wellington-recipe2-1952280, model=gpt-4o-mini"}
+{"time": "2026-03-18 14:59:20", "level": "INFO", "message": "Azure Function response: {"success": true, "data": {"is_recipe": true, "title": "The Ultimate Beef Wellington", "description": null, "prep_time": "1 hr", "cook_time": "6 hr", "cool_time": null, "chill_time": null, "rest_time": null, "marinate_time": null, "soak_time": null, "total_time": "7 hr", "servings": "6 to 8 servings", "ingredients": ["3 pints (1 1/2 pounds) white button mushrooms", "2 shallots, peeled and roughly chopped", "4 cloves garlic, peeled and roughly chopped", "2 sprigs fresh thyme, leaves only", "2 tab"}
+{"time": "2026-03-18 14:59:20", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (41012ms)"}
+{"time": "2026-03-18 14:59:27", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (0ms)"}
+{"time": "2026-03-18 14:59:27", "level": "INFO", "message": "POST /api/v1/recipes — 200 (227ms)"}
+{"time": "2026-03-18 14:59:42", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 14:59:43", "level": "INFO", "message": "GET /api/v1/recipes — 200 (5ms)"}
+{"time": "2026-03-18 15:06:48", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:06:48", "level": "INFO", "message": "GET /api/v1/recipes — 401 (269ms)"}
+{"time": "2026-03-18 15:06:48", "level": "INFO", "message": "GET /api/health — 200 (511ms)"}
+{"time": "2026-03-18 15:06:48", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:06:50", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:06:50", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:06:50", "level": "INFO", "message": "GET /api/v1/recipes — 401 (2ms)"}
+{"time": "2026-03-18 15:06:50", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:06:55", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 15:06:55", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 15:06:57", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 15:06:57", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 15:06:57", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 15:07:14", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:07:14", "level": "INFO", "message": "GET /api/v1/recipes — 401 (721ms)"}
+{"time": "2026-03-18 15:07:14", "level": "INFO", "message": "GET /api/health — 200 (722ms)"}
+{"time": "2026-03-18 15:07:14", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-18 15:08:55", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:08:55", "level": "INFO", "message": "GET /api/v1/recipes — 401 (5ms)"}
+{"time": "2026-03-18 15:08:55", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 15:08:55", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 15:08:58", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 15:08:58", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 15:08:59", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 15:08:59", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 15:09:00", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (864ms)"}
+{"time": "2026-03-18 15:09:02", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 15:09:02", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 15:09:02", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM15KW56S8SXDV7BDBZ9P2SV"}
+{"time": "2026-03-18 15:09:02", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (9ms)"}
+{"time": "2026-03-18 15:09:02", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-18 15:09:03", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 15:09:03", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (237ms)"}
+{"time": "2026-03-18 15:09:03", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-18 15:09:03", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:09:04", "level": "INFO", "message": "GET /api/v1/recipes — 200 (176ms)"}
+{"time": "2026-03-18 15:09:05", "level": "INFO", "message": "OPTIONS /api/v1/recipes/cd4445d8-6a46-4c0c-b427-778140212ee6 — 200 (0ms)"}
+{"time": "2026-03-18 15:09:05", "level": "INFO", "message": "GET /api/v1/recipes/cd4445d8-6a46-4c0c-b427-778140212ee6 — 200 (7ms)"}
+{"time": "2026-03-18 15:09:14", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:09:15", "level": "INFO", "message": "GET /api/v1/recipes — 200 (3ms)"}
+{"time": "2026-03-18 15:30:51", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (0ms)"}
+{"time": "2026-03-18 15:30:51", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:30:51", "level": "INFO", "message": "GET /api/v1/recipes — 401 (177ms)"}
+{"time": "2026-03-18 15:30:53", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:30:53", "level": "INFO", "message": "GET /api/v1/recipes — 401 (2ms)"}
+{"time": "2026-03-18 15:30:55", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:30:55", "level": "INFO", "message": "GET /api/v1/recipes — 401 (3ms)"}
+{"time": "2026-03-18 15:31:03", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:31:03", "level": "INFO", "message": "GET /api/v1/recipes — 401 (2ms)"}
+{"time": "2026-03-18 15:31:07", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:31:07", "level": "INFO", "message": "GET /api/v1/recipes — 401 (3ms)"}
+{"time": "2026-03-18 15:31:08", "level": "INFO", "message": "OPTIONS /api/v1/recipes/cd4445d8-6a46-4c0c-b427-778140212ee6 — 200 (0ms)"}
+{"time": "2026-03-18 15:31:08", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:31:08", "level": "INFO", "message": "GET /api/v1/recipes/cd4445d8-6a46-4c0c-b427-778140212ee6 — 401 (3ms)"}
+{"time": "2026-03-18 15:31:09", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-18 15:31:09", "level": "INFO", "message": "GET /api/health — 200 (211ms)"}
+{"time": "2026-03-18 15:31:10", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:31:10", "level": "INFO", "message": "GET /api/v1/recipes — 401 (3ms)"}
+{"time": "2026-03-18 15:31:14", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:31:15", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (2ms)"}
+{"time": "2026-03-18 15:31:17", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 15:31:17", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 15:31:17", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM16WM0TE471PSJH8PSD3ZH1"}
+{"time": "2026-03-18 15:31:17", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-18 15:31:18", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-18 15:31:18", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 15:31:18", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (276ms)"}
+{"time": "2026-03-18 15:31:18", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:31:19", "level": "INFO", "message": "GET /api/v1/recipes — 200 (4ms)"}
+{"time": "2026-03-18 15:31:20", "level": "INFO", "message": "GET /api/v1/recipes/cd4445d8-6a46-4c0c-b427-778140212ee6 — 200 (3ms)"}
+{"time": "2026-03-18 15:31:26", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:31:27", "level": "INFO", "message": "GET /api/v1/recipes — 200 (2ms)"}
+{"time": "2026-03-18 15:31:32", "level": "INFO", "message": "GET /api/v1/recipes — 200 (3ms)"}
+{"time": "2026-03-18 15:31:54", "level": "INFO", "message": "GET /api/v1/recipes — 200 (4ms)"}
+{"time": "2026-03-18 15:34:43", "level": "INFO", "message": "GET /api/v1/recipes — 200 (2ms)"}
+{"time": "2026-03-18 15:35:00", "level": "INFO", "message": "GET /api/v1/recipes — 200 (3ms)"}
+{"time": "2026-03-18 15:35:36", "level": "INFO", "message": "GET /api/v1/recipes — 200 (3ms)"}
+{"time": "2026-03-18 15:35:44", "level": "INFO", "message": "GET /api/v1/recipes — 200 (1ms)"}
+{"time": "2026-03-18 15:36:01", "level": "INFO", "message": "GET /api/v1/recipes — 200 (222ms)"}
+{"time": "2026-03-18 15:44:46", "level": "INFO", "message": "OPTIONS /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:44:46", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-18 15:44:46", "level": "INFO", "message": "GET /api/health — 200 (238ms)"}
+{"time": "2026-03-18 15:44:46", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-18 15:44:50", "level": "INFO", "message": "GET /api/health — 200 (8ms)"}
+{"time": "2026-03-18 15:44:50", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:45:44", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:45:44", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:47:36", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (1ms)"}
+{"time": "2026-03-18 15:47:36", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:47:36", "level": "INFO", "message": "GET /api/v1/recipes — 401 (194ms)"}
+{"time": "2026-03-18 15:47:43", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 15:47:44", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-18 15:47:46", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 15:47:46", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 15:47:46", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM17TSZGZ23RS3EHZF6D7KPA"}
+{"time": "2026-03-18 15:47:46", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (18ms)"}
+{"time": "2026-03-18 15:47:47", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-18 15:47:47", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 15:47:47", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (240ms)"}
+{"time": "2026-03-18 15:47:47", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 15:48:53", "level": "INFO", "message": "GET /api/v1/recipes — 200 (6ms)"}
+{"time": "2026-03-18 15:50:10", "level": "INFO", "message": "GET /api/v1/recipes — 200 (1ms)"}
+{"time": "2026-03-18 16:04:08", "level": "INFO", "message": "GET /api/health — 200 (302ms)"}
+{"time": "2026-03-18 16:04:09", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-18 16:04:11", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 16:04:11", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 16:04:11", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM18RV9QPNDCPH5G1BHG6T6Z"}
+{"time": "2026-03-18 16:04:11", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-18 16:04:11", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-18 16:04:12", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 16:04:12", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (220ms)"}
+{"time": "2026-03-18 16:04:12", "level": "INFO", "message": "OPTIONS /api/health — 200 (1ms)"}
+{"time": "2026-03-18 16:04:12", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 16:04:13", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (0ms)"}
+{"time": "2026-03-18 16:04:13", "level": "INFO", "message": "GET /api/v1/recipes — 200 (114ms)"}
+{"time": "2026-03-18 16:06:45", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 16:06:46", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-18 16:06:47", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 16:06:47", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 16:06:47", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM18XM88ZR57XMBAXBMX40N0"}
+{"time": "2026-03-18 16:06:47", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-18 16:06:48", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 16:06:48", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (202ms)"}
+{"time": "2026-03-18 16:06:48", "level": "INFO", "message": "GET /api/health — 200 (3ms)"}
+{"time": "2026-03-18 16:06:50", "level": "INFO", "message": "GET /api/v1/recipes — 200 (3ms)"}
+{"time": "2026-03-18 16:14:28", "level": "INFO", "message": "GET /api/health — 200 (185ms)"}
+{"time": "2026-03-18 16:14:33", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-18 16:14:35", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 16:14:35", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 16:14:35", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM19BWZ4WAJADXJWFXRND9GY"}
+{"time": "2026-03-18 16:14:35", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-18 16:14:36", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-18 16:14:36", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 16:14:36", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (221ms)"}
+{"time": "2026-03-18 16:14:36", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-18 16:14:36", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 16:14:51", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (1ms)"}
+{"time": "2026-03-18 16:14:52", "level": "INFO", "message": "GET /api/v1/recipes — 200 (133ms)"}
+{"time": "2026-03-18 16:14:59", "level": "INFO", "message": "OPTIONS /api/v1/recipes/cd4445d8-6a46-4c0c-b427-778140212ee6 — 200 (1ms)"}
+{"time": "2026-03-18 16:14:59", "level": "INFO", "message": "GET /api/v1/recipes/cd4445d8-6a46-4c0c-b427-778140212ee6 — 200 (5ms)"}
+{"time": "2026-03-18 16:15:03", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 16:15:04", "level": "INFO", "message": "GET /api/v1/recipes — 200 (3ms)"}
+{"time": "2026-03-18 16:15:05", "level": "INFO", "message": "GET /api/v1/recipes/cd4445d8-6a46-4c0c-b427-778140212ee6 — 200 (4ms)"}
+{"time": "2026-03-18 16:15:08", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 16:15:48", "level": "INFO", "message": "GET /api/v1/recipes — 200 (3ms)"}
+{"time": "2026-03-18 16:17:00", "level": "INFO", "message": "GET /api/v1/recipes — 200 (2ms)"}
+{"time": "2026-03-18 16:17:03", "level": "INFO", "message": "GET /api/v1/recipes — 200 (3ms)"}
+{"time": "2026-03-18 20:33:47", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (1ms)"}
+{"time": "2026-03-18 20:33:47", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 20:33:47", "level": "INFO", "message": "GET /api/v1/recipes — 401 (267ms)"}
+{"time": "2026-03-18 20:33:58", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 20:33:58", "level": "INFO", "message": "GET /api/v1/recipes — 401 (4ms)"}
+{"time": "2026-03-18 20:34:01", "level": "INFO", "message": "GET /api/health — 200 (233ms)"}
+{"time": "2026-03-18 20:34:02", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (2ms)"}
+{"time": "2026-03-18 20:34:04", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 20:34:04", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 20:34:04", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM1R712X0NFDEYGD5VN7EBM0"}
+{"time": "2026-03-18 20:34:04", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (4ms)"}
+{"time": "2026-03-18 20:34:05", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (1ms)"}
+{"time": "2026-03-18 20:34:05", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 20:34:05", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (199ms)"}
+{"time": "2026-03-18 20:34:05", "level": "INFO", "message": "OPTIONS /api/health — 200 (1ms)"}
+{"time": "2026-03-18 20:34:05", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 20:34:06", "level": "INFO", "message": "GET /api/v1/recipes — 200 (7ms)"}
+{"time": "2026-03-18 20:47:21", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-18 20:47:22", "level": "INFO", "message": "GET /api/health — 200 (197ms)"}
+{"time": "2026-03-18 20:47:22", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 20:47:22", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 20:47:25", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 20:47:25", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 20:47:25", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 20:49:10", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (1ms)"}
+{"time": "2026-03-18 20:49:11", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 20:49:11", "level": "INFO", "message": "GET /api/v1/recipes — 401 (1284ms)"}
+{"time": "2026-03-18 20:49:33", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 20:49:33", "level": "INFO", "message": "GET /api/v1/recipes — 401 (3ms)"}
+{"time": "2026-03-18 20:49:38", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-18 20:49:38", "level": "INFO", "message": "Server shut down"}

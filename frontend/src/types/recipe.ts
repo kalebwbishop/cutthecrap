@@ -43,3 +43,32 @@ export interface HealthCheckResponse {
 
 /** Possible API connection statuses */
 export type ApiStatus = 'checking' | 'healthy' | 'unreachable';
+
+/** Lightweight saved-recipe entry used in the sidebar list. */
+export interface SavedRecipeSummary {
+  id: string;
+  title: string;
+  sourceUrl?: string;
+  createdAt?: string;
+}
+
+/** Full saved-recipe returned by GET /recipes/:id. */
+export interface SavedRecipeDetail {
+  id: string;
+  title: string;
+  description?: string;
+  sourceUrl?: string;
+  prepTime?: string;
+  cookTime?: string;
+  coolTime?: string;
+  chillTime?: string;
+  restTime?: string;
+  marinateTime?: string;
+  soakTime?: string;
+  totalTime?: string;
+  servings?: string;
+  ingredients: string[];
+  steps: (string | RecipeStep)[];
+  notes?: string[];
+  createdAt?: string;
+}

@@ -1,0 +1,318 @@
+{"time": "2026-03-18 13:53:07", "level": "ERROR", "message": "OAuth exchange failed: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self signed certificate in certificate chain (_ssl.c:1129)"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_transports\default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_sync\connection_pool.py", line 256, in handle_request
+    raise exc from None
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_sync\connection_pool.py", line 236, in handle_request
+    response = connection.handle_request(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_sync\connection.py", line 101, in handle_request
+    raise exc
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_sync\connection.py", line 78, in handle_request
+    stream = self._connect(request)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_sync\connection.py", line 156, in _connect
+    stream = stream.start_tls(**kwargs)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_backends\sync.py", line 170, in start_tls
+    raise exc
+  File "C:\Program Files\Python39\lib\contextlib.py", line 137, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self signed certificate in certificate chain (_ssl.c:1129)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 134, in exchange
+    auth_response = workos.user_management.authenticate_with_code(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\workos\user_management.py", line 1270, in authenticate_with_code
+    return self._authenticate_with(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\workos\user_management.py", line 1208, in _authenticate_with
+    response = self._http_client.request(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\workos\utils\http_client.py", line 113, in request
+    response = self._client.request(**prepared_request_parameters)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_client.py", line 825, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_transports\default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+  File "C:\Program Files\Python39\lib\contextlib.py", line 137, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self signed certificate in certificate chain (_ssl.c:1129)
+{"time": "2026-03-18 13:59:25", "level": "ERROR", "message": "Database query failed: relation "users" does not exist"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 144, in exchange
+    db_user = await auth_service.find_user_by_workos_id(user.id)
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\services\auth_service.py", line 14, in find_user_by_workos_id
+    row = await pool.fetchrow(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\pool.py", line 628, in fetchrow
+    return await con.fetchrow(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\connection.py", line 748, in fetchrow
+    data = await self._execute(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\connection.py", line 1864, in _execute
+    result, _ = await self.__execute(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\connection.py", line 1961, in __execute
+    result, stmt = await self._do_execute(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\connection.py", line 2012, in _do_execute
+    stmt = await self._get_statement(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\lib\site-packages\asyncpg\connection.py", line 432, in _get_statement
+    statement = await self._protocol.prepare(
+  File "asyncpg\\protocol\\protocol.pyx", line 165, in prepare
+asyncpg.exceptions.UndefinedTableError: relation "users" does not exist
+{"time": "2026-03-18 14:21:22", "level": "ERROR", "message": "HTTP fetch error for https://feelgoodfoodie.net/recipe/air-fryer-salmon/: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self signed certificate in certificate chain (_ssl.c:1129)"}
+{"time": "2026-03-18 14:32:42", "level": "ERROR", "message": "HTTP fetch error for https://feelgoodfoodie.net/recipe/air-fryer-salmon/: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)"}
+{"time": "2026-03-18 14:33:37", "level": "ERROR", "message": "Azure Function error 404: "}
+{"time": "2026-03-18 14:49:29", "level": "ERROR", "message": "Azure Function error 401: {"error": "Invalid or revoked API key"}"}
+{"time": "2026-03-18 14:54:12", "level": "ERROR", "message": "Azure Function timed out: https://deploy-box-apis-func-dev.azurewebsites.net/api/v1/chatgpt"}
+{"time": "2026-03-18 14:55:20", "level": "ERROR", "message": "Azure Function timed out: https://deploy-box-apis-func-dev.azurewebsites.net/api/v1/chatgpt"}
+{"time": "2026-03-18 15:06:48", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:06:50", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:07:14", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:08:55", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:30:51", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:30:53", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:30:55", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:31:03", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:31:07", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:31:08", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:31:10", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 15:47:36", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 20:33:47", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 20:33:58", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 20:49:11", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 20:49:33", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired

@@ -700,3 +700,1022 @@ jwt.exceptions.ExpiredSignatureError: Signature has expired
 {"time": "2026-03-18 20:49:33", "level": "INFO", "message": "GET /api/v1/recipes — 401 (3ms)"}
 {"time": "2026-03-18 20:49:38", "level": "INFO", "message": "PostgreSQL connection pool closed"}
 {"time": "2026-03-18 20:49:38", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-18 20:49:40", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-18 20:49:40", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-18 20:49:41", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-18 20:49:53", "level": "INFO", "message": "OPTIONS /api/v1/chatgpt/parse-url — 200 (1ms)"}
+{"time": "2026-03-18 20:49:53", "level": "INFO", "message": "chatgpt/parse-url – url=https://feelgoodfoodie.net/recipe/air-fryer-salmon/, model=gpt-4o-mini"}
+{"time": "2026-03-18 20:50:02", "level": "ERROR", "message": "Azure Function error 401: {"error": "Invalid or revoked API key"}"}
+{"time": "2026-03-18 20:50:02", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (9296ms)"}
+{"time": "2026-03-18 20:50:09", "level": "INFO", "message": "GET /api/health — 200 (3ms)"}
+{"time": "2026-03-18 20:50:32", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.thepioneerwoman.com/food-cooking/recipes/a44775880/air-fryer-salmon-recipe/?utm_source=google&utm_medium=cpc&utm_campaign=mgu_ga_pw_md_pmx_prog_org_us_18891731492&gad_source=1&gad_campaignid=18891732851&gclid=Cj0KCQjwmunNBhDbARIsAOndKpm5YsnHEwuoeG_9YzMimjRAD_JdnBs0FzRN7_GeaqBflFsBDwraikIaAsDXEALw_wcB, model=gpt-4o-mini"}
+{"time": "2026-03-18 20:50:44", "level": "INFO", "message": "Azure Function response: {"success": true, "data": {"is_recipe": true, "title": "Air Fryer Salmon", "description": null, "prep_time": "2 mins", "cook_time": "8 mins", "cool_time": null, "chill_time": null, "rest_time": null, "marinate_time": null, "soak_time": null, "total_time": "10 mins", "servings": "2 servings", "ingredients": ["2 6 oz. salmon fillets", "2 tsp. olive oil", "1/2 tsp. seasoned salt", "1/4 tsp. ground black pepper", "Nonstick cooking spray", "Lemon wedges, to serve"], "steps": [{"instruction": "Preheat"}
+{"time": "2026-03-18 20:50:44", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (12576ms)"}
+{"time": "2026-03-18 20:50:54", "level": "INFO", "message": "OPTIONS /api/v1/recipes/count — 200 (0ms)"}
+{"time": "2026-03-18 20:50:55", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 20:50:55", "level": "INFO", "message": "GET /api/v1/recipes/count — 401 (955ms)"}
+{"time": "2026-03-18 20:51:25", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 20:51:28", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-18 20:51:48", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 20:52:05", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 20:52:08", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-18 20:52:17", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-18 20:52:34", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 20:52:34", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 20:52:34", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM1S8WT49FM33SZ3KJZ5173F"}
+{"time": "2026-03-18 20:52:34", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-18 20:52:35", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-18 20:52:35", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 20:52:35", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (253ms)"}
+{"time": "2026-03-18 20:52:35", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 20:52:41", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.thepioneerwoman.com/food-cooking/recipes/a44775880/air-fryer-salmon-recipe/?utm_source=google&utm_medium=cpc&utm_campaign=mgu_ga_pw_md_pmx_prog_org_us_18891731492&gad_source=1&gad_campaignid=18891732851&gclid=Cj0KCQjwmunNBhDbARIsAOndKpm5YsnHEwuoeG_9YzMimjRAD_JdnBs0FzRN7_GeaqBflFsBDwraikIaAsDXEALw_wcB, model=gpt-4o-mini"}
+{"time": "2026-03-18 20:52:49", "level": "INFO", "message": "Azure Function response: {"success": true, "data": {"is_recipe": true, "title": "Air Fryer Salmon", "description": null, "prep_time": "2 mins", "cook_time": "8 mins", "cool_time": null, "chill_time": null, "rest_time": null, "marinate_time": null, "soak_time": null, "total_time": "10 mins", "servings": "2 servings", "ingredients": ["2 6 oz. salmon fillets", "2 tsp. olive oil", "1/2 tsp. seasoned salt", "1/4 tsp. ground black pepper", "Nonstick cooking spray", "Lemon wedges, to serve"], "steps": [{"instruction": "Preheat"}
+{"time": "2026-03-18 20:52:49", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (7697ms)"}
+{"time": "2026-03-18 20:53:17", "level": "INFO", "message": "GET /api/v1/recipes/count — 200 (7ms)"}
+{"time": "2026-03-18 20:54:23", "level": "INFO", "message": "GET /api/v1/recipes/count — 200 (2ms)"}
+{"time": "2026-03-18 20:59:24", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (1ms)"}
+{"time": "2026-03-18 20:59:24", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-18 20:59:24", "level": "ERROR", "message": "OAuth exchange failed: (message=No message, request_id=18fcf66d-3cc0-4337-96d3-2f5473178dba, error=invalid_grant, error_description=The code '01KM1S8WT49FM33SZ3KJZ5173F' has expired.)"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 134, in exchange
+    auth_response = workos.user_management.authenticate_with_code(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1270, in authenticate_with_code
+    return self._authenticate_with(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1208, in _authenticate_with
+    response = self._http_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\http_client.py", line 114, in request
+    return self._handle_response(response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 195, in _handle_response
+    self._maybe_raise_error_by_status_code(response, response_json)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 114, in _maybe_raise_error_by_status_code
+    raise BadRequestException(response, response_json)
+workos.exceptions.BadRequestException: (message=No message, request_id=18fcf66d-3cc0-4337-96d3-2f5473178dba, error=invalid_grant, error_description=The code '01KM1S8WT49FM33SZ3KJZ5173F' has expired.)
+{"time": "2026-03-18 20:59:24", "level": "INFO", "message": "POST /api/v1/auth/exchange — 500 (234ms)"}
+{"time": "2026-03-18 20:59:24", "level": "ERROR", "message": "OAuth exchange failed: (message=No message, request_id=8534fc7e-9c11-4faa-bdcb-5ae64461c501, error=invalid_grant, error_description=The code '01KM1S8WT49FM33SZ3KJZ5173F' has expired.)"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 134, in exchange
+    auth_response = workos.user_management.authenticate_with_code(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1270, in authenticate_with_code
+    return self._authenticate_with(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1208, in _authenticate_with
+    response = self._http_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\http_client.py", line 114, in request
+    return self._handle_response(response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 195, in _handle_response
+    self._maybe_raise_error_by_status_code(response, response_json)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 114, in _maybe_raise_error_by_status_code
+    raise BadRequestException(response, response_json)
+workos.exceptions.BadRequestException: (message=No message, request_id=8534fc7e-9c11-4faa-bdcb-5ae64461c501, error=invalid_grant, error_description=The code '01KM1S8WT49FM33SZ3KJZ5173F' has expired.)
+{"time": "2026-03-18 20:59:24", "level": "INFO", "message": "POST /api/v1/auth/exchange — 500 (95ms)"}
+{"time": "2026-03-18 20:59:24", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-18 20:59:25", "level": "INFO", "message": "GET /api/health — 200 (191ms)"}
+{"time": "2026-03-18 20:59:25", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 20:59:58", "level": "INFO", "message": "OPTIONS /api/v1/chatgpt/parse-url — 200 (0ms)"}
+{"time": "2026-03-18 20:59:58", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.thepioneerwoman.com/food-cooking/recipes/a44775880/air-fryer-salmon-recipe/?utm_source=google&utm_medium=cpc&utm_campaign=mgu_ga_pw_md_pmx_prog_org_us_18891731492&gad_source=1&gad_campaignid=18891732851&gclid=Cj0KCQjwmunNBhDbARIsAOndKpm5YsnHEwuoeG_9YzMimjRAD_JdnBs0FzRN7_GeaqBflFsBDwraikIaAsDXEALw_wcB, model=gpt-4o-mini"}
+{"time": "2026-03-18 21:00:05", "level": "ERROR", "message": "Azure Function error 401: {"error": "Invalid or revoked API key"}"}
+{"time": "2026-03-18 21:00:05", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (6607ms)"}
+{"time": "2026-03-18 21:00:11", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 21:00:17", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 21:00:18", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-18 21:00:20", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 21:00:20", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 21:00:20", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM1SQ45FMJPHKQ9Z7MR7292D"}
+{"time": "2026-03-18 21:00:20", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-18 21:00:21", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 21:00:21", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (240ms)"}
+{"time": "2026-03-18 21:00:21", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 21:14:32", "level": "INFO", "message": "GET /api/health — 200 (274ms)"}
+{"time": "2026-03-18 21:14:32", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-18 21:14:34", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-18 21:14:34", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-18 21:14:34", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KM1TH65KHB7YBS57RGH1QRM9"}
+{"time": "2026-03-18 21:14:34", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-18 21:14:35", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-18 21:14:35", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-18 21:14:35", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (216ms)"}
+{"time": "2026-03-18 21:14:35", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-18 21:14:35", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 21:14:37", "level": "INFO", "message": "OPTIONS /api/v1/chatgpt/parse-url — 200 (0ms)"}
+{"time": "2026-03-18 21:14:37", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.thepioneerwoman.com/food-cooking/recipes/a44775880/air-fryer-salmon-recipe/?utm_source=google&utm_medium=cpc&utm_campaign=mgu_ga_pw_md_pmx_prog_org_us_18891731492&gad_source=1&gad_campaignid=18891732851&gclid=Cj0KCQjwmunNBhDbARIsAOndKpm5YsnHEwuoeG_9YzMimjRAD_JdnBs0FzRN7_GeaqBflFsBDwraikIaAsDXEALw_wcB, model=gpt-4o-mini"}
+{"time": "2026-03-18 21:14:46", "level": "ERROR", "message": "Azure Function error 401: {"error": "Invalid or revoked API key"}"}
+{"time": "2026-03-18 21:14:46", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (9027ms)"}
+{"time": "2026-03-18 21:14:48", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 21:15:08", "level": "INFO", "message": "chatgpt/parse-url – url=https://downshiftology.com/recipes/air-fryer-salmon/, model=gpt-4o-mini"}
+{"time": "2026-03-18 21:15:20", "level": "INFO", "message": "Azure Function response: {"success": true, "data": {"is_recipe": true, "title": "Air Fryer Salmon", "description": null, "prep_time": "5 minutes", "cook_time": "15 minutes", "cool_time": null, "chill_time": null, "rest_time": null, "marinate_time": null, "soak_time": null, "total_time": "20 minutes", "servings": "4 servings", "ingredients": ["4 (6-ounce) salmon filets", "2 tablespoons Dijon mustard", "1 teaspoon paprika", "1 teaspoon garlic powder", "\u00bd teaspoon kosher salt", "\u00bc teaspoon freshly ground black pe"}
+{"time": "2026-03-18 21:15:20", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (11449ms)"}
+{"time": "2026-03-18 21:15:23", "level": "INFO", "message": "OPTIONS /api/v1/recipes/count — 200 (0ms)"}
+{"time": "2026-03-18 21:15:23", "level": "INFO", "message": "GET /api/v1/recipes/count — 200 (186ms)"}
+{"time": "2026-03-18 21:15:23", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (0ms)"}
+{"time": "2026-03-18 21:15:23", "level": "INFO", "message": "POST /api/v1/recipes — 200 (25ms)"}
+{"time": "2026-03-18 21:15:25", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 21:15:28", "level": "INFO", "message": "chatgpt/parse-url – url=https://downshiftology.com/recipes/air-fryer-salmon/, model=gpt-4o-mini"}
+{"time": "2026-03-18 21:15:41", "level": "INFO", "message": "Azure Function response: {"success": true, "data": {"is_recipe": true, "title": "Air Fryer Salmon", "description": null, "prep_time": "5 minutes", "cook_time": "15 minutes", "cool_time": null, "chill_time": null, "rest_time": null, "marinate_time": null, "soak_time": null, "total_time": "20 minutes", "servings": "4 servings", "ingredients": ["4 (6-ounce) salmon filets", "2 tablespoons Dijon mustard", "1 teaspoon paprika", "1 teaspoon garlic powder", "\u00bd teaspoon kosher salt", "\u00bc teaspoon freshly ground black pe"}
+{"time": "2026-03-18 21:15:41", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (13211ms)"}
+{"time": "2026-03-18 21:15:44", "level": "INFO", "message": "GET /api/v1/recipes/count — 200 (3ms)"}
+{"time": "2026-03-18 21:15:44", "level": "INFO", "message": "POST /api/v1/recipes — 200 (11ms)"}
+{"time": "2026-03-18 21:15:46", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 21:15:47", "level": "INFO", "message": "GET /api/v1/recipes — 200 (2ms)"}
+{"time": "2026-03-18 21:15:51", "level": "INFO", "message": "chatgpt/parse-url – url=https://downshiftology.com/recipes/air-fryer-salmon/, model=gpt-4o-mini"}
+{"time": "2026-03-18 21:16:07", "level": "INFO", "message": "Azure Function response: {"success": true, "data": {"is_recipe": true, "title": "Air Fryer Salmon", "description": null, "prep_time": "5 minutes", "cook_time": "15 minutes", "cool_time": null, "chill_time": null, "rest_time": null, "marinate_time": null, "soak_time": null, "total_time": "20 minutes", "servings": "4 servings", "ingredients": ["4 (6-ounce) salmon filets", "2 tablespoons Dijon mustard", "1 teaspoon paprika", "1 teaspoon garlic powder", "\u00bd teaspoon kosher salt", "\u00bc teaspoon freshly ground black pe"}
+{"time": "2026-03-18 21:16:07", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (15359ms)"}
+{"time": "2026-03-18 21:16:12", "level": "INFO", "message": "GET /api/v1/recipes/count — 200 (4ms)"}
+{"time": "2026-03-18 21:16:12", "level": "INFO", "message": "POST /api/v1/recipes — 200 (13ms)"}
+{"time": "2026-03-18 21:16:13", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-18 21:16:16", "level": "INFO", "message": "chatgpt/parse-url – url=https://downshiftology.com/recipes/air-fryer-salmon/, model=gpt-4o-mini"}
+{"time": "2026-03-18 21:16:27", "level": "INFO", "message": "Azure Function response: {"success": true, "data": {"is_recipe": true, "title": "Air Fryer Salmon", "description": null, "prep_time": "5 minutes", "cook_time": "15 minutes", "cool_time": null, "chill_time": null, "rest_time": null, "marinate_time": null, "soak_time": null, "total_time": "20 minutes", "servings": "4 servings", "ingredients": ["4 (6-ounce) salmon filets", "2 tablespoons Dijon mustard", "1 teaspoon paprika", "1 teaspoon garlic powder", "\u00bd teaspoon kosher salt", "\u00bc teaspoon freshly ground black pe"}
+{"time": "2026-03-18 21:16:27", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (11790ms)"}
+{"time": "2026-03-18 21:16:35", "level": "INFO", "message": "GET /api/v1/recipes/count — 200 (3ms)"}
+{"time": "2026-03-18 21:16:35", "level": "INFO", "message": "POST /api/v1/recipes — 200 (9ms)"}
+{"time": "2026-03-18 21:16:36", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-18 21:16:39", "level": "INFO", "message": "chatgpt/parse-url – url=https://downshiftology.com/recipes/air-fryer-salmon/, model=gpt-4o-mini"}
+{"time": "2026-03-18 21:16:47", "level": "INFO", "message": "Azure Function response: {"success": true, "data": {"is_recipe": true, "title": "Air Fryer Salmon", "description": null, "prep_time": "5 minutes", "cook_time": "15 minutes", "cool_time": null, "chill_time": null, "rest_time": null, "marinate_time": null, "soak_time": null, "total_time": "20 minutes", "servings": "4 servings", "ingredients": ["4 (6-ounce) salmon filets", "2 tablespoons Dijon mustard", "1 teaspoon paprika", "1 teaspoon garlic powder", "\u00bd teaspoon kosher salt", "\u00bc teaspoon freshly ground black pe"}
+{"time": "2026-03-18 21:16:47", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (7894ms)"}
+{"time": "2026-03-18 21:16:56", "level": "INFO", "message": "GET /api/v1/recipes/count — 200 (3ms)"}
+{"time": "2026-03-19 10:30:01", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 10:30:01", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 10:30:01", "level": "WARNING", "message": "Authenticated token for unknown user: user_01ABC"}
+{"time": "2026-03-19 10:30:01", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 10:30:03", "level": "INFO", "message": "Azure Function response: {"success": true}"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 10:30:03", "level": "INFO", "message": "Azure Function response: {}"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/health — 503 (0ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/v1/status — 200 (0ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/v1/nonexistent — 404 (0ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/v1/auth/callback — 400 (0ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "OAuth callback received (state=absent)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (0ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?code=abc123"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth?extra=1"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?extra=1&code=abc123"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:30:05", "level": "WARNING", "message": "Failed to decode state parameter, using default redirect"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 99, in callback
+    payload = json.loads(base64.urlsafe_b64decode(padded))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 341, in loads
+    s = s.decode(detect_encoding(s), 'surrogatepass')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0x9e in position 0: invalid start byte
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (7ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=19"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (3ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=4"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (3ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 422 (3ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (3ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "chatgpt/parse-url – url=https://slow.example.com, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 408 (1ms)"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (0ms)"}
+{"time": "2026-03-19 10:30:05", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/v1/recipes — 401 (631ms)"}
+{"time": "2026-03-19 10:30:05", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/v1/recipes/count — 401 (1ms)"}
+{"time": "2026-03-19 10:30:05", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:05", "level": "INFO", "message": "GET /api/v1/recipes/r1 — 401 (2ms)"}
+{"time": "2026-03-19 10:30:06", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:06", "level": "INFO", "message": "GET /api/v1/recipes/nonexistent — 401 (1ms)"}
+{"time": "2026-03-19 10:30:06", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:06", "level": "INFO", "message": "POST /api/v1/recipes — 401 (5ms)"}
+{"time": "2026-03-19 10:30:06", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:06", "level": "INFO", "message": "POST /api/v1/recipes — 401 (0ms)"}
+{"time": "2026-03-19 10:30:17", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 10:30:17", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 10:30:17", "level": "WARNING", "message": "Authenticated token for unknown user: user_01ABC"}
+{"time": "2026-03-19 10:30:18", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 10:30:20", "level": "INFO", "message": "Azure Function response: {"success": true}"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 10:30:20", "level": "INFO", "message": "Azure Function response: {}"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "GET /api/health — 503 (1ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "GET /api/v1/status — 200 (1ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "GET /api/v1/nonexistent — 404 (0ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "GET /api/v1/auth/callback — 400 (1ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "OAuth callback received (state=absent)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (1ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?code=abc123"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth?extra=1"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?extra=1&code=abc123"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (1ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:30:22", "level": "WARNING", "message": "Failed to decode state parameter, using default redirect"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 99, in callback
+    payload = json.loads(base64.urlsafe_b64decode(padded))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 341, in loads
+    s = s.decode(detect_encoding(s), 'surrogatepass')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0x9e in position 0: invalid start byte
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (3ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=19"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (3ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=4"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (2ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 422 (1ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (4ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "chatgpt/parse-url – url=https://slow.example.com, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 408 (1ms)"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:30:22", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (3ms)"}
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:23", "level": "INFO", "message": "GET /api/v1/recipes — 401 (731ms)"}
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:23", "level": "INFO", "message": "GET /api/v1/recipes/count — 401 (2ms)"}
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:23", "level": "INFO", "message": "GET /api/v1/recipes/r1 — 401 (2ms)"}
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:23", "level": "INFO", "message": "GET /api/v1/recipes/nonexistent — 401 (3ms)"}
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:23", "level": "INFO", "message": "POST /api/v1/recipes — 401 (2ms)"}
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:23", "level": "INFO", "message": "POST /api/v1/recipes — 401 (3ms)"}
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 10:31:16", "level": "WARNING", "message": "Authenticated token for unknown user: user_01ABC"}
+{"time": "2026-03-19 10:31:16", "level": "INFO", "message": "New user created: test@example.com"}
+{"time": "2026-03-19 10:31:16", "level": "INFO", "message": "New user created: test@example.com"}
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "Azure Function response: {"success": true}"}
+{"time": "2026-03-19 10:31:17", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 10:31:17", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 10:31:17", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "Azure Function response: {}"}
+{"time": "2026-03-19 10:31:17", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/health — 503 (1ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/v1/status — 200 (1ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/v1/nonexistent — 404 (0ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/v1/auth/callback — 400 (0ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "OAuth callback received (state=absent)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (0ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?code=abc123"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (0ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth?extra=1"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?extra=1&code=abc123"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:31:17", "level": "WARNING", "message": "Failed to decode state parameter, using default redirect"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 99, in callback
+    payload = json.loads(base64.urlsafe_b64decode(padded))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 341, in loads
+    s = s.decode(detect_encoding(s), 'surrogatepass')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0x9e in position 0: invalid start byte
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (4ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=19"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (3ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=4"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (7ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 422 (0ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (3ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "chatgpt/parse-url – url=https://slow.example.com, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 408 (2ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (1ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/v1/recipes — 200 (0ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/v1/recipes/count — 200 (0ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/v1/recipes/r1 — 200 (5ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "GET /api/v1/recipes/nonexistent — 404 (2ms)"}
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "POST /api/v1/recipes — 200 (0ms)"}
+{"time": "2026-03-19 10:31:17", "level": "ERROR", "message": "Failed to save recipe"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\recipes.py", line 80, in save_recipe
+    row = await svc.create_saved_recipe(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+RuntimeError: DB insert failed
+{"time": "2026-03-19 10:31:17", "level": "INFO", "message": "POST /api/v1/recipes — 500 (0ms)"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 10:38:06", "level": "WARNING", "message": "Authenticated token for unknown user: user_01ABC"}
+{"time": "2026-03-19 10:38:06", "level": "INFO", "message": "New user created: test@example.com"}
+{"time": "2026-03-19 10:38:06", "level": "INFO", "message": "New user created: test@example.com"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 10:38:06", "level": "INFO", "message": "Azure Function response: {"success": true}"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 10:38:06", "level": "INFO", "message": "Azure Function response: {}"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/health — 503 (0ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/v1/status — 200 (0ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/v1/nonexistent — 404 (0ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/v1/auth/callback — 400 (0ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "OAuth callback received (state=absent)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (1ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?code=abc123"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth?extra=1"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?extra=1&code=abc123"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (5ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 10:38:07", "level": "WARNING", "message": "Failed to decode state parameter, using default redirect"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 99, in callback
+    payload = json.loads(base64.urlsafe_b64decode(padded))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 341, in loads
+    s = s.decode(detect_encoding(s), 'surrogatepass')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0x9e in position 0: invalid start byte
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (4ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=19"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (6ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=4"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (0ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 422 (1ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (2ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "chatgpt/parse-url – url=https://slow.example.com, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 408 (0ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (0ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/v1/recipes — 200 (2ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/v1/recipes/count — 200 (3ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/v1/recipes/r1 — 200 (1ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "GET /api/v1/recipes/nonexistent — 404 (0ms)"}
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "POST /api/v1/recipes — 200 (12ms)"}
+{"time": "2026-03-19 10:38:07", "level": "ERROR", "message": "Failed to save recipe"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\recipes.py", line 80, in save_recipe
+    row = await svc.create_saved_recipe(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+RuntimeError: DB insert failed
+{"time": "2026-03-19 10:38:07", "level": "INFO", "message": "POST /api/v1/recipes — 500 (3ms)"}
+{"time": "2026-03-19 12:33:11", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:11", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:11", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:11", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:11", "level": "INFO", "message": "Structured data extraction succeeded via microdata"}
+{"time": "2026-03-19 12:33:11", "level": "INFO", "message": "Structured data extraction succeeded via rdfa"}
+{"time": "2026-03-19 12:33:11", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:11", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:11", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:11", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:11", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:39", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:39", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:39", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:39", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:39", "level": "INFO", "message": "Structured data extraction succeeded via microdata"}
+{"time": "2026-03-19 12:33:39", "level": "INFO", "message": "Structured data extraction succeeded via rdfa"}
+{"time": "2026-03-19 12:33:39", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:39", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:39", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:39", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:39", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 12:33:54", "level": "WARNING", "message": "Authenticated token for unknown user: user_01ABC"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "New user created: test@example.com"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "New user created: test@example.com"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "Azure Function response: {"success": true}"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "Azure Function response: {}"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/health — 503 (0ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/v1/status — 200 (0ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/v1/nonexistent — 404 (1ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/v1/auth/callback — 400 (1ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "OAuth callback received (state=absent)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?code=abc123"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (3ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth?extra=1"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?extra=1&code=abc123"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (0ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 12:33:54", "level": "WARNING", "message": "Failed to decode state parameter, using default redirect"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 99, in callback
+    payload = json.loads(base64.urlsafe_b64decode(padded))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 341, in loads
+    s = s.decode(detect_encoding(s), 'surrogatepass')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0x9e in position 0: invalid start byte
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (6ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=19"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (4ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=4"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (6ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 422 (2ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (3ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "chatgpt/parse-url – url=https://slow.example.com, model=gpt-4o-mini"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 408 (0ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (1ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/v1/recipes — 200 (6ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/v1/recipes/count — 200 (1ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/v1/recipes/r1 — 200 (4ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "GET /api/v1/recipes/nonexistent — 404 (3ms)"}
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "POST /api/v1/recipes — 200 (6ms)"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Failed to save recipe"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\recipes.py", line 80, in save_recipe
+    row = await svc.create_saved_recipe(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+RuntimeError: DB insert failed
+{"time": "2026-03-19 12:33:54", "level": "INFO", "message": "POST /api/v1/recipes — 500 (0ms)"}
+{"time": "2026-03-19 12:33:55", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:55", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:55", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:55", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:55", "level": "INFO", "message": "Structured data extraction succeeded via microdata"}
+{"time": "2026-03-19 12:33:55", "level": "INFO", "message": "Structured data extraction succeeded via rdfa"}
+{"time": "2026-03-19 12:33:55", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:55", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:55", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:55", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:33:55", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 12:34:09", "level": "WARNING", "message": "Authenticated token for unknown user: user_01ABC"}
+{"time": "2026-03-19 12:34:09", "level": "INFO", "message": "New user created: test@example.com"}
+{"time": "2026-03-19 12:34:09", "level": "INFO", "message": "New user created: test@example.com"}
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Azure Function response: {"success": true}"}
+{"time": "2026-03-19 12:34:10", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 12:34:10", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 12:34:10", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Azure Function response: {}"}
+{"time": "2026-03-19 12:34:10", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/health — 503 (1ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/v1/status — 200 (1ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/v1/nonexistent — 404 (1ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/v1/auth/callback — 400 (0ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "OAuth callback received (state=absent)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?code=abc123"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (4ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Decoded redirect_uri from state: cutthecrap://auth?extra=1"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Callback redirecting (302) to: cutthecrap://auth?extra=1&code=abc123"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-19 12:34:10", "level": "WARNING", "message": "Failed to decode state parameter, using default redirect"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 99, in callback
+    payload = json.loads(base64.urlsafe_b64decode(padded))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 341, in loads
+    s = s.decode(detect_encoding(s), 'surrogatepass')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0x9e in position 0: invalid start byte
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/home?code=abc123"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=19"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (4ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "chatgpt/parse – model=gpt-4o-mini, text length=4"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 200 (2ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "POST /api/v1/chatgpt/parse — 422 (1ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (3ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "chatgpt/parse-url – url=https://slow.example.com, model=gpt-4o-mini"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 408 (2ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "chatgpt/parse-url – url=https://example.com/recipe, model=gpt-4o-mini"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 200 (2ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/v1/recipes — 200 (2ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/v1/recipes/count — 200 (2ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/v1/recipes/r1 — 200 (2ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "GET /api/v1/recipes/nonexistent — 404 (2ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "POST /api/v1/recipes — 200 (5ms)"}
+{"time": "2026-03-19 12:34:10", "level": "ERROR", "message": "Failed to save recipe"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\recipes.py", line 80, in save_recipe
+    row = await svc.create_saved_recipe(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+RuntimeError: DB insert failed
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "POST /api/v1/recipes — 500 (4ms)"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Structured data extraction succeeded via microdata"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Structured data extraction succeeded via rdfa"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-03-19 12:34:10", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}

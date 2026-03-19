@@ -82,6 +82,11 @@ async def parse_url(payload: ParseUrlPayload):
             }
         )
 
+    # If structured data extraction succeeded, return directly (skip OpenAI)
+    if fetch_result.get("structured_recipe"):
+        logger.info("Returning structured data result for %s", payload.url)
+        return {"success": True, "data": fetch_result["structured_recipe"]}
+
     result = await call_openai_chat(
         text=fetch_result["text"][:12_000],
         system_prompt=payload.system_prompt or RECIPE_SYSTEM_PROMPT,

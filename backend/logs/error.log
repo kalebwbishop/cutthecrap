@@ -316,3 +316,583 @@ Traceback (most recent call last):
   File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
     raise ExpiredSignatureError("Signature has expired")
 jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 20:50:02", "level": "ERROR", "message": "Azure Function error 401: {"error": "Invalid or revoked API key"}"}
+{"time": "2026-03-18 20:50:55", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-18 20:59:24", "level": "ERROR", "message": "OAuth exchange failed: (message=No message, request_id=18fcf66d-3cc0-4337-96d3-2f5473178dba, error=invalid_grant, error_description=The code '01KM1S8WT49FM33SZ3KJZ5173F' has expired.)"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 134, in exchange
+    auth_response = workos.user_management.authenticate_with_code(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1270, in authenticate_with_code
+    return self._authenticate_with(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1208, in _authenticate_with
+    response = self._http_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\http_client.py", line 114, in request
+    return self._handle_response(response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 195, in _handle_response
+    self._maybe_raise_error_by_status_code(response, response_json)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 114, in _maybe_raise_error_by_status_code
+    raise BadRequestException(response, response_json)
+workos.exceptions.BadRequestException: (message=No message, request_id=18fcf66d-3cc0-4337-96d3-2f5473178dba, error=invalid_grant, error_description=The code '01KM1S8WT49FM33SZ3KJZ5173F' has expired.)
+{"time": "2026-03-18 20:59:24", "level": "ERROR", "message": "OAuth exchange failed: (message=No message, request_id=8534fc7e-9c11-4faa-bdcb-5ae64461c501, error=invalid_grant, error_description=The code '01KM1S8WT49FM33SZ3KJZ5173F' has expired.)"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 134, in exchange
+    auth_response = workos.user_management.authenticate_with_code(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1270, in authenticate_with_code
+    return self._authenticate_with(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1208, in _authenticate_with
+    response = self._http_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\http_client.py", line 114, in request
+    return self._handle_response(response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 195, in _handle_response
+    self._maybe_raise_error_by_status_code(response, response_json)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 114, in _maybe_raise_error_by_status_code
+    raise BadRequestException(response, response_json)
+workos.exceptions.BadRequestException: (message=No message, request_id=8534fc7e-9c11-4faa-bdcb-5ae64461c501, error=invalid_grant, error_description=The code '01KM1S8WT49FM33SZ3KJZ5173F' has expired.)
+{"time": "2026-03-18 21:00:05", "level": "ERROR", "message": "Azure Function error 401: {"error": "Invalid or revoked API key"}"}
+{"time": "2026-03-18 21:14:46", "level": "ERROR", "message": "Azure Function error 401: {"error": "Invalid or revoked API key"}"}
+{"time": "2026-03-19 10:30:01", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 10:30:01", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 10:30:03", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 10:30:05", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:05", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:05", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:06", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:06", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:06", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:17", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 10:30:17", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 10:30:20", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:30:23", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 302, in _load
+    signing_input, crypto_segment = jwt.rsplit(b".", 1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\jwks_client.py", line 211, in get_signing_key_from_jwt
+    unverified = decode_token(token, options={"verify_signature": False})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 262, in decode_complete
+    decoded = self._jws.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 240, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jws.py", line 305, in _load
+    raise DecodeError("Not enough segments") from err
+jwt.exceptions.DecodeError: Not enough segments
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 10:31:16", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 10:31:17", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 10:31:17", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 10:31:17", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 10:31:17", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 10:31:17", "level": "ERROR", "message": "Failed to save recipe"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\recipes.py", line 80, in save_recipe
+    row = await svc.create_saved_recipe(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+RuntimeError: DB insert failed
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 10:38:06", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 10:38:07", "level": "ERROR", "message": "Failed to save recipe"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\recipes.py", line 80, in save_recipe
+    row = await svc.create_saved_recipe(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+RuntimeError: DB insert failed
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 12:33:54", "level": "ERROR", "message": "Failed to save recipe"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\recipes.py", line 80, in save_recipe
+    row = await svc.create_saved_recipe(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+RuntimeError: DB insert failed
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-03-19 12:34:09", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-03-19 12:34:10", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-03-19 12:34:10", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-03-19 12:34:10", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-03-19 12:34:10", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-03-19 12:34:10", "level": "ERROR", "message": "Failed to save recipe"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\recipes.py", line 80, in save_recipe
+    row = await svc.create_saved_recipe(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+RuntimeError: DB insert failed

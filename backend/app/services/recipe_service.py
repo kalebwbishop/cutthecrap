@@ -250,6 +250,16 @@ async def fetch_and_extract(url: str) -> dict[str, Any]:
         }
 
     raw_html = resp.text
+
+    # Try structured data extraction first (JSON-LD → Microdata → RDFa)
+    from app.services.structured_data import extract_structured_recipe
+
+    structured_recipe = extract_structured_recipe(raw_html)
+    if structured_recipe:
+        title = structured_recipe.get("title", url)
+        return {"ok": True, "title": title, "text": "", "structured_recipe": structured_recipe}
+
+    # Fall back to regex-based visible text extraction
     title = extract_title(raw_html, url)
     text = extract_visible_text(raw_html)
 

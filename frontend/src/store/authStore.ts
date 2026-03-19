@@ -9,6 +9,7 @@ interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
   isLoading: boolean;
+  sessionExpiredMessage: string | null;
 
   /** Kick off the WorkOS login flow (opens browser). */
   login: () => Promise<void>;
@@ -21,6 +22,12 @@ interface AuthState {
 
   /** Attempt to restore the session from a stored refresh token. */
   restoreSession: () => Promise<void>;
+
+  /** Called when the session cannot be refreshed. Clears auth state and sets an expiry message. */
+  handleSessionExpired: () => void;
+
+  /** Dismiss the session-expired message. */
+  clearSessionExpiredMessage: () => void;
 }
 
 function setAuthHeader(token: string | null) {
@@ -36,6 +43,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   accessToken: null,
   refreshToken: null,
   isLoading: false,
+  sessionExpiredMessage: null,
 
   login: async () => {
     try {
@@ -99,9 +107,27 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isLoading: false,
       });
     } catch {
-      // Refresh failed — clear everything
-      setAuthHeader(null);
-      set({ user: null, accessToken: null, refreshToken: null, isLoading: false });
+      // Refresh failed — session is no longer valid
+      get().handleSessionExpired();
     }
+  },
+
+  handleSessionExpired: () => {
+    const wasLoggedIn = !!get().user;
+    setAuthHeader(null);
+    set({
+      user: null,
+      accessToken: null,
+      refreshToken: null,
+      isLoading: false,
+      // Only surface a message when the user had an active session
+      sessionExpiredMessage: wasLoggedIn
+        ? 'Your session expired. Please sign in again.'
+        : null,
+    });
+  },
+
+  clearSessionExpiredMessage: () => {
+    set({ sessionExpiredMessage: null });
   },
 }));

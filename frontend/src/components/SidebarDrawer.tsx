@@ -34,26 +34,34 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const openSavedRecipe = useRecipeStore((s) => s.openSavedRecipe);
+  const openHistoryRecipe = useRecipeStore((s) => s.openHistoryRecipe);
   const isPro = useSubscriptionStore((s) => s.isPro);
 
   const slideAnim = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  const [activeTab, setActiveTab] = useState<'saved' | 'history'>('saved');
   const [savedRecipes, setSavedRecipes] = useState<SavedRecipeSummary[]>([]);
+  const [historyRecipes, setHistoryRecipes] = useState<SavedRecipeSummary[]>([]);
   const [recipesLoading, setRecipesLoading] = useState(false);
 
   const fetchRecipes = useCallback(async () => {
     if (!user) return;
     setRecipesLoading(true);
     try {
-      const recipes = await recipeApi.getSavedRecipes();
-      setSavedRecipes(recipes);
+      if (activeTab === 'saved') {
+        const recipes = await recipeApi.getSavedRecipes();
+        setSavedRecipes(recipes);
+      } else {
+        const recipes = await recipeApi.getRecipeHistory();
+        setHistoryRecipes(recipes);
+      }
     } catch {
       // Silently fail — sidebar still shows user info
     } finally {
       setRecipesLoading(false);
     }
-  }, [user]);
+  }, [user, activeTab]);
 
   // Animate open/close and fetch recipes when opening
   useEffect(() => {
@@ -89,7 +97,11 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
 
   const handleOpenRecipe = async (id: string) => {
     onClose();
-    await openSavedRecipe(id);
+    if (activeTab === 'saved') {
+      await openSavedRecipe(id);
+    } else {
+      await openHistoryRecipe(id);
+    }
     router.push('/result');
   };
 
@@ -132,15 +144,34 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
 
         <View style={s.divider} />
 
-        {/* Saved recipes */}
-        <Text style={s.sectionTitle}>Saved Recipes</Text>
+        {/* Saved / History toggle */}
+        <View style={s.toggleRow}>
+          <TouchableOpacity
+            style={[s.toggleButton, activeTab === 'saved' && s.toggleButtonActive]}
+            onPress={() => setActiveTab('saved')}
+            activeOpacity={0.7}
+          >
+            <Text style={[s.toggleText, activeTab === 'saved' && s.toggleTextActive]}>Saved</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[s.toggleButton, activeTab === 'history' && s.toggleButtonActive]}
+            onPress={() => setActiveTab('history')}
+            activeOpacity={0.7}
+          >
+            <Text style={[s.toggleText, activeTab === 'history' && s.toggleTextActive]}>History</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Recipe list */}
         <ScrollView style={s.recipeList} contentContainerStyle={s.recipeListContent}>
           {recipesLoading ? (
             <Text style={s.emptyText}>Loading…</Text>
-          ) : savedRecipes.length === 0 ? (
-            <Text style={s.emptyText}>No saved recipes yet.</Text>
+          ) : (activeTab === 'saved' ? savedRecipes : historyRecipes).length === 0 ? (
+            <Text style={s.emptyText}>
+              {activeTab === 'saved' ? 'No saved recipes yet.' : 'No recent recipes yet.'}
+            </Text>
           ) : (
-            savedRecipes.map((recipe) => (
+            (activeTab === 'saved' ? savedRecipes : historyRecipes).map((recipe) => (
               <TouchableOpacity
                 key={recipe.id}
                 style={s.recipeItem}
@@ -228,6 +259,32 @@ const createStyles = (colors: ThemeColors) =>
       height: 1,
       backgroundColor: colors.sidebarDivider,
       marginHorizontal: spacing.lg,
+    },
+    toggleRow: {
+      flexDirection: 'row',
+      marginHorizontal: spacing.lg,
+      marginTop: spacing.md,
+      marginBottom: spacing.xs,
+      borderRadius: radii.md,
+      backgroundColor: colors.sidebarDivider,
+      padding: 3,
+    },
+    toggleButton: {
+      flex: 1,
+      paddingVertical: 6,
+      borderRadius: radii.md - 2,
+      alignItems: 'center',
+    },
+    toggleButtonActive: {
+      backgroundColor: colors.sidebarBg,
+    },
+    toggleText: {
+      fontSize: fontSizes.sm,
+      fontWeight: '600',
+      color: colors.textMuted,
+    },
+    toggleTextActive: {
+      color: colors.text,
     },
     sectionTitle: {
       fontSize: fontSizes.sm,

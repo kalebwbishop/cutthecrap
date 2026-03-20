@@ -220,4 +220,35 @@ export const recipeApi = {
     });
     return resp.data.recipe;
   },
+
+  async getRecipeHistory(): Promise<SavedRecipeSummary[]> {
+    const resp = await apiClient.get<{ recipes: SavedRecipeSummary[] }>('/api/v1/recipes/history');
+    return resp.data.recipes;
+  },
+
+  async getRecipeHistoryById(id: string): Promise<SavedRecipeDetail> {
+    const resp = await apiClient.get<{ recipe: SavedRecipeDetail }>(`/api/v1/recipes/history/${id}`);
+    return resp.data.recipe;
+  },
+
+  async saveRecipeHistory(recipe: Recipe, sourceUrl?: string): Promise<SavedRecipeSummary> {
+    const resp = await apiClient.post<{ recipe: SavedRecipeSummary }>('/api/v1/recipes/history', {
+      title: recipe.title,
+      description: recipe.description,
+      sourceUrl,
+      prepTime: recipe.prep_time,
+      cookTime: recipe.cook_time,
+      coolTime: recipe.cool_time,
+      chillTime: recipe.chill_time,
+      restTime: recipe.rest_time,
+      marinateTime: recipe.marinate_time,
+      soakTime: recipe.soak_time,
+      totalTime: recipe.total_time,
+      servings: recipe.servings,
+      ingredients: recipe.ingredients,
+      steps: recipe.steps,
+      notes: recipe.notes ?? [],
+    });
+    return resp.data.recipe;
+  },
 };

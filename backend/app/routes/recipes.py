@@ -58,6 +58,62 @@ async def recipe_count(user: CurrentUser = Depends(get_current_user)):
     return {"count": count}
 
 
+# ── History routes (must be defined before /{recipe_id}) ─────────────
+
+
+@router.get("/history")
+async def list_history(user: CurrentUser = Depends(get_current_user)):
+    """Return the most recent recipe history for the authenticated user."""
+    rows = await svc.get_recipe_history(user.id)
+    return {"recipes": rows}
+
+
+@router.get("/history/{history_id}")
+async def get_history_recipe(
+    history_id: str,
+    user: CurrentUser = Depends(get_current_user),
+):
+    """Return a single history recipe with full details."""
+    recipe = await svc.get_recipe_history_by_id(user.id, history_id)
+    if not recipe:
+        return JSONResponse(status_code=404, content={"error": "History recipe not found"})
+    return {"recipe": recipe}
+
+
+@router.post("/history")
+async def save_history(
+    payload: SaveRecipePayload,
+    user: CurrentUser = Depends(get_current_user),
+):
+    """Save a recipe to the user's history (keeps most recent 3)."""
+    try:
+        row = await svc.save_recipe_history(
+            user_id=user.id,
+            title=payload.title,
+            description=payload.description,
+            source_url=payload.sourceUrl,
+            prep_time=payload.prepTime,
+            cook_time=payload.cookTime,
+            cool_time=payload.coolTime,
+            chill_time=payload.chillTime,
+            rest_time=payload.restTime,
+            marinate_time=payload.marinateTime,
+            soak_time=payload.soakTime,
+            total_time=payload.totalTime,
+            servings=payload.servings,
+            ingredients=payload.ingredients,
+            steps=payload.steps,
+            notes=payload.notes,
+        )
+        return {"recipe": row}
+    except Exception:
+        logger.error("Failed to save recipe history", exc_info=True)
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Internal Server Error", "message": "Failed to save recipe history"},
+        )
+
+
 @router.get("/{recipe_id}")
 async def get_recipe(
     recipe_id: str,

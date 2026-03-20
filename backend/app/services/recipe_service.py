@@ -396,3 +396,192 @@ async def create_saved_recipe(
         "sourceUrl": row["source_url"],
         "createdAt": str(row["created_at"]) if row["created_at"] else None,
     }
+
+
+# ── Recipe history ───────────────────────────────────────────────────
+
+MAX_HISTORY_PER_USER = 3
+
+
+async def get_recipe_history(user_id: str) -> list[dict[str, Any]]:
+    """Return the most recent history entries for a user (newest first)."""
+    pool = await get_pool()
+    rows = await pool.fetch(
+        "SELECT id, title, source_url, created_at FROM recipe_history "
+        "WHERE user_id = $1 ORDER BY created_at DESC",
+        user_id,
+    )
+    return [
+        {
+            "id": str(r["id"]),
+            "title": r["title"],
+            "sourceUrl": r["source_url"],
+            "createdAt": str(r["created_at"]) if r["created_at"] else None,
+        }
+        for r in rows
+    ]
+
+
+async def get_recipe_history_by_id(user_id: str, history_id: str) -> dict[str, Any] | None:
+    """Return a single history recipe with all fields, or None if not found."""
+    import json as _json
+
+    pool = await get_pool()
+    row = await pool.fetchrow(
+        "SELECT * FROM recipe_history WHERE id = $1 AND user_id = $2",
+        history_id,
+        user_id,
+    )
+    if not row:
+        return None
+    return {
+        "id": str(row["id"]),
+        "title": row["title"],
+        "description": row["description"],
+        "sourceUrl": row["source_url"],
+        "prepTime": row["prep_time"],
+        "cookTime": row["cook_time"],
+        "coolTime": row["cool_time"],
+        "chillTime": row["chill_time"],
+        "restTime": row["rest_time"],
+        "marinateTime": row["marinate_time"],
+        "soakTime": row["soak_time"],
+        "totalTime": row["total_time"],
+        "servings": row["servings"],
+        "ingredients": list(row["ingredients"]) if row["ingredients"] else [],
+        "steps": _json.loads(row["steps"]) if isinstance(row["steps"], str) else row["steps"],
+        "notes": list(row["notes"]) if row["notes"] else [],
+        "createdAt": str(row["created_at"]) if row["created_at"] else None,
+    }
+
+
+async def save_recipe_history(
+    *,
+    user_id: str,
+    title: str,
+    description: str | None = None,
+    source_url: str | None = None,
+    prep_time: str | None = None,
+    cook_time: str | None = None,
+    cool_time: str | None = None,
+    chill_time: str | None = None,
+    rest_time: str | None = None,
+    marinate_time: str | None = None,
+    soak_time: str | None = None,
+    total_time: str | None = None,
+    servings: str | None = None,
+    ingredients: list[str] | None = None,
+    steps: list[Any] | None = None,
+    notes: list[str] | None = None,
+) -> dict[str, Any]:
+    """Add a recipe to the user's history, keeping at most MAX_HISTORY_PER_USER entries.
+
+    If the same source_url already exists for this user, the existing row is
+    updated (bumped to most recent).  Otherwise a new row is inserted and the
+    oldest entry is evicted when the limit is exceeded.
+    """
+    import json as _json
+
+    pool = await get_pool()
+    steps_json = _json.dumps(steps or [])
+    ingredients_list = ingredients or []
+    notes_list = notes or []
+
+    # Upsert if same source_url already in history for this user
+    if source_url:
+        existing = await pool.fetchrow(
+            "SELECT id FROM recipe_history WHERE user_id = $1 AND source_url = $2",
+            user_id,
+            source_url,
+        )
+        if existing:
+            row = await pool.fetchrow(
+                """
+                UPDATE recipe_history SET
+                    title = $3, description = $4, source_url = $5,
+                    prep_time = $6, cook_time = $7, cool_time = $8, chill_time = $9,
+                    rest_time = $10, marinate_time = $11, soak_time = $12, total_time = $13,
+                    servings = $14, ingredients = $15, steps = $16::jsonb, notes = $17,
+                    created_at = CURRENT_TIMESTAMP
+                WHERE id = $1 AND user_id = $2
+                RETURNING id, title, source_url, created_at
+                """,
+                str(existing["id"]),
+                user_id,
+                title,
+                description,
+                source_url,
+                prep_time,
+                cook_time,
+                cool_time,
+                chill_time,
+                rest_time,
+                marinate_time,
+                soak_time,
+                total_time,
+                servings,
+                ingredients_list,
+                steps_json,
+                notes_list,
+            )
+            return {
+                "id": str(row["id"]),
+                "title": row["title"],
+                "sourceUrl": row["source_url"],
+                "createdAt": str(row["created_at"]) if row["created_at"] else None,
+            }
+
+    # Insert new history entry
+    row = await pool.fetchrow(
+        """
+        INSERT INTO recipe_history (
+            user_id, title, description, source_url,
+            prep_time, cook_time, cool_time, chill_time,
+            rest_time, marinate_time, soak_time, total_time,
+            servings, ingredients, steps, notes
+        ) VALUES (
+            $1, $2, $3, $4,
+            $5, $6, $7, $8,
+            $9, $10, $11, $12,
+            $13, $14, $15::jsonb, $16
+        ) RETURNING id, title, source_url, created_at
+        """,
+        user_id,
+        title,
+        description,
+        source_url,
+        prep_time,
+        cook_time,
+        cool_time,
+        chill_time,
+        rest_time,
+        marinate_time,
+        soak_time,
+        total_time,
+        servings,
+        ingredients_list,
+        steps_json,
+        notes_list,
+    )
+
+    # Evict oldest entries beyond the limit
+    await pool.execute(
+        """
+        DELETE FROM recipe_history
+        WHERE id IN (
+            SELECT id FROM recipe_history
+            WHERE user_id = $1
+            ORDER BY created_at DESC
+            OFFSET $2
+        )
+        """,
+        user_id,
+        MAX_HISTORY_PER_USER,
+    )
+
+    return {
+        "id": str(row["id"]),
+        "title": row["title"],
+        "sourceUrl": row["source_url"],
+        "createdAt": str(row["created_at"]) if row["created_at"] else None,
+    }

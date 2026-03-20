@@ -4,6 +4,7 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
+  Pressable,
   StyleSheet,
   Modal,
 } from 'react-native';
@@ -151,8 +152,8 @@ export default function ResultScreen() {
         animationType="fade"
         onRequestClose={() => setShowLimitModal(false)}
       >
-        <View style={s.modalOverlay}>
-          <View style={s.modalCard}>
+        <Pressable style={s.modalOverlay} onPress={() => setShowLimitModal(false)}>
+          <Pressable style={s.modalCard} onPress={(e) => e.stopPropagation()}>
             <Text style={s.modalTitle}>Recipe Limit Reached</Text>
             <Text style={s.modalBody}>
               Free accounts can save up to {FREE_RECIPE_LIMIT} recipes. Upgrade to Pro for unlimited saves!
@@ -176,8 +177,8 @@ export default function ResultScreen() {
                 <Text style={s.modalPrimaryText}>Upgrade</Text>
               </TouchableOpacity>
             </View>
-          </View>
-        </View>
+          </Pressable>
+        </Pressable>
       </Modal>
     </SafeAreaView>
   );
@@ -285,7 +286,7 @@ const createStyles = (colors: ThemeColors) =>
     modalCard: {
       width: '85%',
       maxWidth: 360,
-      backgroundColor: colors.bgInput,
+      backgroundColor: colors.background,
       borderRadius: radii.lg,
       padding: spacing.xxl,
     },

@@ -99,6 +99,20 @@ RECIPE_RESPONSE_FORMAT: dict[str, Any] = {
 }
 
 
+# ── Recipe text sanitization ─────────────────────────────────────────
+
+
+def sanitize_recipe_strings(obj: Any) -> Any:
+    """Recursively decode HTML entities in all strings within a dict/list."""
+    if isinstance(obj, str):
+        return html.unescape(obj)
+    if isinstance(obj, dict):
+        return {k: sanitize_recipe_strings(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [sanitize_recipe_strings(item) for item in obj]
+    return obj
+
+
 # ── HTML helpers ─────────────────────────────────────────────────────
 
 

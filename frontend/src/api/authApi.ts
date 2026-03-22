@@ -57,9 +57,10 @@ export const authApi = {
     return resp.data.user;
   },
 
-  /** Log out the current user. */
-  async logout(): Promise<void> {
-    await apiClient.post('/api/v1/auth/logout');
+  /** Log out the current user and return the WorkOS logout URL. */
+  async logout(): Promise<string | null> {
+    const resp = await apiClient.post<{ logoutUrl?: string }>('/api/v1/auth/logout');
+    return resp.data.logoutUrl ?? null;
   },
 };
 

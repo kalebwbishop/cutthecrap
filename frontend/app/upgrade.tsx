@@ -1,5 +1,5 @@
 import PaywallScreen from '@/screens/PaywallScreen';
 
-export default function PaywallRoute() {
+export default function UpgradeRoute() {
     return <PaywallScreen />;
 }

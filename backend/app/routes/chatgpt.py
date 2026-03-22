@@ -16,6 +16,7 @@ from app.services.recipe_service import (
     RECIPE_SYSTEM_PROMPT,
     call_openai_chat,
     fetch_and_extract,
+    sanitize_recipe_strings,
 )
 from app.utils.logger import logger
 
@@ -60,7 +61,7 @@ async def parse_text(payload: ParseTextPayload):
         max_tokens=payload.max_tokens,
     )
 
-    return result
+    return sanitize_recipe_strings(result)
 
 
 # ── POST /chatgpt/parse-url ─────────────────────────────────────────
@@ -85,7 +86,7 @@ async def parse_url(payload: ParseUrlPayload):
     # If structured data extraction succeeded, return directly (skip OpenAI)
     if fetch_result.get("structured_recipe"):
         logger.info("Returning structured data result for %s", payload.url)
-        return {"success": True, "data": fetch_result["structured_recipe"]}
+        return sanitize_recipe_strings({"success": True, "data": fetch_result["structured_recipe"]})
 
     result = await call_openai_chat(
         text=fetch_result["text"][:12_000],
@@ -96,4 +97,4 @@ async def parse_url(payload: ParseUrlPayload):
         max_tokens=payload.max_tokens,
     )
 
-    return result
+    return sanitize_recipe_strings(result)

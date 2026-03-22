@@ -115,7 +115,7 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
     if (isPro) {
       router.push('/customer-center');
     } else {
-      router.push('/paywall');
+      router.push('/upgrade');
     }
   };
 
@@ -200,6 +200,15 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
           <TouchableOpacity style={s.logoutButton} onPress={handleLogout} activeOpacity={0.7}>
             <Text style={s.logoutText}>Log out</Text>
           </TouchableOpacity>
+          <View style={s.legalRow}>
+            <TouchableOpacity onPress={() => { onClose(); router.push('/terms'); }} activeOpacity={0.7}>
+              <Text style={s.legalText}>Terms</Text>
+            </TouchableOpacity>
+            <Text style={s.legalSeparator}>·</Text>
+            <TouchableOpacity onPress={() => { onClose(); router.push('/privacy'); }} activeOpacity={0.7}>
+              <Text style={s.legalText}>Privacy</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Animated.View>
     </View>
@@ -366,5 +375,20 @@ const createStyles = (colors: ThemeColors) =>
       fontSize: fontSizes.base,
       fontWeight: '600',
       color: colors.text,
+    },
+    legalRow: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: spacing.md,
+      gap: spacing.sm,
+    },
+    legalText: {
+      fontSize: fontSizes.sm,
+      color: colors.textMuted,
+    },
+    legalSeparator: {
+      fontSize: fontSizes.sm,
+      color: colors.textMuted,
     },
   });

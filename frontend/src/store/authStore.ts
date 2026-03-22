@@ -79,14 +79,23 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   logout: async () => {
+    let logoutUrl: string | null = null;
     try {
       const { accessToken } = get();
       if (accessToken) {
-        await authApi.logout().catch(() => {});
+        logoutUrl = await authApi.logout().catch(() => null);
       }
     } finally {
       setAuthHeader(null);
       set({ user: null, accessToken: null, refreshToken: null });
+
+      if (logoutUrl) {
+        if (Platform.OS === 'web') {
+          window.location.href = logoutUrl;
+        } else {
+          await Linking.openURL(logoutUrl);
+        }
+      }
     }
   },
 

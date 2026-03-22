@@ -4,7 +4,7 @@ import { Alert, Platform, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, useThemeColors, useIsDarkMode } from '../src/theme';
-import { configureRevenueCat } from '../src/config/revenuecat';
+import { billingService } from '../src/services/billing';
 import { useAuthStore } from '../src/store/authStore';
 import { useSubscriptionStore } from '../src/store/subscriptionStore';
 import { setupAuthInterceptor } from '../src/api/authInterceptor';
@@ -31,10 +31,11 @@ function RootLayoutInner() {
         clearSessionExpiredMessage();
     }, [sessionExpiredMessage]);
 
-    // Initialize RevenueCat once on mount, then re-identify when the user changes
     useEffect(() => {
-        configureRevenueCat(user?.id).then(() => {
+        billingService.configure(user?.id).then(() => {
             refreshCustomerInfo();
+        }).catch((err: unknown) => {
+            console.warn('Failed to configure billing:', err);
         });
     }, [user?.id]);
 

@@ -170,7 +170,7 @@ export default function ResultScreen() {
                 style={s.modalPrimaryBtn}
                 onPress={() => {
                   setShowLimitModal(false);
-                  router.push('/paywall');
+                  router.push('/upgrade');
                 }}
                 activeOpacity={0.7}
               >

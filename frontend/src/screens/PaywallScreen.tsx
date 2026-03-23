@@ -8,8 +8,8 @@ export default function PaywallScreen() {
   const refreshCustomerInfo = useSubscriptionStore((st) => st.refreshCustomerInfo);
   const restorePurchases = useSubscriptionStore((st) => st.restorePurchases);
 
-  const handleDismiss = useCallback(() => {
-    refreshCustomerInfo();
+  const handleDismiss = useCallback(async () => {
+    await refreshCustomerInfo();
     router.back();
   }, [refreshCustomerInfo, router]);
 

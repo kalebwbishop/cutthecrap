@@ -18,6 +18,8 @@ export interface BillingOffering {
 export interface BillingService {
   configure(appUserId?: string): Promise<void>;
   isConfigured(): boolean;
+  logIn(appUserId: string): Promise<BillingCustomerInfo>;
+  logOut(): Promise<void>;
   getCustomerInfo(): Promise<BillingCustomerInfo>;
   getOfferings(): Promise<BillingOffering | null>;
   restorePurchases(): Promise<BillingCustomerInfo>;

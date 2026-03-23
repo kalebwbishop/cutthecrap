@@ -32,6 +32,20 @@ export const billingService: BillingService = {
     return PurchasesWeb.isConfigured();
   },
 
+  async logIn(appUserId: string): Promise<BillingCustomerInfo> {
+    if (!PurchasesWeb.isConfigured()) return { isPro: false, managementURL: null };
+    // identifyUser aliases the anonymous user to the identified user,
+    // transferring any entitlements (unlike changeUser which is a hard switch).
+    const { customerInfo } = await getInstance().identifyUser(appUserId);
+    return mapCustomerInfo(customerInfo);
+  },
+
+  async logOut(): Promise<void> {
+    if (!PurchasesWeb.isConfigured()) return;
+    const anonId = PurchasesWeb.generateRevenueCatAnonymousAppUserId();
+    await getInstance().changeUser(anonId);
+  },
+
   async getCustomerInfo(): Promise<BillingCustomerInfo> {
     if (!PurchasesWeb.isConfigured()) return { isPro: false, managementURL: null };
     const info = await getInstance().getCustomerInfo();

@@ -32,11 +32,25 @@ function RootLayoutInner() {
     }, [sessionExpiredMessage]);
 
     useEffect(() => {
-        billingService.configure(user?.id).then(() => {
-            refreshCustomerInfo();
-        }).catch((err: unknown) => {
-            console.warn('Failed to configure billing:', err);
-        });
+        if (!billingService.isConfigured()) {
+            billingService.configure(user?.id).then(() => {
+                refreshCustomerInfo();
+            }).catch((err: unknown) => {
+                console.warn('Failed to configure billing:', err);
+            });
+        } else if (user?.id) {
+            billingService.logIn(user.id).then(() => {
+                refreshCustomerInfo();
+            }).catch((err: unknown) => {
+                console.warn('Failed to log in to billing:', err);
+            });
+        } else {
+            billingService.logOut().then(() => {
+                refreshCustomerInfo();
+            }).catch((err: unknown) => {
+                console.warn('Failed to log out of billing:', err);
+            });
+        }
     }, [user?.id]);
 
     return (

@@ -1062,3 +1062,48 @@ Traceback (most recent call last):
   File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
     raise ExpiredSignatureError("Signature has expired")
 jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-21 22:24:03", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-22 20:28:54", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-22 20:35:55", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired

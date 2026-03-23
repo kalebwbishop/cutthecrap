@@ -1124,3 +1124,41 @@ Traceback (most recent call last):
 jwt.exceptions.ExpiredSignatureError: Signature has expired
 {"time": "2026-03-22 20:58:21", "level": "ERROR", "message": "Email endpoint error 401: {"error": "Invalid or revoked API key"}"}
 {"time": "2026-03-22 20:58:21", "level": "ERROR", "message": "Error: Email service returned 401 | POST /api/v1/feedback/send | status=502"}
+{"time": "2026-03-22 21:11:50", "level": "ERROR", "message": "OAuth exchange failed: (message=No message, request_id=34b4368c-cc90-4103-9b4d-e1a1a6ad25ff, error=invalid_grant, error_description=The code '01KMC3550WSJRQTWRGGXNK4KM5' has expired.)"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 134, in exchange
+    auth_response = workos.user_management.authenticate_with_code(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1270, in authenticate_with_code
+    return self._authenticate_with(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1208, in _authenticate_with
+    response = self._http_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\http_client.py", line 114, in request
+    return self._handle_response(response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 195, in _handle_response
+    self._maybe_raise_error_by_status_code(response, response_json)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 114, in _maybe_raise_error_by_status_code
+    raise BadRequestException(response, response_json)
+workos.exceptions.BadRequestException: (message=No message, request_id=34b4368c-cc90-4103-9b4d-e1a1a6ad25ff, error=invalid_grant, error_description=The code '01KMC3550WSJRQTWRGGXNK4KM5' has expired.)
+{"time": "2026-03-22 21:11:50", "level": "ERROR", "message": "OAuth exchange failed: (message=No message, request_id=7e50b015-de81-44ea-abb0-ab5b8237b950, error=invalid_grant, error_description=The code '01KMC3550WSJRQTWRGGXNK4KM5' has expired.)"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 134, in exchange
+    auth_response = workos.user_management.authenticate_with_code(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1270, in authenticate_with_code
+    return self._authenticate_with(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1208, in _authenticate_with
+    response = self._http_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\http_client.py", line 114, in request
+    return self._handle_response(response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 195, in _handle_response
+    self._maybe_raise_error_by_status_code(response, response_json)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 114, in _maybe_raise_error_by_status_code
+    raise BadRequestException(response, response_json)
+workos.exceptions.BadRequestException: (message=No message, request_id=7e50b015-de81-44ea-abb0-ab5b8237b950, error=invalid_grant, error_description=The code '01KMC3550WSJRQTWRGGXNK4KM5' has expired.)

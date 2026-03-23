@@ -16,6 +16,7 @@ import { purchaseWebPackage } from '@/services/billing/billingService';
 import { useThemeColors, fontSizes, spacing, radii } from '@/theme';
 import type { ThemeColors } from '@/theme';
 import type { BillingPackage } from '@/services/billing';
+import { PRO_FEATURES } from '@/data/upcomingFeatures';
 
 const FEATURES = [
   'Unlimited saved recipes',
@@ -168,6 +169,19 @@ export default function PaywallScreen() {
           ))}
         </View>
 
+        {/* Coming soon */}
+        <Text style={[s.comingSoonLabel, { color: colors.textMuted }]}>Coming Soon</Text>
+        <View style={s.featureList}>
+          {PRO_FEATURES.map((feature) => (
+            <View key={feature.title} style={s.featureRow}>
+              <View style={[s.comingCircle, { borderColor: colors.success }]}>
+                <Text style={[s.comingIcon, { color: colors.success }]}>✦</Text>
+              </View>
+              <Text style={[s.featureText, { color: colors.textSubtle }]}>{feature.title}</Text>
+            </View>
+          ))}
+        </View>
+
         {/* Loading */}
         {loading && (
           <View style={s.centered}>
@@ -298,6 +312,7 @@ const createStyles = (colors: ThemeColors) =>
       justifyContent: 'center',
       paddingHorizontal: spacing.xxl,
       paddingBottom: 40,
+      maxWidth: 600,
       width: '100%',
       alignSelf: 'center',
     },
@@ -333,6 +348,26 @@ const createStyles = (colors: ThemeColors) =>
     checkMark: {
       color: '#fff',
       fontSize: 13,
+      fontWeight: '700',
+      lineHeight: 16,
+    },
+    comingSoonLabel: {
+      fontSize: fontSizes.sm,
+      fontWeight: '600',
+      textTransform: 'uppercase',
+      letterSpacing: 0.8,
+      marginBottom: spacing.md,
+    },
+    comingCircle: {
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      borderWidth: 1.5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    comingIcon: {
+      fontSize: 11,
       fontWeight: '700',
       lineHeight: 16,
     },
@@ -380,7 +415,9 @@ const createStyles = (colors: ThemeColors) =>
       fontWeight: '600',
     },
     packageRight: {
-      alignItems: 'flex-end',
+      flexDirection: 'row',
+      alignItems: 'baseline',
+      gap: spacing.xs,
     },
     packagePrice: {
       fontSize: fontSizes.xl,
@@ -388,7 +425,6 @@ const createStyles = (colors: ThemeColors) =>
     },
     packagePeriod: {
       fontSize: fontSizes.sm,
-      marginTop: 2,
     },
     errorText: {
       fontSize: fontSizes.base,

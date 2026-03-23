@@ -16,6 +16,7 @@ function mapCustomerInfo(
 
 export const billingService: BillingService = {
   async configure(appUserId?: string) {
+    if (configured) return;
     const apiKey = Platform.OS === 'ios' ? API_KEYS.apple : API_KEYS.google;
     if (__DEV__) Purchases.setLogLevel(LOG_LEVEL.DEBUG);
     Purchases.configure({ apiKey, appUserID: appUserId ?? undefined });
@@ -24,6 +25,17 @@ export const billingService: BillingService = {
 
   isConfigured() {
     return configured;
+  },
+
+  async logIn(appUserId: string): Promise<BillingCustomerInfo> {
+    if (!configured) return { isPro: false, managementURL: null };
+    const { customerInfo } = await Purchases.logIn(appUserId);
+    return mapCustomerInfo(customerInfo);
+  },
+
+  async logOut(): Promise<void> {
+    if (!configured) return;
+    await Purchases.logOut();
   },
 
   async getCustomerInfo(): Promise<BillingCustomerInfo> {

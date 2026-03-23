@@ -14,6 +14,7 @@ from app.middleware.error_handler import (
 )
 from app.routes.auth import router as auth_router
 from app.routes.chatgpt import router as chatgpt_router
+from app.routes.feedback import router as feedback_router
 from app.routes.recipes import router as recipes_router
 from app.utils.logger import logger
 
@@ -123,6 +124,7 @@ async def status():
 API_PREFIX = "/api/v1"
 app.include_router(auth_router, prefix=API_PREFIX)
 app.include_router(chatgpt_router, prefix=API_PREFIX)
+app.include_router(feedback_router, prefix=API_PREFIX)
 app.include_router(recipes_router, prefix=API_PREFIX)
 
 

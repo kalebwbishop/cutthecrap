@@ -2475,3 +2475,75 @@ jwt.exceptions.ExpiredSignatureError: Signature has expired
 {"time": "2026-03-22 20:35:55", "level": "INFO", "message": "Token refresh successful"}
 {"time": "2026-03-22 20:35:55", "level": "INFO", "message": "POST /api/v1/auth/refresh — 200 (583ms)"}
 {"time": "2026-03-22 20:35:55", "level": "INFO", "message": "GET /api/v1/recipes — 200 (5ms)"}
+{"time": "2026-03-22 20:41:24", "level": "INFO", "message": "GET /api/v1/recipes — 200 (843ms)"}
+{"time": "2026-03-22 20:41:25", "level": "INFO", "message": "OPTIONS /api/v1/recipes/history — 200 (0ms)"}
+{"time": "2026-03-22 20:41:25", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\middleware\auth.py", line 48, in get_current_user
+    decoded = pyjwt.decode(
+              ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 365, in decode
+    decoded = self.decode_complete(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 272, in decode_complete
+    self._validate_claims(
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 405, in _validate_claims
+    self._validate_exp(payload, now, leeway)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 508, in _validate_exp
+    raise ExpiredSignatureError("Signature has expired")
+jwt.exceptions.ExpiredSignatureError: Signature has expired
+{"time": "2026-03-22 20:41:25", "level": "INFO", "message": "GET /api/v1/recipes/history — 401 (0ms)"}
+{"time": "2026-03-22 20:41:25", "level": "INFO", "message": "OPTIONS /api/v1/auth/refresh — 200 (0ms)"}
+{"time": "2026-03-22 20:41:25", "level": "INFO", "message": "Token refresh successful"}
+{"time": "2026-03-22 20:41:25", "level": "INFO", "message": "POST /api/v1/auth/refresh — 200 (418ms)"}
+{"time": "2026-03-22 20:41:25", "level": "INFO", "message": "GET /api/v1/recipes/history — 200 (44ms)"}
+{"time": "2026-03-22 20:41:28", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-22 20:41:32", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-22 20:41:35", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-22 20:41:35", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-22 20:41:35", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KMC27N9GTFS0GB7ZKBJDF4CE"}
+{"time": "2026-03-22 20:41:35", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (4ms)"}
+{"time": "2026-03-22 20:41:35", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-22 20:41:36", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-22 20:41:36", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (498ms)"}
+{"time": "2026-03-22 20:41:36", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-22 20:41:36", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-22 20:41:38", "level": "INFO", "message": "GET /api/v1/recipes — 200 (5ms)"}
+{"time": "2026-03-22 20:41:39", "level": "INFO", "message": "GET /api/v1/recipes/history — 200 (8ms)"}
+{"time": "2026-03-22 20:41:43", "level": "INFO", "message": "OPTIONS /api/v1/recipes/history/0aedb9ee-774c-4031-9a7a-9c3f92d7c8e2 — 200 (0ms)"}
+{"time": "2026-03-22 20:41:43", "level": "INFO", "message": "GET /api/v1/recipes/history/0aedb9ee-774c-4031-9a7a-9c3f92d7c8e2 — 200 (6ms)"}
+{"time": "2026-03-22 20:42:08", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-22 20:42:11", "level": "INFO", "message": "GET /api/v1/recipes — 200 (0ms)"}
+{"time": "2026-03-22 20:42:12", "level": "INFO", "message": "GET /api/v1/recipes/history — 200 (0ms)"}
+{"time": "2026-03-22 20:43:11", "level": "INFO", "message": "GET /api/health — 200 (6ms)"}
+{"time": "2026-03-22 20:43:11", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-22 20:43:11", "level": "INFO", "message": "GET /api/v1/recipes/history — 200 (322ms)"}
+{"time": "2026-03-22 20:43:34", "level": "INFO", "message": "GET /api/v1/recipes — 200 (38ms)"}
+{"time": "2026-03-22 20:43:52", "level": "INFO", "message": "GET /api/v1/recipes — 200 (2ms)"}
+{"time": "2026-03-22 20:44:02", "level": "INFO", "message": "GET /api/v1/recipes — 200 (5ms)"}
+{"time": "2026-03-22 20:44:43", "level": "INFO", "message": "GET /api/v1/recipes/history — 200 (4ms)"}
+{"time": "2026-03-22 20:44:50", "level": "INFO", "message": "GET /api/v1/recipes — 200 (5ms)"}
+{"time": "2026-03-22 20:57:19", "level": "INFO", "message": "GET /api/health — 200 (349ms)"}
+{"time": "2026-03-22 20:57:19", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-22 20:57:19", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-22 20:57:23", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-22 20:57:23", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-22 20:57:24", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-22 20:57:25", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (954ms)"}
+{"time": "2026-03-22 20:57:41", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-22 20:57:41", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-22 20:57:41", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KMC3550WSJRQTWRGGXNK4KM5"}
+{"time": "2026-03-22 20:57:41", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-22 20:57:42", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-22 20:57:43", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-22 20:57:43", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (425ms)"}
+{"time": "2026-03-22 20:57:43", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-22 20:57:43", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-22 20:57:51", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (0ms)"}
+{"time": "2026-03-22 20:57:56", "level": "INFO", "message": "GET /api/v1/recipes — 200 (5242ms)"}
+{"time": "2026-03-22 20:58:11", "level": "INFO", "message": "OPTIONS /api/v1/feedback/send — 200 (0ms)"}
+{"time": "2026-03-22 20:58:21", "level": "ERROR", "message": "Email endpoint error 401: {"error": "Invalid or revoked API key"}"}
+{"time": "2026-03-22 20:58:21", "level": "ERROR", "message": "Error: Email service returned 401 | POST /api/v1/feedback/send | status=502"}
+{"time": "2026-03-22 20:58:21", "level": "INFO", "message": "POST /api/v1/feedback/send — 502 (9977ms)"}
+{"time": "2026-03-22 20:59:41", "level": "INFO", "message": "Feedback email sent successfully for kalebwbishop@gmail.com"}
+{"time": "2026-03-22 20:59:41", "level": "INFO", "message": "POST /api/v1/feedback/send — 200 (4187ms)"}

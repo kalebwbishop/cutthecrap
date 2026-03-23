@@ -233,6 +233,13 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
             <MailIcon size={16} color={colors.textMuted} />
             <Text style={s.feedbackText}>Send Feedback</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={s.feedbackButton}
+            onPress={() => { onClose(); router.push('/upcoming-features'); }}
+            activeOpacity={0.7}
+          >
+            <Text style={s.feedbackText}>Upcoming Features</Text>
+          </TouchableOpacity>
           <View style={s.legalRow}>
             <TouchableOpacity onPress={() => { onClose(); router.push('/terms'); }} activeOpacity={0.7}>
               <Text style={s.legalText}>Terms</Text>

@@ -2547,3 +2547,99 @@ jwt.exceptions.ExpiredSignatureError: Signature has expired
 {"time": "2026-03-22 20:58:21", "level": "INFO", "message": "POST /api/v1/feedback/send — 502 (9977ms)"}
 {"time": "2026-03-22 20:59:41", "level": "INFO", "message": "Feedback email sent successfully for kalebwbishop@gmail.com"}
 {"time": "2026-03-22 20:59:41", "level": "INFO", "message": "POST /api/v1/feedback/send — 200 (4187ms)"}
+{"time": "2026-03-22 21:04:28", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-22 21:04:28", "level": "INFO", "message": "OPTIONS /api/v1/auth/refresh — 200 (1ms)"}
+{"time": "2026-03-22 21:04:29", "level": "INFO", "message": "Token refresh successful"}
+{"time": "2026-03-22 21:04:29", "level": "INFO", "message": "POST /api/v1/auth/refresh — 200 (565ms)"}
+{"time": "2026-03-22 21:04:29", "level": "INFO", "message": "OPTIONS /api/v1/auth/me — 200 (0ms)"}
+{"time": "2026-03-22 21:04:29", "level": "INFO", "message": "GET /api/v1/auth/me — 200 (320ms)"}
+{"time": "2026-03-22 21:06:37", "level": "INFO", "message": "GET /api/v1/recipes — 200 (0ms)"}
+{"time": "2026-03-22 21:06:53", "level": "INFO", "message": "GET /api/v1/recipes — 200 (9ms)"}
+{"time": "2026-03-22 21:06:58", "level": "INFO", "message": "OPTIONS /api/v1/recipes/history — 200 (0ms)"}
+{"time": "2026-03-22 21:06:58", "level": "INFO", "message": "GET /api/v1/recipes/history — 200 (6ms)"}
+{"time": "2026-03-22 21:06:59", "level": "INFO", "message": "GET /api/v1/recipes — 200 (3ms)"}
+{"time": "2026-03-22 21:11:49", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-03-22 21:11:50", "level": "INFO", "message": "Token refresh successful"}
+{"time": "2026-03-22 21:11:50", "level": "INFO", "message": "POST /api/v1/auth/refresh — 200 (625ms)"}
+{"time": "2026-03-22 21:11:50", "level": "ERROR", "message": "OAuth exchange failed: (message=No message, request_id=34b4368c-cc90-4103-9b4d-e1a1a6ad25ff, error=invalid_grant, error_description=The code '01KMC3550WSJRQTWRGGXNK4KM5' has expired.)"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 134, in exchange
+    auth_response = workos.user_management.authenticate_with_code(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1270, in authenticate_with_code
+    return self._authenticate_with(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1208, in _authenticate_with
+    response = self._http_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\http_client.py", line 114, in request
+    return self._handle_response(response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 195, in _handle_response
+    self._maybe_raise_error_by_status_code(response, response_json)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 114, in _maybe_raise_error_by_status_code
+    raise BadRequestException(response, response_json)
+workos.exceptions.BadRequestException: (message=No message, request_id=34b4368c-cc90-4103-9b4d-e1a1a6ad25ff, error=invalid_grant, error_description=The code '01KMC3550WSJRQTWRGGXNK4KM5' has expired.)
+{"time": "2026-03-22 21:11:50", "level": "INFO", "message": "POST /api/v1/auth/exchange — 500 (238ms)"}
+{"time": "2026-03-22 21:11:50", "level": "ERROR", "message": "OAuth exchange failed: (message=No message, request_id=7e50b015-de81-44ea-abb0-ab5b8237b950, error=invalid_grant, error_description=The code '01KMC3550WSJRQTWRGGXNK4KM5' has expired.)"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\cutthecrap\backend\app\routes\auth.py", line 134, in exchange
+    auth_response = workos.user_management.authenticate_with_code(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1270, in authenticate_with_code
+    return self._authenticate_with(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1208, in _authenticate_with
+    response = self._http_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\http_client.py", line 114, in request
+    return self._handle_response(response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 195, in _handle_response
+    self._maybe_raise_error_by_status_code(response, response_json)
+  File "C:\Users\KBishop\code\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 114, in _maybe_raise_error_by_status_code
+    raise BadRequestException(response, response_json)
+workos.exceptions.BadRequestException: (message=No message, request_id=7e50b015-de81-44ea-abb0-ab5b8237b950, error=invalid_grant, error_description=The code '01KMC3550WSJRQTWRGGXNK4KM5' has expired.)
+{"time": "2026-03-22 21:11:51", "level": "INFO", "message": "Token refresh successful"}
+{"time": "2026-03-22 21:11:51", "level": "INFO", "message": "OPTIONS /api/health — 200 (510ms)"}
+{"time": "2026-03-22 21:11:51", "level": "INFO", "message": "POST /api/v1/auth/exchange — 500 (838ms)"}
+{"time": "2026-03-22 21:11:51", "level": "INFO", "message": "POST /api/v1/auth/refresh — 200 (840ms)"}
+{"time": "2026-03-22 21:11:51", "level": "INFO", "message": "GET /api/v1/auth/me — 200 (846ms)"}
+{"time": "2026-03-22 21:11:51", "level": "INFO", "message": "GET /api/v1/auth/me — 200 (4ms)"}
+{"time": "2026-03-22 21:11:51", "level": "INFO", "message": "GET /api/health — 200 (338ms)"}
+{"time": "2026-03-22 21:11:51", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-22 21:12:15", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-22 21:12:38", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-22 21:12:41", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-22 21:12:41", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-22 21:12:41", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KMC40KT63QH76XNGF4MVQV2Q"}
+{"time": "2026-03-22 21:12:41", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (2ms)"}
+{"time": "2026-03-22 21:12:42", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-22 21:12:42", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (451ms)"}
+{"time": "2026-03-22 21:12:42", "level": "INFO", "message": "GET /api/health — 200 (2ms)"}
+{"time": "2026-03-22 21:12:49", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (2ms)"}
+{"time": "2026-03-22 21:12:49", "level": "INFO", "message": "GET /api/v1/recipes — 200 (5ms)"}
+{"time": "2026-03-23 08:37:08", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-23 08:37:08", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-23 08:37:09", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-23 08:37:55", "level": "INFO", "message": "GET /api/health — 200 (9ms)"}
+{"time": "2026-03-23 08:37:59", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (1230ms)"}
+{"time": "2026-03-23 08:38:01", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-23 08:38:01", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-03-23 08:38:01", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KMDB7FS69QC9P43TMVM6P6WP"}
+{"time": "2026-03-23 08:38:01", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (3ms)"}
+{"time": "2026-03-23 08:38:01", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (1ms)"}
+{"time": "2026-03-23 08:38:02", "level": "INFO", "message": "OAuth exchange successful for user: kalebwbishop@gmail.com"}
+{"time": "2026-03-23 08:38:02", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (353ms)"}
+{"time": "2026-03-23 08:38:02", "level": "INFO", "message": "OPTIONS /api/health — 200 (0ms)"}
+{"time": "2026-03-23 08:38:02", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-23 08:38:06", "level": "INFO", "message": "OPTIONS /api/v1/recipes — 200 (0ms)"}
+{"time": "2026-03-23 08:38:06", "level": "INFO", "message": "GET /api/v1/recipes — 200 (287ms)"}
+{"time": "2026-03-23 08:38:08", "level": "INFO", "message": "OPTIONS /api/v1/recipes/history — 200 (1ms)"}
+{"time": "2026-03-23 08:38:08", "level": "INFO", "message": "GET /api/v1/recipes/history — 200 (9ms)"}
+{"time": "2026-03-23 08:38:09", "level": "INFO", "message": "GET /api/v1/recipes — 200 (3ms)"}
+{"time": "2026-03-23 08:38:10", "level": "INFO", "message": "OPTIONS /api/v1/recipes/cd4445d8-6a46-4c0c-b427-778140212ee6 — 200 (1ms)"}
+{"time": "2026-03-23 08:38:10", "level": "INFO", "message": "GET /api/v1/recipes/cd4445d8-6a46-4c0c-b427-778140212ee6 — 200 (6ms)"}
+{"time": "2026-03-23 08:38:12", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-23 08:38:14", "level": "INFO", "message": "GET /api/v1/recipes — 200 (3ms)"}
+{"time": "2026-03-23 08:41:01", "level": "INFO", "message": "GET /api/v1/recipes — 200 (5ms)"}

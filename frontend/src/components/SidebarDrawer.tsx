@@ -3,13 +3,14 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Pressable,
   StyleSheet,
   Animated,
   ScrollView,
   Dimensions,
   Platform,
 } from 'react-native';
-import { CloseIcon } from '@/components/Icons';
+import { CloseIcon, MailIcon, TrashIcon } from '@/components/Icons';
 import { useAuthStore } from '@/store/authStore';
 import { useRecipeStore } from '@/store/recipeStore';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
@@ -44,6 +45,7 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
   const [savedRecipes, setSavedRecipes] = useState<SavedRecipeSummary[]>([]);
   const [historyRecipes, setHistoryRecipes] = useState<SavedRecipeSummary[]>([]);
   const [recipesLoading, setRecipesLoading] = useState(false);
+  const [hoveredRecipeId, setHoveredRecipeId] = useState<string | null>(null);
 
   const fetchRecipes = useCallback(async () => {
     if (!user) return;
@@ -103,6 +105,14 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
       await openHistoryRecipe(id);
     }
     router.push('/result');
+  };
+
+  const handleDeleteRecipe = (id: string) => {
+    if (activeTab === 'saved') {
+      setSavedRecipes((prev) => prev.filter((r) => r.id !== id));
+    } else {
+      setHistoryRecipes((prev) => prev.filter((r) => r.id !== id));
+    }
   };
 
   const handleLogout = async () => {
@@ -172,19 +182,34 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
             </Text>
           ) : (
             (activeTab === 'saved' ? savedRecipes : historyRecipes).map((recipe) => (
-              <TouchableOpacity
+              <Pressable
                 key={recipe.id}
-                style={s.recipeItem}
+                style={({ pressed }) => [s.recipeItem, pressed && { opacity: 0.7 }]}
                 onPress={() => handleOpenRecipe(recipe.id)}
-                activeOpacity={0.7}
+                onHoverIn={() => setHoveredRecipeId(recipe.id)}
+                onHoverOut={() => setHoveredRecipeId(null)}
               >
-                <Text style={s.recipeTitle} numberOfLines={2}>{recipe.title}</Text>
-                {recipe.createdAt ? (
-                  <Text style={s.recipeDate}>
-                    {new Date(recipe.createdAt).toLocaleDateString()}
-                  </Text>
-                ) : null}
-              </TouchableOpacity>
+                <View style={s.recipeItemRow}>
+                  <View style={s.recipeItemText}>
+                    <Text style={s.recipeTitle} numberOfLines={2}>{recipe.title}</Text>
+                    {recipe.createdAt ? (
+                      <Text style={s.recipeDate}>
+                        {new Date(recipe.createdAt).toLocaleDateString()}
+                      </Text>
+                    ) : null}
+                  </View>
+                  {hoveredRecipeId === recipe.id && (
+                    <TouchableOpacity
+                      onPress={() => handleDeleteRecipe(recipe.id)}
+                      hitSlop={8}
+                      activeOpacity={0.7}
+                      style={s.trashButton}
+                    >
+                      <TrashIcon size={16} color={colors.error} />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </Pressable>
             ))
           )}
         </ScrollView>
@@ -199,6 +224,14 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
           </TouchableOpacity>
           <TouchableOpacity style={s.logoutButton} onPress={handleLogout} activeOpacity={0.7}>
             <Text style={s.logoutText}>Log out</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={s.feedbackButton}
+            onPress={() => { onClose(); router.push('/feedback'); }}
+            activeOpacity={0.7}
+          >
+            <MailIcon size={16} color={colors.textMuted} />
+            <Text style={s.feedbackText}>Send Feedback</Text>
           </TouchableOpacity>
           <View style={s.legalRow}>
             <TouchableOpacity onPress={() => { onClose(); router.push('/terms'); }} activeOpacity={0.7}>
@@ -317,6 +350,18 @@ const createStyles = (colors: ThemeColors) =>
       borderBottomWidth: 1,
       borderBottomColor: colors.sidebarDivider,
     },
+    recipeItemRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    recipeItemText: {
+      flex: 1,
+      marginRight: spacing.sm,
+    },
+    trashButton: {
+      padding: spacing.xs,
+    },
     recipeTitle: {
       fontSize: fontSizes.base,
       fontWeight: '500',
@@ -376,11 +421,24 @@ const createStyles = (colors: ThemeColors) =>
       fontWeight: '600',
       color: colors.text,
     },
+    feedbackButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginHorizontal: spacing.lg,
+      marginTop: spacing.sm,
+      paddingVertical: 10,
+      gap: spacing.sm,
+    },
+    feedbackText: {
+      fontSize: fontSizes.sm,
+      color: colors.textMuted,
+    },
     legalRow: {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: spacing.md,
+      marginTop: spacing.xs,
       gap: spacing.sm,
     },
     legalText: {

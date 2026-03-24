@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     chatgpt_api_base: str = "https://deploy-box-apis-func-dev.azurewebsites.net"
     openai_api_key: str = ""
 
+    # RevenueCat (server-side entitlement verification)
+    revenuecat_api_key: str = ""
+
     # CORS
     cors_origin: str = "http://localhost:19006,http://localhost:19000,http://localhost:8081"
 

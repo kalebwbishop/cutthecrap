@@ -16,6 +16,7 @@ from pydantic import BaseModel
 
 from app.middleware.auth import CurrentUser, get_current_user
 from app.services import recipe_service as svc
+from app.services.subscription_service import FREE_RECIPE_LIMIT, is_pro
 from app.utils.logger import logger
 
 router = APIRouter(prefix="/recipes", tags=["recipes"])
@@ -133,6 +134,19 @@ async def save_recipe(
 ):
     """Save a new recipe for the authenticated user."""
     try:
+        if not await is_pro(user.id):
+            count = await svc.count_saved_recipes(user.id)
+            if count >= FREE_RECIPE_LIMIT:
+                return JSONResponse(
+                    status_code=403,
+                    content={
+                        "error": {
+                            "message": f"Free accounts can save up to {FREE_RECIPE_LIMIT} recipes. Upgrade to Pro for unlimited saves.",
+                            "code": "RECIPE_LIMIT_REACHED",
+                        }
+                    },
+                )
+
         row = await svc.create_saved_recipe(
             user_id=user.id,
             title=payload.title,

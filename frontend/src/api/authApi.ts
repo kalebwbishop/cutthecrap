@@ -62,6 +62,11 @@ export const authApi = {
     const resp = await apiClient.post<{ logoutUrl?: string }>('/api/v1/auth/logout');
     return resp.data.logoutUrl ?? null;
   },
+
+  /** Permanently delete the authenticated user's account. */
+  async deleteAccount(): Promise<void> {
+    await apiClient.delete('/api/v1/auth/account');
+  },
 };
 
 export type { User };

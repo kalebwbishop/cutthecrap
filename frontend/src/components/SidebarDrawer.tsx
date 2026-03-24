@@ -9,6 +9,7 @@ import {
   ScrollView,
   Dimensions,
   Platform,
+  Modal,
 } from 'react-native';
 import { CloseIcon, MailIcon, TrashIcon } from '@/components/Icons';
 import { useAuthStore } from '@/store/authStore';
@@ -34,6 +35,7 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
+  const deleteAccount = useAuthStore((s) => s.deleteAccount);
   const openSavedRecipe = useRecipeStore((s) => s.openSavedRecipe);
   const openHistoryRecipe = useRecipeStore((s) => s.openHistoryRecipe);
   const isPro = useSubscriptionStore((s) => s.isPro);
@@ -46,6 +48,8 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
   const [historyRecipes, setHistoryRecipes] = useState<SavedRecipeSummary[]>([]);
   const [recipesLoading, setRecipesLoading] = useState(false);
   const [hoveredRecipeId, setHoveredRecipeId] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchRecipes = useCallback(async () => {
     if (!user) return;
@@ -118,6 +122,17 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
   const handleLogout = async () => {
     onClose();
     await logout();
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteAccount();
+      setShowDeleteModal(false);
+      onClose();
+    } catch {
+      setIsDeleting(false);
+    }
   };
 
   const handleUpgrade = () => {
@@ -225,6 +240,10 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
           <TouchableOpacity style={s.logoutButton} onPress={handleLogout} activeOpacity={0.7}>
             <Text style={s.logoutText}>Log out</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={s.deleteAccountButton} onPress={() => setShowDeleteModal(true)} activeOpacity={0.7}>
+            <TrashIcon size={16} color={colors.error} />
+            <Text style={s.deleteAccountText}>Delete Account</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={s.feedbackButton}
             onPress={() => { onClose(); router.push('/feedback'); }}
@@ -232,13 +251,6 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
           >
             <MailIcon size={16} color={colors.textMuted} />
             <Text style={s.feedbackText}>Send Feedback</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={s.feedbackButton}
-            onPress={() => { onClose(); router.push('/upcoming-features'); }}
-            activeOpacity={0.7}
-          >
-            <Text style={s.feedbackText}>Upcoming Features</Text>
           </TouchableOpacity>
           <View style={s.legalRow}>
             <TouchableOpacity onPress={() => { onClose(); router.push('/terms'); }} activeOpacity={0.7}>
@@ -251,6 +263,36 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
           </View>
         </View>
       </Animated.View>
+
+      {/* Delete account confirmation modal */}
+      <Modal visible={showDeleteModal} transparent animationType="fade" onRequestClose={() => setShowDeleteModal(false)}>
+        <View style={s.modalOverlay}>
+          <View style={s.modalContent}>
+            <Text style={s.modalTitle}>Delete Account?</Text>
+            <Text style={s.modalBody}>
+              This will permanently delete your account and all saved recipes. This action cannot be undone.
+            </Text>
+            <View style={s.modalActions}>
+              <TouchableOpacity
+                style={s.modalCancelButton}
+                onPress={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+                activeOpacity={0.7}
+              >
+                <Text style={s.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.modalDeleteButton, isDeleting && { opacity: 0.6 }]}
+                onPress={handleDeleteAccount}
+                disabled={isDeleting}
+                activeOpacity={0.7}
+              >
+                <Text style={s.modalDeleteText}>{isDeleting ? 'Deleting…' : 'Delete'}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -428,6 +470,20 @@ const createStyles = (colors: ThemeColors) =>
       fontWeight: '600',
       color: colors.text,
     },
+    deleteAccountButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginHorizontal: spacing.lg,
+      marginTop: spacing.sm,
+      paddingVertical: 10,
+      gap: spacing.sm,
+    },
+    deleteAccountText: {
+      fontSize: fontSizes.sm,
+      fontWeight: '600',
+      color: colors.error,
+    },
     feedbackButton: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -455,5 +511,60 @@ const createStyles = (colors: ThemeColors) =>
     legalSeparator: {
       fontSize: fontSizes.sm,
       color: colors.textMuted,
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: spacing.lg,
+    },
+    modalContent: {
+      backgroundColor: colors.background,
+      borderRadius: radii.lg,
+      padding: spacing.xl,
+      width: '100%',
+      maxWidth: 340,
+    },
+    modalTitle: {
+      fontSize: fontSizes.xl,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: spacing.sm,
+    },
+    modalBody: {
+      fontSize: fontSizes.base,
+      color: colors.textMuted,
+      lineHeight: 22,
+      marginBottom: spacing.lg,
+    },
+    modalActions: {
+      flexDirection: 'row',
+      gap: spacing.sm,
+    },
+    modalCancelButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: radii.md,
+      borderWidth: 1,
+      borderColor: colors.border,
+      alignItems: 'center',
+    },
+    modalCancelText: {
+      fontSize: fontSizes.base,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    modalDeleteButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: radii.md,
+      backgroundColor: colors.error,
+      alignItems: 'center',
+    },
+    modalDeleteText: {
+      fontSize: fontSizes.base,
+      fontWeight: '600',
+      color: '#FFFFFF',
     },
   });

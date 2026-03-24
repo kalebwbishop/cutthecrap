@@ -20,6 +20,9 @@ interface AuthState {
   /** Log out and clear tokens. */
   logout: () => Promise<void>;
 
+  /** Permanently delete the user's account and clear all local state. */
+  deleteAccount: () => Promise<void>;
+
   /** Attempt to restore the session from a stored refresh token. */
   restoreSession: () => Promise<void>;
 
@@ -97,6 +100,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
       }
     }
+  },
+
+  deleteAccount: async () => {
+    await authApi.deleteAccount();
+    setAuthHeader(null);
+    set({ user: null, accessToken: null, refreshToken: null });
   },
 
   restoreSession: async () => {

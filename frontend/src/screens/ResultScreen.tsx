@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { isAxiosError } from 'axios';
 import RecipeCard from '@/components/RecipeCard';
 import NotRecipePage from '@/components/NotRecipePage';
 import { ArrowLeftIcon, BookmarkIcon, BookmarkFilledIcon } from '@/components/Icons';
@@ -53,8 +54,15 @@ export default function ResultScreen() {
       }
       await recipeApi.saveRecipe(recipe, url || undefined);
       setSaved(true);
-    } catch {
-      // Could show an error toast here
+    } catch (err) {
+      if (
+        isAxiosError(err) &&
+        err.response?.status === 403 &&
+        err.response?.data?.error?.code === 'RECIPE_LIMIT_REACHED'
+      ) {
+        setShowLimitModal(true);
+      }
+      // Could show a generic error toast for other failures
     } finally {
       setSaving(false);
     }

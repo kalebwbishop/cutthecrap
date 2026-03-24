@@ -1,0 +1,24 @@
+{
+  "name": "database",
+  "version": "1.0.0",
+  "description": "PostgreSQL database for the Cut The Crap application.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "node-pg-migrate up --migration-file-language sql --migrations-dir migrations --envPath ../backend/.env --database-url-var POSTGRES_CONNECTION_STRING",
+    "migrate:down": "node-pg-migrate down --migration-file-language sql --migrations-dir migrations --envPath ../backend/.env --database-url-var POSTGRES_CONNECTION_STRING",
+    "migrate:create": "node-pg-migrate create --migration-file-language sql --migrations-dir migrations",
+    "migrate:redo": "npm run migrate:down && npm run migrate",
+    "migrate:reset": "ts-node scripts/migrate.ts",
+    "seed": "ts-node scripts/seed.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "node-pg-migrate": "^8.0.4",
+    "pg": "^8.20.0"
+  }
+}

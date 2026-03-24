@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -12,8 +12,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ArrowUpIcon } from '@/components/Icons';
+import { ArrowUpIcon, MenuIcon } from '@/components/Icons';
+import SidebarDrawer from '@/components/SidebarDrawer';
 import { useRecipeStore } from '@/store/recipeStore';
+import { useAuthStore } from '@/store/authStore';
 import { useThemeColors, fontSizes, spacing, radii } from '@/theme';
 import type { ThemeColors } from '@/theme';
 
@@ -33,6 +35,11 @@ export default function InputScreen() {
     submitUrl,
     checkHealth,
   } = useRecipeStore();
+
+  const user = useAuthStore((s) => s.user);
+  const login = useAuthStore((s) => s.login);
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const pulseAnim = React.useRef(new Animated.Value(1)).current;
 
@@ -103,6 +110,23 @@ export default function InputScreen() {
         style={s.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
+        {/* Auth button / menu */}
+        <View style={[s.topBar, user ? s.topBarLeft : s.topBarRight]}>
+          {user ? (
+            <TouchableOpacity
+              style={s.menuButton}
+              onPress={() => setSidebarOpen(true)}
+              activeOpacity={0.7}
+            >
+              <MenuIcon size={24} color={colors.text} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={s.loginButton} onPress={login} activeOpacity={0.7}>
+              <Text style={s.loginButtonText}>Log in</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
         {/* Main content */}
         <View style={s.emptyState}>
           <View style={s.inputHero}>
@@ -162,6 +186,8 @@ export default function InputScreen() {
           <Text style={s.statusText}>{statusLabel}</Text>
         </View>
       </KeyboardAvoidingView>
+
+      <SidebarDrawer visible={sidebarOpen} onClose={() => setSidebarOpen(false)} />
     </SafeAreaView>
   );
 }
@@ -173,6 +199,32 @@ const createStyles = (colors: ThemeColors) =>
     },
     container: {
       flex: 1,
+    },
+    topBar: {
+      flexDirection: 'row',
+      paddingHorizontal: spacing.lg,
+      paddingTop: spacing.sm,
+    },
+    topBarLeft: {
+      justifyContent: 'flex-start',
+    },
+    topBarRight: {
+      justifyContent: 'flex-end',
+    },
+    menuButton: {
+      padding: 8,
+      borderRadius: radii.md,
+    },
+    loginButton: {
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: radii.md,
+      backgroundColor: colors.bgButton,
+    },
+    loginButtonText: {
+      color: colors.white,
+      fontSize: fontSizes.md,
+      fontWeight: '600',
     },
     emptyState: {
       flex: 1,

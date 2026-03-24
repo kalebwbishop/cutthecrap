@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { recipeApi } from '@/api/recipeApi';
-import { SummarizeResponse, ApiStatus } from '@/types/recipe';
+import { useAuthStore } from '@/store/authStore';
+import { SummarizeResponse, SavedRecipeDetail, ApiStatus } from '@/types/recipe';
 
 const LOADING_MESSAGES = [
   'Scraping the page…',
@@ -23,6 +24,7 @@ interface RecipeState {
   /* Result */
   result: SummarizeResponse | null;
   error: string | null;
+  savedRecipeId: string | null;
 
   /* API health */
   apiStatus: ApiStatus;
@@ -30,6 +32,8 @@ interface RecipeState {
   /* Actions */
   setUrl: (url: string) => void;
   submitUrl: () => Promise<void>;
+  openSavedRecipe: (id: string) => Promise<void>;
+  openHistoryRecipe: (id: string) => Promise<void>;
   reset: () => void;
   checkHealth: () => Promise<void>;
   cycleLoadingMessage: () => void;
@@ -52,6 +56,7 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
   loadingMessageIndex: 0,
   result: null,
   error: null,
+  savedRecipeId: null,
   apiStatus: 'checking',
 
   setUrl: (url: string) => set({ url, urlError: '' }),
@@ -74,15 +79,84 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
       result: null,
       error: null,
       urlError: '',
+      savedRecipeId: null,
     });
 
     try {
       const data = await recipeApi.summarize(trimmed);
       set({ result: data, isLoading: false });
+
+      // Auto-save to history if user is logged in and it's a valid recipe
+      const user = useAuthStore.getState().user;
+      if (user && data.is_recipe && data.recipe) {
+        recipeApi.saveRecipeHistory(data.recipe, trimmed).catch(() => {});
+      }
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : 'Something went wrong';
       set({ error: `Something went wrong: ${message}`, isLoading: false });
+    }
+  },
+
+  openSavedRecipe: async (id: string) => {
+    try {
+      const detail = await recipeApi.getRecipeById(id);
+      const recipe = {
+        title: detail.title,
+        description: detail.description,
+        prep_time: detail.prepTime,
+        cook_time: detail.cookTime,
+        cool_time: detail.coolTime,
+        chill_time: detail.chillTime,
+        rest_time: detail.restTime,
+        marinate_time: detail.marinateTime,
+        soak_time: detail.soakTime,
+        total_time: detail.totalTime,
+        servings: detail.servings,
+        ingredients: detail.ingredients,
+        steps: detail.steps,
+        notes: detail.notes,
+      };
+      set({
+        result: { is_recipe: true, title: detail.title, recipe },
+        url: detail.sourceUrl ?? '',
+        error: null,
+        isLoading: false,
+        savedRecipeId: detail.id,
+      });
+    } catch {
+      set({ error: 'Failed to load saved recipe.', result: null, isLoading: false });
+    }
+  },
+
+  openHistoryRecipe: async (id: string) => {
+    try {
+      const detail = await recipeApi.getRecipeHistoryById(id);
+      const recipe = {
+        title: detail.title,
+        description: detail.description,
+        prep_time: detail.prepTime,
+        cook_time: detail.cookTime,
+        cool_time: detail.coolTime,
+        chill_time: detail.chillTime,
+        rest_time: detail.restTime,
+        marinate_time: detail.marinateTime,
+        soak_time: detail.soakTime,
+        total_time: detail.totalTime,
+        servings: detail.servings,
+        ingredients: detail.ingredients,
+        steps: detail.steps,
+        notes: detail.notes,
+      };
+      set({
+        result: { is_recipe: true, title: detail.title, recipe },
+        url: detail.sourceUrl ?? '',
+        error: null,
+        isLoading: false,
+        savedRecipeId: null,
+      });
+    } catch {
+      set({ error: 'Failed to load history recipe.', result: null, isLoading: false });
     }
   },
 
@@ -94,6 +168,7 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
       loadingMessageIndex: 0,
       result: null,
       error: null,
+      savedRecipeId: null,
     }),
 
   checkHealth: async () => {

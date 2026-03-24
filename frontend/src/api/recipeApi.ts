@@ -1,83 +1,15 @@
 import axios from 'axios';
-import { Platform } from 'react-native';
-import apiClient, { CHATGPT_API_KEY } from './client';
+import apiClient from './client';
 import {
   HealthCheckResponse,
   Recipe,
   RecipeStep,
+  SavedRecipeDetail,
+  SavedRecipeSummary,
   SummarizeResponse,
 } from '@/types/recipe';
 
-const RECIPE_SYSTEM_PROMPT = `You are a recipe extraction assistant. Given the raw text content of a web page, first determine if the page contains a recipe.
-
-Set is_recipe to true if the page contains an actual recipe with ingredients and cooking instructions.
-Set is_recipe to false if the page is not a recipe (e.g. a blog post, news article, homepage, product page, etc.).
-
-If is_recipe is false, still provide a short title describing what the page is, and set all other fields to null or empty arrays.
-
-If is_recipe is true, extract the full recipe:
-- ingredients should be the complete list of individual items with quantities included.
-- steps should be clear, concise instructions in the same order as the original recipe. Each step has:
-  - "instruction": the step text.
-  - "ingredients": a list of the specific ingredients (with quantities) used in that step. If no ingredients are used in a step, use an empty list.
-- notes can include tips, substitutions, storage info, etc. Use an empty array if none.
-- Extract all relevant time categories when available:
-  - prep_time: hands-on preparation time (chopping, mixing, etc.)
-  - cook_time: active cooking time (on the stove, in the oven, etc.)
-  - cool_time: time for cooling down after cooking
-  - chill_time: refrigeration or chilling time
-  - rest_time: resting time (for dough rising, meat resting, etc.)
-  - marinate_time: time spent marinating
-  - soak_time: time spent soaking ingredients
-  - total_time: the overall total time from start to finish
-- Only include a time category if it genuinely applies. Use null for times that don't apply.
-- If something is truly not findable, use null for strings or empty arrays for lists.
-- Clean up any ad copy, SEO filler, or life-story content - just the recipe facts.`;
-
-const RECIPE_RESPONSE_FORMAT = {
-  type: 'json_schema' as const,
-  json_schema: {
-    name: 'recipe_extraction',
-    strict: true,
-    schema: {
-      type: 'object',
-      properties: {
-        is_recipe: { type: 'boolean' },
-        title: { type: 'string' },
-        description: { type: ['string', 'null'] },
-        prep_time: { type: ['string', 'null'] },
-        cook_time: { type: ['string', 'null'] },
-        cool_time: { type: ['string', 'null'] },
-        chill_time: { type: ['string', 'null'] },
-        rest_time: { type: ['string', 'null'] },
-        marinate_time: { type: ['string', 'null'] },
-        soak_time: { type: ['string', 'null'] },
-        total_time: { type: ['string', 'null'] },
-        servings: { type: ['string', 'null'] },
-        ingredients: { type: 'array', items: { type: 'string' } },
-        steps: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              instruction: { type: 'string' },
-              ingredients: { type: 'array', items: { type: 'string' } },
-            },
-            required: ['instruction', 'ingredients'],
-            additionalProperties: false,
-          },
-        },
-        notes: { type: 'array', items: { type: 'string' } },
-      },
-      required: [
-        'is_recipe', 'title', 'description', 'prep_time', 'cook_time',
-        'cool_time', 'chill_time', 'rest_time', 'marinate_time', 'soak_time',
-        'total_time', 'servings', 'ingredients', 'steps', 'notes',
-      ],
-      additionalProperties: false,
-    },
-  },
-};
+// ── error messages ──────────────────────────────────────────────────
 
 const STATUS_MESSAGES: Record<number, string> = {
   400: "🤔 The server said 'nah, bad request.' Maybe the URL is having an identity crisis?",
@@ -99,33 +31,22 @@ const DEFAULT_STATUS_MESSAGES = [
   '🫠 The server melted a little. Give it a moment to pull itself together.',
 ] as const;
 
-const EXCEPTION_MESSAGES = [
-  '🔌 Connection failed! Either the internet is down or that URL is playing hard to get.',
-  '🌪️ Something went sideways. The bits got lost somewhere between here and there.',
-  '🧊 Brr... that request went ice cold. Could not reach the server at all.',
-  '🛸 The request disappeared into the void. Aliens? Maybe. Network error? Definitely.',
-  '🔥 This is fine. Everything is fine. (It is not fine - we could not connect.)',
-  '🐛 A wild bug appeared! Do not worry, we are on it. Probably.',
-] as const;
+// ── types ───────────────────────────────────────────────────────────
 
-const REMOVED_TAGS = ['script', 'style', 'noscript', 'svg', 'iframe', 'template'];
-const STRUCTURAL_TAGS = ['header', 'footer', 'nav', 'aside', 'form'];
-
-interface ChatGptParseResponse {
+interface BackendParseResponse {
   success?: boolean;
   data?: unknown;
   error?: string;
+  status_code?: number;
 }
 
 type ParsedRecipe = Recipe & { is_recipe: boolean };
 
+// ── helpers ─────────────────────────────────────────────────────────
+
 function getStatusErrorMessage(statusCode: number): string {
   return STATUS_MESSAGES[statusCode] ??
     DEFAULT_STATUS_MESSAGES[statusCode % DEFAULT_STATUS_MESSAGES.length];
-}
-
-function getExceptionErrorMessage(): string {
-  return EXCEPTION_MESSAGES[Math.floor(Math.random() * EXCEPTION_MESSAGES.length)];
 }
 
 function buildSummaryResponse(summary: string, errorCode?: number): SummarizeResponse {
@@ -142,56 +63,6 @@ function stripMarkdownFences(value: string): string {
     .trim()
     .replace(/^```(?:json)?\s*/i, '')
     .replace(/\s*```$/, '');
-}
-
-function decodeHtmlEntities(value: string): string {
-  if (typeof DOMParser !== 'undefined') {
-    const document = new DOMParser().parseFromString(value, 'text/html');
-    return document.documentElement.textContent ?? value;
-  }
-
-  return value
-    .replace(/&#(\d+);/g, (_, codePoint) => String.fromCodePoint(Number(codePoint)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/&amp;/gi, '&')
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;|&apos;/gi, "'")
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>');
-}
-
-function removeTagBlocks(value: string, tagName: string): string {
-  return value.replace(new RegExp(`<${tagName}\\b[^>]*>[\\s\\S]*?<\\/${tagName}>`, 'gi'), '\n');
-}
-
-function extractTitle(html: string, fallbackTitle: string): string {
-  const match = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  const title = match?.[1] ? decodeHtmlEntities(match[1]).replace(/\s+/g, ' ').trim() : '';
-  return title || fallbackTitle;
-}
-
-function extractVisibleText(html: string): string {
-  let sanitized = html.replace(/<!--[\s\S]*?-->/g, ' ');
-
-  for (const tagName of [...REMOVED_TAGS, ...STRUCTURAL_TAGS]) {
-    sanitized = removeTagBlocks(sanitized, tagName);
-  }
-
-  sanitized = sanitized.replace(/<(?:br|hr)\s*\/?>/gi, '\n');
-  sanitized = sanitized.replace(
-    /<\/(?:address|article|blockquote|caption|dd|div|dl|dt|figcaption|figure|h[1-6]|li|main|ol|p|pre|section|table|tbody|td|th|thead|tr|ul)>/gi,
-    '\n',
-  );
-  sanitized = sanitized.replace(/<[^>]+>/g, ' ');
-
-  const lines = decodeHtmlEntities(sanitized)
-    .split(/\r?\n/)
-    .map((line) => line.replace(/\s+/g, ' ').trim())
-    .filter(Boolean)
-    .filter((line, index, allLines) => index === 0 || line !== allLines[index - 1]);
-
-  return lines.join('\n');
 }
 
 function normalizeSteps(steps: unknown): Array<string | RecipeStep> {
@@ -264,185 +135,42 @@ function normalizeRecipePayload(payload: unknown): ParsedRecipe | null {
   };
 }
 
-async function extractRecipeWithChatGpt(rawText: string): Promise<{
-  recipe: ParsedRecipe | null;
-  errorResponse?: SummarizeResponse;
-}> {
-  if (!CHATGPT_API_KEY) {
-    return {
-      recipe: null,
-      errorResponse: buildSummaryResponse(
-        '🔐 Missing EXPO_PUBLIC_CHATGPT_API_KEY. Add a public API key to the Expo app before trying again.\n\n📋 Error code: 401',
-        401,
-      ),
-    };
-  }
+// ── public API ──────────────────────────────────────────────────────
 
-  try {
-    const response = await apiClient.post<ChatGptParseResponse>('/api/v1/chatgpt/parse', {
-      text: rawText.slice(0, 12_000),
-      system_prompt: RECIPE_SYSTEM_PROMPT,
-      model: 'gpt-4o-mini',
-      response_format: RECIPE_RESPONSE_FORMAT,
-      temperature: 0.2,
-      max_tokens: 2000,
-    });
-
-    if (response.data?.success) {
-      return { recipe: normalizeRecipePayload(response.data.data) };
-    }
-
-    return { recipe: null };
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response) {
-      const statusCode = error.response.status;
-      const message =
-        statusCode === 401
-          ? '🔐 The public ChatGPT API key was rejected. Update EXPO_PUBLIC_CHATGPT_API_KEY and try again.'
-          : getStatusErrorMessage(statusCode);
-
-      return {
-        recipe: null,
-        errorResponse: buildSummaryResponse(`${message}\n\n📋 Error code: ${statusCode}`, statusCode),
-      };
-    }
-
-    if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
-      return {
-        recipe: null,
-        errorResponse: buildSummaryResponse(
-          '⏰ The ChatGPT API timed out before it could finish parsing the recipe.\n\n📋 Error code: 408',
-          408,
-        ),
-      };
-    }
-
-    return {
-      recipe: null,
-      errorResponse: buildSummaryResponse(
-        '🔌 Could not reach the ChatGPT API. Make sure the Azure Function is running and reachable from this device.\n\n📋 Error code: CONNECTION_FAILED',
-        0,
-      ),
-    };
-  }
-}
-
-async function summarizeViaBackend(url: string): Promise<SummarizeResponse> {
-  try {
-    const response = await apiClient.post<ChatGptParseResponse>('/api/v1/chatgpt/parse-url', {
-      url,
-      system_prompt: RECIPE_SYSTEM_PROMPT,
-      model: 'gpt-4o-mini',
-      response_format: RECIPE_RESPONSE_FORMAT,
-      temperature: 0.2,
-      max_tokens: 2000,
-    });
-
-    if (response.data?.success) {
-      const recipe = normalizeRecipePayload(response.data.data);
-      if (recipe?.is_recipe) return { title: recipe.title, is_recipe: true, recipe };
-      if (recipe && !recipe.is_recipe) return { title: recipe.title, is_recipe: false };
-    }
-
-    return buildSummaryResponse('🤔 Could not extract a recipe from that page.\n\n📋 Error code: PARSE_FAILED', 0);
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response) {
-      const backendStatus: number | undefined = error.response.data?.status_code;
-      const httpStatus = backendStatus ?? error.response.status;
-      return buildSummaryResponse(
-        `${getStatusErrorMessage(httpStatus)}\n\n📋 Error code: ${httpStatus}`,
-        httpStatus,
-      );
-    }
-
-    if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
-      return buildSummaryResponse(
-        '⏰ The request timed out! That site is slower than a Monday morning.\n\n📋 Error code: TIMEOUT',
-        408,
-      );
-    }
-
-    return buildSummaryResponse(
-      '🔌 Could not reach the backend. Make sure the Azure Function is running.\n\n📋 Error code: CONNECTION_FAILED',
-      0,
-    );
-  }
-}
-
-/**
- * Recipe extraction endpoints.
- */
 export const recipeApi = {
-  /** Check if the ChatGPT extraction service is reachable. */
   async checkHealth(): Promise<HealthCheckResponse> {
     await apiClient.get('/api/health', { responseType: 'text' });
     return { status: 'healthy' };
   },
 
-  /** Fetch a URL, extract readable text, and ask chatgpt_api for the recipe JSON. */
   async summarize(url: string): Promise<SummarizeResponse> {
-    // On web browsers, direct cross-origin fetches are blocked by CORS.
-    // Delegate the URL fetch to the backend which has no such restriction.
-    if (Platform.OS === 'web') {
-      return summarizeViaBackend(url);
-    }
-
     try {
-      const response = await axios.get<string>(url, {
-        responseType: 'text',
-        timeout: 15_000,
-        validateStatus: () => true,
-        transformResponse: [(value) => value],
-        headers: {
-          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.5',
-        },
+      const response = await apiClient.post<BackendParseResponse>('/api/v1/chatgpt/parse-url', {
+        url,
       });
 
-      if (response.status !== 200) {
-        return buildSummaryResponse(
-          `${getStatusErrorMessage(response.status)}\n\n📋 Error code: ${response.status}`,
-          response.status,
-        );
+      if (response.data?.success) {
+        const recipe = normalizeRecipePayload(response.data.data);
+        if (recipe?.is_recipe) return { title: recipe.title, is_recipe: true, recipe };
+        if (recipe && !recipe.is_recipe) return { title: recipe.title, is_recipe: false };
       }
 
-      const html = response.data;
-      const title = extractTitle(html, url);
-      const text = extractVisibleText(html);
+      console.log('Unexpected response from backend:', response.data);
 
-      if (!text) {
-        return buildSummaryResponse(
-          '🫥 The page loaded, but there was not enough readable text to extract anything useful.\n\n📋 Error code: EMPTY_PAGE',
-          0,
-        );
-      }
-
-      const { recipe, errorResponse } = await extractRecipeWithChatGpt(text);
-      if (errorResponse) {
-        return errorResponse;
-      }
-
-      if (recipe?.is_recipe) {
-        return {
-          title: recipe.title,
-          is_recipe: true,
-          recipe,
-        };
-      }
-
-      if (recipe && !recipe.is_recipe) {
-        return {
-          title: recipe.title,
-          is_recipe: false,
-        };
-      }
-
-      return {
-        title,
-        is_recipe: true,
-        summary: text,
-      };
+      return buildSummaryResponse(
+        '🤔 Could not extract a recipe from that page.\n\n📋 Error code: PARSE_FAILED',
+        0,
+      );
     } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response) {
+        const backendStatus: number | undefined = error.response.data?.status_code;
+        const httpStatus = backendStatus ?? error.response.status;
+        return buildSummaryResponse(
+          `${getStatusErrorMessage(httpStatus)}\n\n📋 Error code: ${httpStatus}`,
+          httpStatus,
+        );
+      }
+
       if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
         return buildSummaryResponse(
           '⏰ The request timed out! That site is slower than a Monday morning.\n\n📋 Error code: TIMEOUT',
@@ -450,17 +178,77 @@ export const recipeApi = {
         );
       }
 
-      if (axios.isAxiosError(error)) {
-        return buildSummaryResponse(
-          '🔌 Could not connect! Either the site is down or it is ghosting us.\n\n📋 Error code: CONNECTION_FAILED',
-          0,
-        );
-      }
-
       return buildSummaryResponse(
-        `${getExceptionErrorMessage()}\n\n📋 Error code: UNKNOWN\n🔍 Details: ${String(error)}`,
-        -1,
+        '🔌 Could not reach the backend. Make sure the server is running.\n\n📋 Error code: CONNECTION_FAILED',
+        0,
       );
     }
+  },
+
+  async getSavedRecipes(): Promise<SavedRecipeSummary[]> {
+    const resp = await apiClient.get<{ recipes: SavedRecipeSummary[] }>('/api/v1/recipes');
+    return resp.data.recipes;
+  },
+
+  async getSavedRecipeCount(): Promise<number> {
+    const resp = await apiClient.get<{ count: number }>('/api/v1/recipes/count');
+    return resp.data.count;
+  },
+
+  async getRecipeById(id: string): Promise<SavedRecipeDetail> {
+    const resp = await apiClient.get<{ recipe: SavedRecipeDetail }>(`/api/v1/recipes/${id}`);
+    return resp.data.recipe;
+  },
+
+  async saveRecipe(recipe: Recipe, sourceUrl?: string): Promise<SavedRecipeSummary> {
+    const resp = await apiClient.post<{ recipe: SavedRecipeSummary }>('/api/v1/recipes', {
+      title: recipe.title,
+      description: recipe.description,
+      sourceUrl,
+      prepTime: recipe.prep_time,
+      cookTime: recipe.cook_time,
+      coolTime: recipe.cool_time,
+      chillTime: recipe.chill_time,
+      restTime: recipe.rest_time,
+      marinateTime: recipe.marinate_time,
+      soakTime: recipe.soak_time,
+      totalTime: recipe.total_time,
+      servings: recipe.servings,
+      ingredients: recipe.ingredients,
+      steps: recipe.steps,
+      notes: recipe.notes ?? [],
+    });
+    return resp.data.recipe;
+  },
+
+  async getRecipeHistory(): Promise<SavedRecipeSummary[]> {
+    const resp = await apiClient.get<{ recipes: SavedRecipeSummary[] }>('/api/v1/recipes/history');
+    return resp.data.recipes;
+  },
+
+  async getRecipeHistoryById(id: string): Promise<SavedRecipeDetail> {
+    const resp = await apiClient.get<{ recipe: SavedRecipeDetail }>(`/api/v1/recipes/history/${id}`);
+    return resp.data.recipe;
+  },
+
+  async saveRecipeHistory(recipe: Recipe, sourceUrl?: string): Promise<SavedRecipeSummary> {
+    const resp = await apiClient.post<{ recipe: SavedRecipeSummary }>('/api/v1/recipes/history', {
+      title: recipe.title,
+      description: recipe.description,
+      sourceUrl,
+      prepTime: recipe.prep_time,
+      cookTime: recipe.cook_time,
+      coolTime: recipe.cool_time,
+      chillTime: recipe.chill_time,
+      restTime: recipe.rest_time,
+      marinateTime: recipe.marinate_time,
+      soakTime: recipe.soak_time,
+      totalTime: recipe.total_time,
+      servings: recipe.servings,
+      ingredients: recipe.ingredients,
+      steps: recipe.steps,
+      notes: recipe.notes ?? [],
+    });
+    return resp.data.recipe;
   },
 };

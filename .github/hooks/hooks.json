@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "python .github/hooks/format-frontend.py",
+        "powershell": "python .github/hooks/format-frontend.py",
+        "cwd": ".",
+        "timeoutSec": 30
+      },
+      {
+        "type": "command",
+        "bash": "python .github/hooks/format-backend.py",
+        "powershell": "python .github/hooks/format-backend.py",
+        "cwd": ".",
+        "timeoutSec": 30
+      },
+      {
+        "type": "command",
+        "bash": "python .github/hooks/run-backend-tests.py",
+        "powershell": "python .github/hooks/run-backend-tests.py",
+        "cwd": ".",
+        "timeoutSec": 60
+      }
+    ]
+  }
+}

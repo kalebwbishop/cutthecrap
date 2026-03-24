@@ -1,14 +1,57 @@
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Alert, Platform, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, useThemeColors, useIsDarkMode } from '../src/theme';
+import { billingService } from '../src/services/billing';
+import { useAuthStore } from '../src/store/authStore';
+import { useSubscriptionStore } from '../src/store/subscriptionStore';
+import { setupAuthInterceptor } from '../src/api/authInterceptor';
 
 function RootLayoutInner() {
     const colors = useThemeColors();
     const isDark = useIsDarkMode();
-    console.log('Current theme colors:', colors);
-    console.log('Is dark mode:', isDark);
+    const user = useAuthStore((s) => s.user);
+    const restoreSession = useAuthStore((s) => s.restoreSession);
+    const sessionExpiredMessage = useAuthStore((s) => s.sessionExpiredMessage);
+    const clearSessionExpiredMessage = useAuthStore((s) => s.clearSessionExpiredMessage);
+    const refreshCustomerInfo = useSubscriptionStore((s) => s.refreshCustomerInfo);
+
+    // Register the 401 interceptor and attempt to restore an existing session
+    useEffect(() => {
+        setupAuthInterceptor();
+        restoreSession();
+    }, []);
+
+    // Show an alert when the session can no longer be refreshed
+    useEffect(() => {
+        if (!sessionExpiredMessage) return;
+        Alert.alert('Session Expired', sessionExpiredMessage);
+        clearSessionExpiredMessage();
+    }, [sessionExpiredMessage]);
+
+    useEffect(() => {
+        if (!billingService.isConfigured()) {
+            billingService.configure(user?.id).then(() => {
+                refreshCustomerInfo();
+            }).catch((err: unknown) => {
+                console.warn('Failed to configure billing:', err);
+            });
+        } else if (user?.id) {
+            billingService.logIn(user.id).then(() => {
+                refreshCustomerInfo();
+            }).catch((err: unknown) => {
+                console.warn('Failed to log in to billing:', err);
+            });
+        } else {
+            billingService.logOut().then(() => {
+                refreshCustomerInfo();
+            }).catch((err: unknown) => {
+                console.warn('Failed to log out of billing:', err);
+            });
+        }
+    }, [user?.id]);
 
     return (
         <View style={s.container}>

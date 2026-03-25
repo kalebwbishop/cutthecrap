@@ -1,13 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { Stack } from 'expo-router';
 import { Alert, Platform, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import ErrorBoundary from '../src/components/ErrorBoundary';
 import { ThemeProvider, useThemeColors, useIsDarkMode } from '../src/theme';
 import { billingService } from '../src/services/billing';
 import { useAuthStore } from '../src/store/authStore';
 import { useSubscriptionStore } from '../src/store/subscriptionStore';
 import { setupAuthInterceptor } from '../src/api/authInterceptor';
+
+// Prevent the splash screen from auto-hiding until we finish restoring the session.
+SplashScreen.preventAutoHideAsync();
 
 function RootLayoutInner() {
     const colors = useThemeColors();
@@ -17,12 +22,20 @@ function RootLayoutInner() {
     const sessionExpiredMessage = useAuthStore((s) => s.sessionExpiredMessage);
     const clearSessionExpiredMessage = useAuthStore((s) => s.clearSessionExpiredMessage);
     const refreshCustomerInfo = useSubscriptionStore((s) => s.refreshCustomerInfo);
+    const [appReady, setAppReady] = useState(false);
 
     // Register the 401 interceptor and attempt to restore an existing session
     useEffect(() => {
         setupAuthInterceptor();
-        restoreSession();
+        restoreSession().finally(() => setAppReady(true));
     }, []);
+
+    // Hide the splash screen once session restoration is complete
+    const onLayoutReady = useCallback(() => {
+        if (appReady) {
+            SplashScreen.hideAsync();
+        }
+    }, [appReady]);
 
     // Show an alert when the session can no longer be refreshed
     useEffect(() => {
@@ -54,7 +67,7 @@ function RootLayoutInner() {
     }, [user?.id]);
 
     return (
-        <View style={s.container}>
+        <View style={s.container} onLayout={onLayoutReady}>
             <StatusBar style={isDark ? 'light' : 'dark'} />
             <Stack
                 screenOptions={{
@@ -69,11 +82,13 @@ function RootLayoutInner() {
 
 export default function RootLayout() {
     return (
-        <SafeAreaProvider>
-            <ThemeProvider>
-                <RootLayoutInner />
-            </ThemeProvider>
-        </SafeAreaProvider>
+        <ErrorBoundary>
+            <SafeAreaProvider>
+                <ThemeProvider>
+                    <RootLayoutInner />
+                </ThemeProvider>
+            </SafeAreaProvider>
+        </ErrorBoundary>
     );
 }
 

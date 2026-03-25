@@ -33,12 +33,12 @@
     },
     "extra": {
       "eas": {
-        "projectId": ""
+        "projectId": "6986e615-2c88-4596-8c5a-f308436657b4"
       }
     },
     "plugins": [
-      "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-secure-store"
     ]
   }
 }

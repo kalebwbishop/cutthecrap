@@ -18,6 +18,8 @@ import { useRecipeStore } from '@/store/recipeStore';
 import { useAuthStore } from '@/store/authStore';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { recipeApi } from '@/api/recipeApi';
+import { successFeedback, errorFeedback } from '@/utils/haptics';
+import { copyRecipeToClipboard } from '@/utils/clipboard';
 import { useThemeColors, fontSizes, spacing, radii } from '@/theme';
 import type { ThemeColors } from '@/theme';
 
@@ -36,8 +38,19 @@ export default function ResultScreen() {
   const [saved, setSaved] = useState(!!savedRecipeId);
   const [saving, setSaving] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const FREE_RECIPE_LIMIT = 5;
+
+  const handleCopy = async () => {
+    if (!recipe || copied) return;
+    const ok = await copyRecipeToClipboard(recipe);
+    if (ok) {
+      setCopied(true);
+      successFeedback();
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   const handleSave = async () => {
     const recipe = result?.recipe;
@@ -49,11 +62,13 @@ export default function ResultScreen() {
         if (count >= FREE_RECIPE_LIMIT) {
           setShowLimitModal(true);
           setSaving(false);
+          errorFeedback();
           return;
         }
       }
       await recipeApi.saveRecipe(recipe, url || undefined);
       setSaved(true);
+      successFeedback();
     } catch (err) {
       if (
         isAxiosError(err) &&
@@ -62,7 +77,7 @@ export default function ResultScreen() {
       ) {
         setShowLimitModal(true);
       }
-      // Could show a generic error toast for other failures
+      errorFeedback();
     } finally {
       setSaving(false);
     }
@@ -97,22 +112,36 @@ export default function ResultScreen() {
             </Text>
           ) : null}
         </View>
-        {user && recipe ? (
-          <TouchableOpacity
-            style={s.saveButton}
-            onPress={handleSave}
-            disabled={saving || saved}
-            activeOpacity={0.7}
-          >
-            {saved ? (
-              <BookmarkFilledIcon size={20} color={colors.success} />
-            ) : (
-              <BookmarkIcon size={20} color={colors.text} />
-            )}
-            <Text style={[s.saveButtonText, saved && { color: colors.success }]}>
-              {saved ? 'Saved' : saving ? 'Saving…' : 'Save'}
-            </Text>
-          </TouchableOpacity>
+        {recipe ? (
+          <View style={s.headerActions}>
+            <TouchableOpacity
+              style={s.copyButton}
+              onPress={handleCopy}
+              disabled={copied}
+              activeOpacity={0.7}
+            >
+              <Text style={[s.copyButtonText, copied && { color: colors.success }]}>
+                {copied ? '✓ Copied' : '📋 Copy'}
+              </Text>
+            </TouchableOpacity>
+            {user ? (
+              <TouchableOpacity
+                style={s.saveButton}
+                onPress={handleSave}
+                disabled={saving || saved}
+                activeOpacity={0.7}
+              >
+                {saved ? (
+                  <BookmarkFilledIcon size={20} color={colors.success} />
+                ) : (
+                  <BookmarkIcon size={20} color={colors.text} />
+                )}
+                <Text style={[s.saveButtonText, saved && { color: colors.success }]}>
+                  {saved ? 'Saved' : saving ? 'Saving…' : 'Save'}
+                </Text>
+              </TouchableOpacity>
+            ) : null}
+          </View>
         ) : null}
       </View>
 
@@ -218,9 +247,6 @@ const createStyles = (colors: ThemeColors) =>
       justifyContent: 'center',
     },
     saveButton: {
-      position: 'absolute',
-      right: 16,
-      zIndex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       gap: 4,
@@ -228,6 +254,27 @@ const createStyles = (colors: ThemeColors) =>
       paddingHorizontal: 10,
       borderRadius: radii.sm,
       backgroundColor: colors.bgInput,
+    },
+    headerActions: {
+      position: 'absolute',
+      right: 16,
+      zIndex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+    },
+    copyButton: {
+      height: 34,
+      paddingHorizontal: 10,
+      borderRadius: radii.sm,
+      backgroundColor: colors.bgInput,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    copyButtonText: {
+      fontSize: fontSizes.sm,
+      fontWeight: '600',
+      color: colors.text,
     },
     saveButtonText: {
       fontSize: fontSizes.sm,

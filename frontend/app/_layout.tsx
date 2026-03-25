@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { Alert, Platform, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
@@ -31,7 +31,7 @@ function RootLayoutInner() {
     }, []);
 
     // Hide the splash screen once session restoration is complete
-    const onLayoutReady = useCallback(() => {
+    useEffect(() => {
         if (appReady) {
             SplashScreen.hideAsync();
         }
@@ -67,7 +67,7 @@ function RootLayoutInner() {
     }, [user?.id]);
 
     return (
-        <View style={s.container} onLayout={onLayoutReady}>
+        <View style={s.container}>
             <StatusBar style={isDark ? 'light' : 'dark'} />
             <Stack
                 screenOptions={{

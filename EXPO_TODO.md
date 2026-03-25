@@ -48,12 +48,9 @@ export async function getToken(key: string): Promise<string | null> {
 - Read them back in `restoreSession()` on app launch
 - Clear them on logout/session expiry
 
-### 2. Add `react-native-purchases` plugin to `app.json` — N/A
+### 2. ~~Add `react-native-purchases` plugin to `app.json`~~ — N/A (Not applicable)
 
-The RevenueCat SDK requires its config plugin for native builds. Without it in the `plugins` array, EAS builds will likely fail for in-app purchases. Web billing is already handled separately via `billingService.web.ts`.
-
-**Action:**
-- Add `"react-native-purchases"` to the `plugins` array in `app.json`
+`react-native-purchases` does not ship a config plugin (`app.plugin.js`). The RevenueCat SDK works with EAS builds via `expo prebuild` without a plugin entry. No action needed.
 
 ---
 

@@ -15,11 +15,21 @@ write_files:
       POSTGRES_CONNECTION_STRING=postgresql://postgres:postgres@db:5432/cutthecrap_dev
       WORKOS_API_KEY=${workos_api_key}
       WORKOS_CLIENT_ID=${workos_client_id}
-      WORKOS_REDIRECT_URI=http://${public_ip}/api/v1/auth/callback
+      WORKOS_REDIRECT_URI=https://${domain_name}/api/v1/auth/callback
       OPENAI_API_KEY=${openai_api_key}
       CHATGPT_API_BASE=${chatgpt_api_base}
-      CORS_ORIGIN=http://${public_ip}
-      FRONTEND_URL=http://${public_ip}
+      CORS_ORIGIN=https://${domain_name}
+      FRONTEND_URL=https://${domain_name}
+
+  - path: /opt/cutthecrap/certs/fullchain.pem
+    permissions: "0600"
+    content: |
+      ${indent(6, tls_fullchain)}
+
+  - path: /opt/cutthecrap/certs/privkey.pem
+    permissions: "0600"
+    content: |
+      ${indent(6, tls_privkey)}
 
   - path: /opt/cutthecrap/setup.sh
     permissions: "0755"
@@ -55,6 +65,11 @@ write_files:
       # ── Place the .env file ────────────────────────────────────────
       cp "$APP_DIR/backend/.env" "$REPO_DIR/backend/.env"
 
+      # ── Place TLS certificates ─────────────────────────────────────
+      mkdir -p "$REPO_DIR/certs"
+      cp "$APP_DIR/certs/fullchain.pem" "$REPO_DIR/certs/fullchain.pem"
+      cp "$APP_DIR/certs/privkey.pem"   "$REPO_DIR/certs/privkey.pem"
+
       # ── Start the application ──────────────────────────────────────
       cd "$REPO_DIR"
       docker compose up --build -d
@@ -72,7 +87,7 @@ write_files:
       docker compose exec -T db psql -U postgres -d cutthecrap_dev \
         < "$REPO_DIR/database/schemas/public_schema.sql"
 
-      echo "Cut The Crap is running at http://${public_ip}"
+      echo "Cut The Crap is running at https://${domain_name}"
 
 runcmd:
   - bash /opt/cutthecrap/setup.sh >> /var/log/cutthecrap-setup.log 2>&1

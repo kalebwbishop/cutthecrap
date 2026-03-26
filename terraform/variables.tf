@@ -4,6 +4,12 @@ variable "resource_group_name" {
   default     = "res000_0_4e69310cb4464d46"
 }
 
+variable "domain_name" {
+  description = "Domain name for the application (e.g. cutthecrap.dev.deploy-box.com)"
+  type        = string
+  default     = "cutthecrap.dev.deploy-box.com"
+}
+
 variable "vm_size" {
   description = "Azure VM size"
   type        = string

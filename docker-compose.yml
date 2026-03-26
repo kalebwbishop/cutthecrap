@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -15,6 +16,7 @@ services:
 
   backend:
     build: ./backend
+    restart: unless-stopped
     env_file: ./backend/.env
     environment:
       POSTGRES_CONNECTION_STRING: postgresql://postgres:postgres@db:5432/cutthecrap_dev
@@ -30,15 +32,19 @@ services:
       context: ./frontend
       args:
         EXPO_PUBLIC_API_BASE: ""
+    restart: unless-stopped
     depends_on:
       - backend
 
   nginx:
     image: nginx:alpine
+    restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
     depends_on:
       - frontend
       - backend

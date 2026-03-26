@@ -10,5 +10,5 @@ output "ssh_command" {
 
 output "app_url" {
   description = "URL to access the application"
-  value       = "http://${azurerm_public_ip.this.ip_address}"
+  value       = "https://${var.domain_name}"
 }

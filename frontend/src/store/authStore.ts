@@ -4,6 +4,7 @@ import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
 import apiClient from '@/api/client';
 import { authApi, User } from '@/api/authApi';
+import { tokenStorage } from '@/utils/tokenStorage';
 
 interface AuthState {
   user: User | null;
@@ -85,6 +86,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const { user, accessToken, refreshToken } = await authApi.exchange(code);
       setAuthHeader(accessToken);
+      await tokenStorage.saveTokens(accessToken, refreshToken ?? null);
       set({ user, accessToken, refreshToken: refreshToken ?? null, isLoading: false });
     } catch (err) {
       console.error('Token exchange failed:', err);
@@ -101,6 +103,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
     } finally {
       setAuthHeader(null);
+      await tokenStorage.clearTokens();
       set({ user: null, accessToken: null, refreshToken: null });
 
       if (logoutUrl) {
@@ -116,11 +119,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   deleteAccount: async () => {
     await authApi.deleteAccount();
     setAuthHeader(null);
+    await tokenStorage.clearTokens();
     set({ user: null, accessToken: null, refreshToken: null });
   },
 
   restoreSession: async () => {
-    const { refreshToken } = get();
+    const storedRefreshToken = await tokenStorage.getRefreshToken();
+    const refreshToken = get().refreshToken ?? storedRefreshToken;
     if (!refreshToken) return;
 
     set({ isLoading: true });
@@ -128,15 +133,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const tokens = await authApi.refresh(refreshToken);
       setAuthHeader(tokens.accessToken);
 
+      const newRefreshToken = tokens.refreshToken ?? refreshToken;
+      await tokenStorage.saveTokens(tokens.accessToken, newRefreshToken);
+
       const user = await authApi.me();
       set({
         user,
         accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken ?? refreshToken,
+        refreshToken: newRefreshToken,
         isLoading: false,
       });
     } catch {
       // Refresh failed — session is no longer valid
+      await tokenStorage.clearTokens();
       get().handleSessionExpired();
     }
   },
@@ -144,6 +153,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   handleSessionExpired: () => {
     const wasLoggedIn = !!get().user;
     setAuthHeader(null);
+    tokenStorage.clearTokens();
     set({
       user: null,
       accessToken: null,

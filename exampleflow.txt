@@ -1,0 +1,92 @@
+name: Issue/renew TLS cert (Let's Encrypt) via Azure DNS + Key Vault
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 */15 * *"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  cert:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev, main]
+    environment: ${{ github.event_name == 'schedule' && matrix.environment || github.ref_name }}
+    
+    env:
+      DOMAIN: ${{ vars.DOMAIN }}
+      EMAIL: ${{ vars.EMAIL }}
+      KEYVAULT_NAME: ${{ vars.KEYVAULT_NAME }}
+      CERT_NAME_IN_KV: ${{ vars.CERT_NAME_IN_KV }}
+      AZURE_ZONE_RESOURCE_ID: ${{ vars.AZURE_ZONE_RESOURCE_ID }}
+
+    steps:
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      # ── Install Certbot + Azure DNS plugin ──────────────────────────
+      - name: Install Certbot & Azure DNS plugin
+        run: |
+          sudo pip install "azure-mgmt-dns<9.0.0" certbot certbot-dns-azure
+
+      # ── Build the Azure DNS plugin INI file ─────────────────────────
+      - name: Create azure.ini for DNS plugin
+        run: |
+          mkdir -p /tmp/certbot
+          cat > /tmp/certbot/azure.ini <<EOF
+          dns_azure_use_cli_credentials = true
+          dns_azure_zone1 = ${{ env.DOMAIN }}:${{ env.AZURE_ZONE_RESOURCE_ID }}
+          EOF
+          chmod 600 /tmp/certbot/azure.ini
+
+      # ── Request / renew the certificate ─────────────────────────────
+      - name: Run Certbot (DNS-01 via Azure DNS)
+        run: |
+          certbot certonly \
+            --config-dir /tmp/certbot/config \
+            --work-dir /tmp/certbot/work \
+            --logs-dir /tmp/certbot/logs \
+            --authenticator dns-azure \
+            --dns-azure-config /tmp/certbot/azure.ini \
+            --dns-azure-propagation-seconds 60 \
+            --non-interactive \
+            --agree-tos \
+            --email "${{ env.EMAIL }}" \
+            -d "${{ env.DOMAIN }}" \
+            -d "*.${{ env.DOMAIN }}" \
+            --preferred-challenges dns-01 \
+            --key-type ecdsa \
+            -v
+
+      # ── Bundle into a PFX for Key Vault ─────────────────────────────
+      - name: Create PFX bundle
+        run: |
+          CERT_DIR="/tmp/certbot/config/live/${{ env.DOMAIN }}"
+          openssl pkcs12 -export \
+            -out /tmp/certbot/cert.pfx \
+            -inkey "${CERT_DIR}/privkey.pem" \
+            -in    "${CERT_DIR}/fullchain.pem" \
+            -passout pass:
+
+      # ── Upload to Azure Key Vault ───────────────────────────────────
+      - name: Import certificate into Key Vault
+        run: |
+          az keyvault certificate import \
+            --vault-name "${{ env.KEYVAULT_NAME }}" \
+            --name "${{ env.CERT_NAME_IN_KV }}" \
+            --file /tmp/certbot/cert.pfx \
+            --password ""
+
+      # ── Clean up sensitive files ────────────────────────────────────
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -rf /tmp/certbot

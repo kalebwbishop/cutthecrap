@@ -1,0 +1,78 @@
+#cloud-config
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - ca-certificates
+  - curl
+  - gnupg
+
+write_files:
+  - path: /opt/cutthecrap/backend/.env
+    permissions: "0600"
+    content: |
+      POSTGRES_CONNECTION_STRING=postgresql://postgres:postgres@db:5432/cutthecrap_dev
+      WORKOS_API_KEY=${workos_api_key}
+      WORKOS_CLIENT_ID=${workos_client_id}
+      WORKOS_REDIRECT_URI=http://${public_ip}/api/v1/auth/callback
+      OPENAI_API_KEY=${openai_api_key}
+      CHATGPT_API_BASE=${chatgpt_api_base}
+      CORS_ORIGIN=http://${public_ip}
+      FRONTEND_URL=http://${public_ip}
+
+  - path: /opt/cutthecrap/setup.sh
+    permissions: "0755"
+    content: |
+      #!/bin/bash
+      set -euo pipefail
+
+      APP_DIR="/opt/cutthecrap"
+      REPO_DIR="$APP_DIR/repo"
+
+      # ── Install Docker ─────────────────────────────────────────────
+      install -m 0755 -d /etc/apt/keyrings
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+        -o /etc/apt/keyrings/docker.asc
+      chmod a+r /etc/apt/keyrings/docker.asc
+
+      echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
+        https://download.docker.com/linux/ubuntu \
+        $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+        > /etc/apt/sources.list.d/docker.list
+
+      apt-get update
+      apt-get install -y docker-ce docker-ce-cli containerd.io \
+        docker-buildx-plugin docker-compose-plugin
+
+      systemctl enable docker
+      usermod -aG docker ${admin_username}
+
+      # ── Clone repository ───────────────────────────────────────────
+      git clone --branch ${github_repo_branch} ${github_repo_url} "$REPO_DIR"
+
+      # ── Place the .env file ────────────────────────────────────────
+      cp "$APP_DIR/backend/.env" "$REPO_DIR/backend/.env"
+
+      # ── Start the application ──────────────────────────────────────
+      cd "$REPO_DIR"
+      docker compose up --build -d
+
+      # ── Wait for DB to be healthy, then run migrations ─────────────
+      echo "Waiting for database to be ready..."
+      for i in $(seq 1 30); do
+        if docker compose exec -T db pg_isready -U postgres > /dev/null 2>&1; then
+          echo "Database is ready."
+          break
+        fi
+        sleep 2
+      done
+
+      docker compose exec -T db psql -U postgres -d cutthecrap_dev \
+        < "$REPO_DIR/database/schemas/public_schema.sql"
+
+      echo "Cut The Crap is running at http://${public_ip}"
+
+runcmd:
+  - bash /opt/cutthecrap/setup.sh >> /var/log/cutthecrap-setup.log 2>&1

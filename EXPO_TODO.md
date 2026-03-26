@@ -48,54 +48,21 @@ export async function getToken(key: string): Promise<string | null> {
 - Read them back in `restoreSession()` on app launch
 - Clear them on logout/session expiry
 
-### 2. ~~Add `react-native-purchases` plugin to `app.json`~~ — N/A (Not applicable)
-
-`react-native-purchases` does not ship a config plugin (`app.plugin.js`). The RevenueCat SDK works with EAS builds via `expo prebuild` without a plugin entry. No action needed.
-
 ---
 
 ## 🟡 Recommended
 
-### 3. ~~Add `expo-splash-screen` programmatic control — ❌ Web~~ ✅ Done
-
-The splash screen now stays visible until `restoreSession()` completes. Uses `preventAutoHideAsync()` at module load and `hideAsync()` via `onLayout` callback. No effect on web (as expected).
-
-### 4. Consider `expo-image` for future image support — ✅ Web
+### 2. Consider `expo-image` for future image support — ✅ Web
 
 No user-facing images are rendered currently, but if recipe images are ever added, `expo-image` offers disk/memory caching, BlurHash placeholders, smooth transitions, and is significantly more performant than RN's built-in `<Image>`. Full web support included.
-
-### 5. ~~Add `expo-haptics` for tactile feedback — ⚠️ Web~~ ✅ Done
-
-Haptic feedback added to URL submit, recipe save, and save-limit error via `src/utils/haptics.ts`. Native-only via lazy `require()` — web bundle never imports the native module. Degrades silently.
-
-### 6. ~~Add `expo-clipboard` for copying recipes — ✅ Web~~ ✅ Done
-
-Copy button added to the result screen header. Copies the full recipe as formatted plain text via `src/utils/clipboard.ts`. Uses `expo-clipboard` (AsyncClipboard API on web).
-
-### 7. ~~Remove dead dependencies — ✅ Web~~ ✅ Done
-
-- `expo-linear-gradient` — uninstalled
-- `expo-font` plugin — removed from `plugins` in `app.json`
 
 ---
 
 ## 🟢 Nice-to-Have / Future
 
-### 8. Configure `expo-updates` for OTA updates — ❌ Web
+### 3. Configure `expo-updates` for OTA updates — ❌ Web
 
 Not currently configured. Would allow pushing JS-only fixes to native users instantly without going through app store review. Does not apply to web — web deployments are updated by redeploying the static bundle.
-
-### 9. ~~Add a global error boundary — ✅ Web~~ ✅ Done
-
-`ErrorBoundary` class component wraps the root layout in `_layout.tsx`. Catches unhandled JS errors and shows recovery UI with "Try Again" button. Shows error details in dev mode.
-
-### 10. ~~Move hardcoded RevenueCat keys to env vars — ✅ Web~~ ✅ Done
-
-Keys moved from `constants.ts` to `EXPO_PUBLIC_RC_APPLE_KEY`, `EXPO_PUBLIC_RC_GOOGLE_KEY`, `EXPO_PUBLIC_RC_WEB_KEY` env vars. `.env.example` updated.
-
-### 11. ~~Clean up unused env vars — ✅ Web~~ ✅ Done
-
-`EXPO_PUBLIC_CHATGPT_API_BASE` and `EXPO_PUBLIC_CHATGPT_API_KEY` removed from `.env` and `.env.example`. Added missing `EXPO_PUBLIC_API_BASE` to `.env.example`.
 
 ---
 

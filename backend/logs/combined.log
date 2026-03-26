@@ -3047,3 +3047,75 @@ jwt.exceptions.ExpiredSignatureError: Signature has expired
 {"time": "2026-03-24 23:40:25", "level": "INFO", "message": "POST /api/v1/auth/logout — 200 (1ms)"}
 {"time": "2026-03-24 23:41:07", "level": "INFO", "message": "PostgreSQL connection pool closed"}
 {"time": "2026-03-24 23:41:07", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-25 08:33:37", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-25 08:33:37", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-25 08:33:37", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-25 08:43:28", "level": "INFO", "message": "GET /api/health — 200 (50ms)"}
+{"time": "2026-03-25 08:43:44", "level": "INFO", "message": "GET /favicon.ico — 404 (0ms)"}
+{"time": "2026-03-25 08:48:14", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-25 08:50:35", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-25 08:51:01", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (318ms)"}
+{"time": "2026-03-25 09:03:45", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-25 09:03:45", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-25 09:03:45", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-25 09:04:13", "level": "INFO", "message": "GET /api/health — 200 (43ms)"}
+{"time": "2026-03-25 09:06:02", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-25 09:06:30", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-25 09:07:12", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (1ms)"}
+{"time": "2026-03-25 09:07:30", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-25 09:07:30", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-25 09:07:30", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-25 09:07:50", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-25 09:08:35", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-25 09:08:35", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-25 09:08:35", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-25 09:08:54", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (1ms)"}
+{"time": "2026-03-25 09:09:14", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-03-25 09:10:25", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-25 09:10:25", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-25 09:10:25", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-25 09:10:25", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-03-25 09:10:25", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-03-25 09:11:40", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-25 09:11:40", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-25 09:11:40", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-25 09:12:01", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (236ms)"}
+{"time": "2026-03-25 09:12:29", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (2ms)"}
+{"time": "2026-03-25 09:12:32", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-03-25 09:12:32", "level": "INFO", "message": "Decoded redirect_uri from state: exp://192.168.7.168:8081/--/auth"}
+{"time": "2026-03-25 09:12:32", "level": "INFO", "message": "Callback redirecting (302) to: exp://192.168.7.168:8081/--/auth?code=01KMJJ0444DFENQ6XFPK15J2QV"}
+{"time": "2026-03-25 09:12:32", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (1ms)"}
+{"time": "2026-03-25 09:12:33", "level": "ERROR", "message": "OAuth exchange failed: (message=No message, request_id=469704e9-cf4b-4a52-b7aa-ee6083798602, error=invalid_grant, error_description=The code '01KMJJ0444DFENQ6XFPK15J2QV' has already been exchanged.)"}
+Traceback (most recent call last):
+  File "C:\Users\kaleb\repos\cutthecrap\backend\app\routes\auth.py", line 134, in exchange
+    auth_response = workos.user_management.authenticate_with_code(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kaleb\repos\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1270, in authenticate_with_code
+    return self._authenticate_with(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kaleb\repos\cutthecrap\backend\venv\Lib\site-packages\workos\user_management.py", line 1208, in _authenticate_with
+    response = self._http_client.request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kaleb\repos\cutthecrap\backend\venv\Lib\site-packages\workos\utils\http_client.py", line 114, in request
+    return self._handle_response(response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kaleb\repos\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 195, in _handle_response
+    self._maybe_raise_error_by_status_code(response, response_json)
+  File "C:\Users\kaleb\repos\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 114, in _maybe_raise_error_by_status_code
+    raise BadRequestException(response, response_json)
+workos.exceptions.BadRequestException: (message=No message, request_id=469704e9-cf4b-4a52-b7aa-ee6083798602, error=invalid_grant, error_description=The code '01KMJJ0444DFENQ6XFPK15J2QV' has already been exchanged.)
+{"time": "2026-03-25 09:12:33", "level": "INFO", "message": "POST /api/v1/auth/exchange — 500 (122ms)"}
+{"time": "2026-03-25 09:12:33", "level": "INFO", "message": "New user created: testuser_cutthecrap@mailinator.com"}
+{"time": "2026-03-25 09:12:33", "level": "INFO", "message": "OAuth exchange successful for user: testuser_cutthecrap@mailinator.com"}
+{"time": "2026-03-25 09:12:33", "level": "INFO", "message": "POST /api/v1/auth/exchange — 200 (345ms)"}
+{"time": "2026-03-25 09:12:34", "level": "INFO", "message": "GET /api/health — 200 (0ms)"}
+{"time": "2026-03-25 09:13:30", "level": "INFO", "message": "POST /api/v1/auth/logout — 200 (110ms)"}
+{"time": "2026-03-25 09:41:05", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-03-25 09:41:05", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-03-25 09:41:05", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-03-25 10:58:30", "level": "INFO", "message": "GET /api/health — 200 (51ms)"}
+{"time": "2026-03-25 11:02:53", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-25 11:03:05", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-03-25 11:04:52", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.allrecipes.com/recipe/24002/easy-lasagna-ii/, model=gpt-4o-mini"}
+{"time": "2026-03-25 11:04:52", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 402 (77ms)"}
+{"time": "2026-03-25 11:05:48", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}

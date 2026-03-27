@@ -23,7 +23,9 @@ class Settings(BaseSettings):
 
     # ChatGPT Azure Function
     chatgpt_api_base: str = "https://deploy-box-apis-func-dev.azurewebsites.net"
-    openai_api_key: str = ""
+    openai_api_key: str = ""  # deprecated – use client credentials below
+    deploy_box_client_id: str = ""
+    deploy_box_client_secret: str = ""
 
     # RevenueCat (server-side entitlement verification)
     revenuecat_api_key: str = ""

@@ -197,8 +197,23 @@ async def call_openai_chat(
     ``{"success": False, "error": "..."}`` on failure.
     """
     settings = get_settings()
-    if not settings.openai_api_key:
-        return {"success": False, "error": "OPENAI_API_KEY is not configured on the server."}
+
+    # Prefer OAuth2 client credentials; fall back to legacy API key
+    from app.services.token_service import get_bearer_token
+
+    bearer = await get_bearer_token()
+    if bearer:
+        headers: dict[str, str] = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {bearer}",
+        }
+    elif settings.openai_api_key:
+        headers = {
+            "Content-Type": "application/json",
+            "x-api-key": settings.openai_api_key,
+        }
+    else:
+        return {"success": False, "error": "Deploy Box API credentials are not configured on the server."}
 
     url = f"{settings.chatgpt_api_base.rstrip('/')}/api/v1/chatgpt"
 
@@ -211,11 +226,6 @@ async def call_openai_chat(
     }
     if response_format:
         payload["response_format"] = response_format
-
-    headers: dict[str, str] = {
-        "Content-Type": "application/json",
-        "x-api-key": settings.openai_api_key,
-    }
 
     try:
         timeout_seconds = max(len(text) / 100, 10)  # ~100 tokens per second, minimum 10 seconds

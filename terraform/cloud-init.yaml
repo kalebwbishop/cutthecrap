@@ -16,7 +16,8 @@ write_files:
       WORKOS_API_KEY=${workos_api_key}
       WORKOS_CLIENT_ID=${workos_client_id}
       WORKOS_REDIRECT_URI=https://${domain_name}/api/v1/auth/callback
-      OPENAI_API_KEY=${openai_api_key}
+      DEPLOY_BOX_CLIENT_ID=${deploy_box_client_id}
+      DEPLOY_BOX_CLIENT_SECRET=${deploy_box_client_secret}
       CHATGPT_API_BASE=${chatgpt_api_base}
       CORS_ORIGIN=https://${domain_name}
       FRONTEND_URL=https://${domain_name}

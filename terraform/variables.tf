@@ -59,8 +59,15 @@ variable "workos_client_id" {
   default     = ""
 }
 
-variable "openai_api_key" {
-  description = "OpenAI API key (used by the Azure Function proxy)"
+variable "deploy_box_client_id" {
+  description = "Deploy Box OAuth2 client ID (base64-encoded)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "deploy_box_client_secret" {
+  description = "Deploy Box OAuth2 client secret"
   type        = string
   sensitive   = true
   default     = ""

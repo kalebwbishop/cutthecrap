@@ -35,7 +35,8 @@ resource "azurerm_linux_virtual_machine" "this" {
     public_ip          = azurerm_public_ip.this.ip_address
     workos_api_key     = var.workos_api_key
     workos_client_id   = var.workos_client_id
-    openai_api_key     = var.openai_api_key
+    deploy_box_client_id     = var.deploy_box_client_id
+    deploy_box_client_secret = var.deploy_box_client_secret
     chatgpt_api_base   = var.chatgpt_api_base
     chatgpt_api_key    = var.chatgpt_api_key
     tls_fullchain      = file(var.tls_fullchain_path)

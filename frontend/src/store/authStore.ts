@@ -43,7 +43,13 @@ function setAuthHeader(token: string | null) {
   }
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set, get) => {
+  // Track the last exchanged code to prevent duplicate exchange attempts.
+  // On mobile, both WebBrowser.openAuthSessionAsync and the deep-link route
+  // can trigger handleAuthCode for the same code simultaneously.
+  let lastExchangedCode: string | null = null;
+
+  return {
   user: null,
   accessToken: null,
   refreshToken: null,
@@ -82,6 +88,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   handleAuthCode: async (code: string) => {
+    if (code === lastExchangedCode) return;
+    lastExchangedCode = code;
     set({ isLoading: true });
     try {
       const { user, accessToken, refreshToken } = await authApi.exchange(code);
@@ -169,4 +177,5 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   clearSessionExpiredMessage: () => {
     set({ sessionExpiredMessage: null });
   },
-}));
+};
+});

@@ -83,13 +83,17 @@ async def parse_url(payload: ParseUrlPayload):
             }
         )
 
-    # If structured data extraction succeeded, return directly (skip OpenAI)
+    # Build the best available text for ChatGPT.
+    # Structured data gives cleaner input; fall back to raw visible text.
     if fetch_result.get("structured_recipe"):
-        logger.info("Returning structured data result for %s", payload.url)
-        return sanitize_recipe_strings({"success": True, "data": fetch_result["structured_recipe"]})
+        import json
+        input_text = json.dumps(fetch_result["structured_recipe"], indent=2)
+        logger.info("Using structured data as ChatGPT input for %s", payload.url)
+    else:
+        input_text = fetch_result["text"][:12_000]
 
     result = await call_openai_chat(
-        text=fetch_result["text"][:12_000],
+        text=input_text[:12_000],
         system_prompt=payload.system_prompt or RECIPE_SYSTEM_PROMPT,
         model=payload.model,
         response_format=payload.response_format or RECIPE_RESPONSE_FORMAT,

@@ -55,7 +55,9 @@ RECIPE_SYSTEM_PROMPT = (
     "  - total_time: the overall total time from start to finish\n"
     "- Only include a time category if it genuinely applies. Use null for times that don't apply.\n"
     "- If something is truly not findable, use null for strings or empty arrays for lists.\n"
-    "- Clean up any ad copy, SEO filler, or life-story content - just the recipe facts."
+    "- Clean up any ad copy, SEO filler, or life-story content - just the recipe facts.\n"
+    "- IMPORTANT: Rewrite all text in your own words. Do not copy verbatim from the source. "
+    "Keep the same meaning, quantities, temperatures, and technique but rephrase naturally."
 )
 
 RECIPE_RESPONSE_FORMAT: dict[str, Any] = {

@@ -2,8 +2,7 @@
 -- Version: 2.0.0
 -- Description: Recipe extraction app – users, saved recipes, and social features
 
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- gen_random_uuid() is built-in since PostgreSQL 13; no extension needed.
 
 -- ── Utility function ────────────────────────────────────────────────
 
@@ -27,7 +26,7 @@ DROP TABLE IF EXISTS users CASCADE;
 -- ── Users ───────────────────────────────────────────────────────────
 
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     workos_user_id VARCHAR(255) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -49,7 +48,7 @@ COMMENT ON TABLE users IS 'Core user accounts authenticated via WorkOS';
 -- ── Saved Recipes ───────────────────────────────────────────────────
 
 CREATE TABLE saved_recipes (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title VARCHAR(500) NOT NULL,
     description TEXT,
@@ -86,7 +85,7 @@ COMMENT ON COLUMN saved_recipes.notes IS 'Optional tips, substitutions, storage 
 -- ── Recipe History ───────────────────────────────────────────────────
 
 CREATE TABLE recipe_history (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title VARCHAR(500) NOT NULL,
     description TEXT,
@@ -120,7 +119,7 @@ COMMENT ON TABLE recipe_history IS 'Most recent 3 parsed recipes per user (auto-
 -- ── Friendships ──────────────────────────────────────────────────────
 
 CREATE TABLE friendships (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     requester_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     addressee_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
@@ -144,7 +143,7 @@ COMMENT ON TABLE friendships IS 'Bidirectional friend requests between users';
 -- ── Groups ───────────────────────────────────────────────────────────
 
 CREATE TABLE groups (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     created_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
@@ -177,7 +176,7 @@ COMMENT ON TABLE group_members IS 'Membership in recipe sharing groups';
 -- ── Group Shared Recipes ─────────────────────────────────────────────
 
 CREATE TABLE group_shared_recipes (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     group_id UUID NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
     shared_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     recipe_id UUID NOT NULL REFERENCES saved_recipes(id) ON DELETE CASCADE,

@@ -174,7 +174,7 @@ export default function GroupDetailScreen() {
         isLoading: false,
         savedRecipeId: null,
       });
-      router.push('/result');
+      router.push({ pathname: '/result', params: { groupId, sharedRecipeId: recipeId } });
     } catch {
       showAlert('Failed to load recipe');
     }

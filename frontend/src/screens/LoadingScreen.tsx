@@ -11,7 +11,7 @@ import { useRecipeStore, LOADING_MESSAGES } from '@/store/recipeStore';
  */
 export default function LoadingScreen() {
   const router = useRouter();
-  const { isLoading, loadingMessageIndex, result, error, cycleLoadingMessage } =
+  const { isLoading, loadingMessageIndex, result, error, url, cycleLoadingMessage } =
     useRecipeStore();
   const progressAnim = useRef(new Animated.Value(0)).current;
 
@@ -36,9 +36,9 @@ export default function LoadingScreen() {
   // Navigate to result when loading completes
   useEffect(() => {
     if (!isLoading && (result || error)) {
-      router.replace('/result');
+      router.replace({ pathname: '/result', params: url ? { url } : undefined });
     }
-  }, [isLoading, result, error, router]);
+  }, [isLoading, result, error, url, router]);
 
   return (
     <SafeAreaView style={s.safeArea} edges={['top', 'bottom']}>

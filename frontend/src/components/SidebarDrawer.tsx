@@ -105,10 +105,11 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
     onClose();
     if (activeTab === 'saved') {
       await openSavedRecipe(id);
+      router.push({ pathname: '/result', params: { savedRecipeId: id } });
     } else {
       await openHistoryRecipe(id);
+      router.push({ pathname: '/result', params: { historyRecipeId: id } });
     }
-    router.push('/result');
   };
 
   const handleDeleteRecipe = (id: string) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo, useState } from 'react';
+import React, { useEffect, useCallback, useMemo, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,10 @@ import {
   StyleSheet,
   Modal,
   BackHandler,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { isAxiosError } from 'axios';
 import RecipeCard from '@/components/RecipeCard';
 import NotRecipePage from '@/components/NotRecipePage';
@@ -19,6 +20,7 @@ import { useRecipeStore } from '@/store/recipeStore';
 import { useAuthStore } from '@/store/authStore';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { recipeApi } from '@/api/recipeApi';
+import { socialApi } from '@/api/socialApi';
 import { successFeedback, errorFeedback } from '@/utils/haptics';
 import { copyRecipeToClipboard } from '@/utils/clipboard';
 import { useThemeColors, fontSizes, spacing, radii } from '@/theme';
@@ -27,12 +29,23 @@ import type { ThemeColors } from '@/theme';
 /**
  * Displays the recipe result, "not a recipe" page, or an error fallback.
  * Back button resets the store and returns to input.
+ *
+ * On web, URL query params (savedRecipeId, historyRecipeId, url,
+ * groupId+sharedRecipeId) allow the recipe to survive a page refresh.
  */
 export default function ResultScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{
+    savedRecipeId?: string;
+    historyRecipeId?: string;
+    url?: string;
+    groupId?: string;
+    sharedRecipeId?: string;
+  }>();
   const colors = useThemeColors();
   const s = useMemo(() => createStyles(colors), [colors]);
-  const { result, error, url, reset, savedRecipeId } = useRecipeStore();
+  const { result, error, url, reset, savedRecipeId, openSavedRecipe, openHistoryRecipe } =
+    useRecipeStore();
   const user = useAuthStore((s) => s.user);
   const isPro = useSubscriptionStore((s) => s.isPro);
 
@@ -40,8 +53,82 @@ export default function ResultScreen() {
   const [saving, setSaving] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isRehydrating, setIsRehydrating] = useState(false);
+  const rehydrationAttempted = useRef(false);
 
   const FREE_RECIPE_LIMIT = 5;
+
+  // Rehydrate store from URL query params on web refresh
+  useEffect(() => {
+    if (rehydrationAttempted.current) return;
+    rehydrationAttempted.current = true;
+
+    const storeHasData = result || error;
+    if (storeHasData) return;
+
+    const { savedRecipeId: paramSavedId, historyRecipeId: paramHistoryId, url: paramUrl, groupId: paramGroupId, sharedRecipeId: paramSharedId } = params;
+
+    if (paramSavedId) {
+      setIsRehydrating(true);
+      openSavedRecipe(paramSavedId).finally(() => setIsRehydrating(false));
+    } else if (paramHistoryId) {
+      setIsRehydrating(true);
+      openHistoryRecipe(paramHistoryId).finally(() => setIsRehydrating(false));
+    } else if (paramGroupId && paramSharedId) {
+      setIsRehydrating(true);
+      socialApi
+        .getSharedRecipeDetail(paramGroupId, paramSharedId)
+        .then((detail) => {
+          const recipe = {
+            title: detail.title,
+            description: detail.description,
+            prep_time: detail.prepTime,
+            cook_time: detail.cookTime,
+            cool_time: detail.coolTime,
+            chill_time: detail.chillTime,
+            rest_time: detail.restTime,
+            marinate_time: detail.marinateTime,
+            soak_time: detail.soakTime,
+            total_time: detail.totalTime,
+            servings: detail.servings,
+            ingredients: detail.ingredients,
+            steps: detail.steps,
+            notes: detail.notes,
+          };
+          useRecipeStore.setState({
+            result: { is_recipe: true, title: detail.title, recipe },
+            url: detail.sourceUrl ?? '',
+            error: null,
+            isLoading: false,
+            savedRecipeId: null,
+          });
+        })
+        .catch(() => {
+          useRecipeStore.setState({ error: 'Failed to load shared recipe.', result: null });
+        })
+        .finally(() => setIsRehydrating(false));
+    } else if (paramUrl) {
+      setIsRehydrating(true);
+      recipeApi
+        .summarize(paramUrl)
+        .then((data) => {
+          useRecipeStore.setState({
+            result: data,
+            url: paramUrl,
+            error: null,
+            isLoading: false,
+            savedRecipeId: null,
+          });
+        })
+        .catch((err: unknown) => {
+          const message = err instanceof Error ? err.message : 'Something went wrong';
+          useRecipeStore.setState({ error: `Something went wrong: ${message}`, result: null });
+        })
+        .finally(() => setIsRehydrating(false));
+    } else {
+      router.replace('/');
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCopy = async () => {
     if (!recipe || copied) return;
@@ -161,7 +248,12 @@ export default function ResultScreen() {
         contentContainerStyle={s.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        {recipe ? (
+        {isRehydrating ? (
+          <View style={s.rehydratingContainer}>
+            <ActivityIndicator size="large" color={colors.bgButton} />
+            <Text style={s.rehydratingText}>Loading recipe…</Text>
+          </View>
+        ) : recipe ? (
           <RecipeCard recipe={recipe} url={url} />
         ) : isNotRecipe ? (
           <NotRecipePage title={pageTitle} onBack={handleBack} />
@@ -321,6 +413,17 @@ const createStyles = (colors: ThemeColors) =>
     responseContent: {
       alignItems: 'center',
     },
+    rehydratingContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 80,
+      gap: spacing.md,
+    },
+    rehydratingText: {
+      fontSize: fontSizes.base,
+      color: colors.textMuted,
+    },
     responseText: {
       fontSize: fontSizes.lg,
       color: colors.text,
@@ -391,7 +494,7 @@ const createStyles = (colors: ThemeColors) =>
       flex: 1,
       paddingVertical: 10,
       borderRadius: radii.md,
-      backgroundColor: colors.accent,
+      backgroundColor: colors.bgButton,
       alignItems: 'center',
     },
     modalPrimaryText: {

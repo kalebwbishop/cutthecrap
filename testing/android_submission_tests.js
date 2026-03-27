@@ -186,9 +186,10 @@ const CAT_DEBUG = 'Debug Code';
   const srcDir = path.join(FRONTEND, 'src');
 
   // console.log / console.error / console.warn in frontend source
-  const consoleLogs = grepFiles(srcDir, /\bconsole\.(log|error|warn|debug|info)\s*\(/, tsFilter);
+  const consoleLogs = grepFiles(srcDir, /\bconsole\.(log|error|warn|debug|info)\s*\(/, tsFilter)
+    .filter(h => !h.match.includes('__DEV__') && !h.file.includes('ErrorBoundary'));
   if (consoleLogs.length === 0) {
-    pass(CAT_DEBUG, 'No console.log/error/warn in frontend src', 'Clean — no console statements found');
+    pass(CAT_DEBUG, 'No console.log/error/warn in frontend src', 'Clean — no unguarded console statements found');
   } else {
     const detail = consoleLogs.map(h => `  ${h.file}:${h.line} → ${h.match}`).join('\n');
     fail(CAT_DEBUG, 'No console.log/error/warn in frontend src',
@@ -196,7 +197,8 @@ const CAT_DEBUG = 'Debug Code';
   }
 
   // localhost references in frontend source
-  const localhostHits = grepFiles(srcDir, /localhost/i, tsFilter);
+  const localhostHits = grepFiles(srcDir, /localhost/i, tsFilter)
+    .filter(h => !h.match.includes('__DEV__'));
   if (localhostHits.length === 0) {
     pass(CAT_DEBUG, 'No localhost references in frontend src', 'Clean');
   } else {

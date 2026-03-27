@@ -1,5 +1,6 @@
 import logging
 import sys
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 from app.config.settings import get_settings
@@ -23,22 +24,27 @@ def _setup_logger() -> logging.Logger:
     console.setFormatter(console_fmt)
     log.addHandler(console)
 
-    # File handlers
+    # File handlers (rotating to prevent unbounded growth)
     log_dir = Path("logs")
     log_dir.mkdir(exist_ok=True)
 
-    # Error log
-    error_handler = logging.FileHandler(log_dir / "error.log", encoding="utf-8")
-    error_handler.setLevel(logging.ERROR)
     file_fmt = logging.Formatter(
         '{"time": "%(asctime)s", "level": "%(levelname)s", "message": "%(message)s"}',
         datefmt="%Y-%m-%d %H:%M:%S",
     )
+
+    # Error log — 5 MB per file, keep 3 backups
+    error_handler = RotatingFileHandler(
+        log_dir / "error.log", encoding="utf-8", maxBytes=5_000_000, backupCount=3,
+    )
+    error_handler.setLevel(logging.ERROR)
     error_handler.setFormatter(file_fmt)
     log.addHandler(error_handler)
 
-    # Combined log
-    combined_handler = logging.FileHandler(log_dir / "combined.log", encoding="utf-8")
+    # Combined log — 10 MB per file, keep 5 backups
+    combined_handler = RotatingFileHandler(
+        log_dir / "combined.log", encoding="utf-8", maxBytes=10_000_000, backupCount=5,
+    )
     combined_handler.setLevel(logging.DEBUG)
     combined_handler.setFormatter(file_fmt)
     log.addHandler(combined_handler)

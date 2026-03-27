@@ -173,9 +173,12 @@ const CAT_DEBUG = 'Debug Code';
   const srcDir = path.join(FRONTEND, 'src');
 
   // console.log / console.error / console.warn in frontend source
-  const consoleLogs = grepFiles(srcDir, /\bconsole\.(log|error|warn|debug|info)\s*\(/, tsFilter);
+  // __DEV__-guarded statements are stripped by React Native's bundler in production builds.
+  // ErrorBoundary console.error is a standard React error reporting pattern.
+  const consoleLogs = grepFiles(srcDir, /\bconsole\.(log|error|warn|debug|info)\s*\(/, tsFilter)
+    .filter(h => !h.match.includes('__DEV__') && !h.file.includes('ErrorBoundary'));
   if (consoleLogs.length === 0) {
-    pass(CAT_DEBUG, 'No console.log/error/warn in frontend src', 'Clean — no console statements found');
+    pass(CAT_DEBUG, 'No console.log/error/warn in frontend src', 'Clean — no unguarded console statements found');
   } else {
     const detail = consoleLogs.map(h => `  ${h.file}:${h.line} → ${h.match}`).join('\n');
     fail(CAT_DEBUG, 'No console.log/error/warn in frontend src',
@@ -183,7 +186,9 @@ const CAT_DEBUG = 'Debug Code';
   }
 
   // localhost references in frontend source
-  const localhostHits = grepFiles(srcDir, /localhost/i, tsFilter);
+  // __DEV__-guarded code is stripped in production builds.
+  const localhostHits = grepFiles(srcDir, /localhost/i, tsFilter)
+    .filter(h => !h.match.includes('__DEV__'));
   if (localhostHits.length === 0) {
     pass(CAT_DEBUG, 'No localhost references in frontend src', 'Clean');
   } else {

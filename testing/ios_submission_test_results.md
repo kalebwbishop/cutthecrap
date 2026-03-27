@@ -1,50 +1,7 @@
 # iOS Submission Checklist — Test Results
 
-**Run date:** 2026-03-25T13:36:35.443Z
-**Summary:** 35 passed, 8 failed, 1 warnings, 33 manual
-
-## ❌ Failures
-
-These must be fixed before submitting to the App Store.
-
-### App Build — Build number is set
-
-ios.buildNumber is missing from app.json — required by App Store
-
-### App Build — EAS project ID is set
-
-eas.projectId is empty in app.json — required for EAS Build/Submit
-
-### App Build — eas.json exists
-
-frontend/eas.json not found — required for EAS Build
-
-### Debug Code — No console.log/error/warn in frontend src
-
-Found 3 console statement(s):
-  frontend/src/api/recipeApi.ts:158 → console.log('Unexpected response from backend:', response.data);
-  frontend/src/store/authStore.ts:79 → console.error('Login failed:', err);
-  frontend/src/store/authStore.ts:90 → console.error('Token exchange failed:', err);
-
-### Debug Code — No localhost references in frontend src
-
-Found 1 localhost reference(s):
-  frontend/src/api/client.ts:36 → return Platform.OS === 'web' ? 'http://localhost:8000' : 'http://10.0.2.2:8000';
-
-### Debug Code — No test/sandbox API keys in frontend src
-
-Found 3 test/sandbox key(s):
-  frontend/src/services/billing/constants.ts:3 → apple: 'test_LzCiuDWzuzhHijTlImsadWTZHXD',
-  frontend/src/services/billing/constants.ts:4 → google: 'test_LzCiuDWzuzhHijTlImsadWTZHXD',
-  frontend/src/services/billing/constants.ts:5 → web: 'rcb_sb_cWjUatYDoJNLloJFGctoOkvQA',
-
-### Functional Completeness — Offline/network detection
-
-No offline/network detection found — consider adding @react-native-community/netinfo. Apple reviewers may test in airplane mode
-
-### Payments & Subscriptions — RevenueCat production API keys
-
-Still using test_ prefixed key(s) and rcb_sb_ sandbox key(s) in constants.ts — must swap to production keys before release
+**Run date:** 2026-03-27T20:46:43.409Z
+**Summary:** 43 passed, 0 failed, 1 warnings, 33 manual
 
 ## ⚠️ Warnings
 
@@ -58,25 +15,33 @@ Wildcard "*" appended only in development mode — ensure ENVIRONMENT!=developme
 
 - **App Build** — Bundle ID is correct: ios.bundleIdentifier = "com.cutthecrap.app"
 - **App Build** — Version number is set: version = "1.0.0"
+- **App Build** — Build number is set: ios.buildNumber = "1"
+- **App Build** — EAS project ID is set: eas.projectId = "6986e615-2c88-4596-8c5a-f308436657b4"
+- **App Build** — eas.json exists: frontend/eas.json found
 - **App Build** — App icon exists: frontend/assets/icon.png found
 - **App Build** — Splash screen exists: frontend/assets/splash.png found
 - **App Build** — Deep link scheme configured: scheme = "cutthecrap"
+- **Debug Code** — No console.log/error/warn in frontend src: Clean — no unguarded console statements found
+- **Debug Code** — No localhost references in frontend src: Clean
+- **Debug Code** — No test/sandbox API keys in frontend src: Clean
 - **Debug Code** — No placeholder/coming-soon content: Clean
 - **Debug Code** — No TODO comments in frontend src: Clean
 - **Functional Completeness** — Account deletion (frontend): Found in 15 file(s)
 - **Functional Completeness** — Account deletion (backend): Found in 8 file(s)
 - **Functional Completeness** — Logout implemented (frontend): Found in 12 file(s)
 - **Functional Completeness** — Logout implemented (backend): Found in 8 file(s)
-- **Functional Completeness** — Login/auth flow (frontend): Found in 19 file(s)
-- **Functional Completeness** — Error states handled: Error handling found in 15 file(s)
+- **Functional Completeness** — Login/auth flow (frontend): Found in 20 file(s)
+- **Functional Completeness** — Error states handled: Error handling found in 16 file(s)
 - **Functional Completeness** — Session expiry handling: Found in 13 file(s)
+- **Functional Completeness** — Offline/network detection: Found in 10 file(s)
 - **Functional Completeness** — Health check integration: Found in 9 file(s)
-- **Functional Completeness** — Health endpoint (backend): Found in 6 file(s)
+- **Functional Completeness** — Health endpoint (backend): Found in 15 file(s)
 - **Privacy & Permissions** — No unnecessary permission plugins: Only expo-font and expo-web-browser found — appropriate
 - **Privacy & Permissions** — No unnecessary permission descriptions: No NSUsageDescription keys in infoPlist
 - **Privacy & Permissions** — Privacy policy screen exists: frontend/src/screens/PrivacyScreen.tsx
 - **Privacy & Permissions** — Terms of service screen exists: frontend/src/screens/TermsScreen.tsx
 - **Privacy & Permissions** — No tracking SDKs/IDFA usage: Clean — no tracking code found
+- **Payments & Subscriptions** — RevenueCat production API keys: No test/sandbox keys detected
 - **Payments & Subscriptions** — Restore Purchases implemented: Found in 14 file(s)
 - **Payments & Subscriptions** — Paywall screen exists (native): PaywallScreen.tsx found
 - **Payments & Subscriptions** — Paywall screen exists (web): PaywallScreen.web.tsx found

@@ -42,10 +42,16 @@ class Settings(BaseSettings):
     @property
     def cors_origins(self) -> list[str]:
         origins = [origin.strip() for origin in self.cors_origin.split(",")]
-        # In development, allow all origins so physical devices can connect
         if self.environment == "development" and "*" not in origins:
+            # In development, allow all origins so physical devices can connect.
+            # When using wildcard, credentials must be disabled — FastAPI/Starlette
+            # handles this automatically by converting to a permissive origin echo.
             origins.append("*")
         return origins
+
+    @property
+    def is_dev(self) -> bool:
+        return self.environment == "development"
 
 
 @lru_cache

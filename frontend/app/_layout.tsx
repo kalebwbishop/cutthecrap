@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ErrorBoundary from '../src/components/ErrorBoundary';
+import OfflineBanner from '../src/components/OfflineBanner';
 import { ThemeProvider, useThemeColors, useIsDarkMode } from '../src/theme';
 import { billingService } from '../src/services/billing';
 import { useAuthStore } from '../src/store/authStore';
@@ -49,19 +50,19 @@ function RootLayoutInner() {
             billingService.configure(user?.id).then(() => {
                 refreshCustomerInfo();
             }).catch((err: unknown) => {
-                console.warn('Failed to configure billing:', err);
+                if (__DEV__) console.warn('Failed to configure billing:', err);
             });
         } else if (user?.id) {
             billingService.logIn(user.id).then(() => {
                 refreshCustomerInfo();
             }).catch((err: unknown) => {
-                console.warn('Failed to log in to billing:', err);
+                if (__DEV__) console.warn('Failed to log in to billing:', err);
             });
         } else {
             billingService.logOut().then(() => {
                 refreshCustomerInfo();
             }).catch((err: unknown) => {
-                console.warn('Failed to log out of billing:', err);
+                if (__DEV__) console.warn('Failed to log out of billing:', err);
             });
         }
     }, [user?.id]);
@@ -69,6 +70,7 @@ function RootLayoutInner() {
     return (
         <View style={s.container}>
             <StatusBar style={isDark ? 'light' : 'dark'} />
+            <OfflineBanner />
             <Stack
                 screenOptions={{
                     headerShown: false,

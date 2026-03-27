@@ -74,7 +74,7 @@ export const useSocialStore = create<SocialState>((set, get) => ({
       ]);
       set({ friends, friendRequests: requests, sentRequests: sent });
     } catch (err) {
-      console.error('Failed to load friends:', err);
+      if (__DEV__) console.error('Failed to load friends:', err);
     } finally {
       set({ friendsLoading: false });
     }
@@ -88,7 +88,7 @@ export const useSocialStore = create<SocialState>((set, get) => ({
       ]);
       set({ friendRequests: requests, sentRequests: sent });
     } catch (err) {
-      console.error('Failed to load friend requests:', err);
+      if (__DEV__) console.error('Failed to load friend requests:', err);
     }
   },
 
@@ -127,7 +127,7 @@ export const useSocialStore = create<SocialState>((set, get) => ({
       const groups = await socialApi.getGroups();
       set({ groups });
     } catch (err) {
-      console.error('Failed to load groups:', err);
+      if (__DEV__) console.error('Failed to load groups:', err);
     } finally {
       set({ groupsLoading: false });
     }
@@ -162,7 +162,7 @@ export const useSocialStore = create<SocialState>((set, get) => ({
         activeGroupRecipes: recipes,
       });
     } catch (err) {
-      console.error('Failed to load group detail:', err);
+      if (__DEV__) console.error('Failed to load group detail:', err);
     } finally {
       set({ activeGroupLoading: false });
     }

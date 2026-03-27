@@ -83,7 +83,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
         }
       }
     } catch (err) {
-      console.error('Login failed:', err);
+      if (__DEV__) console.error('Login failed:', err);
     }
   },
 
@@ -97,7 +97,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
       await tokenStorage.saveTokens(accessToken, refreshToken ?? null);
       set({ user, accessToken, refreshToken: refreshToken ?? null, isLoading: false });
     } catch (err) {
-      console.error('Token exchange failed:', err);
+      if (__DEV__) console.error('Token exchange failed:', err);
       set({ isLoading: false });
     }
   },

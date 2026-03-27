@@ -4,8 +4,10 @@ logic from the frontend recipeApi.ts into server-side Python.
 """
 
 import html
+import ipaddress
 import re
 from typing import Any, Optional
+from urllib.parse import urlparse
 
 import httpx
 
@@ -229,7 +231,7 @@ async def call_openai_chat(
 
     try:
         timeout_seconds = max(len(text) / 100, 10)  # ~100 tokens per second, minimum 10 seconds
-        async with httpx.AsyncClient(timeout=timeout_seconds, verify=False) as client:
+        async with httpx.AsyncClient(timeout=timeout_seconds, verify=not settings.is_dev) as client:
             resp = await client.post(url, headers=headers, json=payload)
     except httpx.TimeoutException:
         logger.error("Azure Function timed out: %s", url)
@@ -250,13 +252,47 @@ async def call_openai_chat(
     return resp.json()
 
 
+# ── SSRF protection ──────────────────────────────────────────────────
+
+
+def _validate_url(url: str) -> Optional[str]:
+    """Validate a user-supplied URL and return an error message if unsafe.
+
+    Returns None if the URL is safe, or an error string if it should be rejected.
+    """
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return "Invalid URL format."
+
+    if parsed.scheme not in ("http", "https"):
+        return f"Unsupported URL scheme: {parsed.scheme!r}. Only http and https are allowed."
+
+    hostname = parsed.hostname
+    if not hostname:
+        return "URL is missing a hostname."
+
+    # Block private/reserved IP ranges (SSRF protection)
+    try:
+        addr = ipaddress.ip_address(hostname)
+        if addr.is_private or addr.is_loopback or addr.is_reserved or addr.is_link_local:
+            return "URLs pointing to internal/private networks are not allowed."
+    except ValueError:
+        # hostname is a domain name, not a raw IP — that's fine
+        pass
+
+    # Block obviously internal hostnames
+    if hostname in ("localhost", "metadata.google.internal") or hostname.endswith(".local"):
+        return "URLs pointing to internal/private networks are not allowed."
+
+    return None
+
+
 # ── URL fetching ─────────────────────────────────────────────────────
 
 
 def _is_pinterest_url(url: str) -> bool:
     """Return True when *url* points to a Pinterest domain."""
-    from urllib.parse import urlparse
-
     host = urlparse(url).hostname or ""
     # Strip leading "www." for simpler matching, then check suffix
     return host in _PINTEREST_HOSTS or host.endswith(".pinterest.com")
@@ -295,12 +331,18 @@ async def fetch_and_extract(url: str) -> dict[str, Any]:
     Returns ``{"ok": True, "title": ..., "text": ...}`` on success, or
     ``{"ok": False, "error": ..., "status_code": ...}`` on failure.
     """
+    # SSRF protection — reject internal/private URLs
+    url_error = _validate_url(url)
+    if url_error:
+        return {"ok": False, "error": url_error, "status_code": 400}
+
+    settings = get_settings()
     try:
         async with httpx.AsyncClient(
             timeout=FETCH_TIMEOUT,
             follow_redirects=True,
             headers=FETCH_HEADERS,
-            verify=False,
+            verify=not settings.is_dev,
         ) as client:
             resp = await client.get(url)
     except httpx.TimeoutException:

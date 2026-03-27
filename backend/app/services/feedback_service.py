@@ -55,7 +55,7 @@ async def send_feedback_email(*, message: str, user_email: str | None = None) ->
     }
 
     try:
-        async with httpx.AsyncClient(timeout=15, verify=False) as client:
+        async with httpx.AsyncClient(timeout=15, verify=not settings.is_dev) as client:
             resp = await client.post(url, headers=headers, json=payload)
     except httpx.TimeoutException:
         logger.error("Email endpoint timed out: %s", url)

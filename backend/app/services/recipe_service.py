@@ -26,6 +26,11 @@ FETCH_HEADERS = {
 
 FETCH_TIMEOUT = 15.0  # seconds
 
+# Domains whose pages act as wrappers around an external recipe link.
+# When detected, we extract the original source URL and follow it instead.
+_PINTEREST_HOSTS = {"pin.it", "pinterest.com", "www.pinterest.com",
+                    "pinterest.co.uk", "www.pinterest.co.uk"}
+
 RECIPE_SYSTEM_PROMPT = (
     "You are a recipe extraction assistant. Given the raw text content of a web page, "
     "first determine if the page contains a recipe.\n\n"
@@ -236,6 +241,42 @@ async def call_openai_chat(
 # ── URL fetching ─────────────────────────────────────────────────────
 
 
+def _is_pinterest_url(url: str) -> bool:
+    """Return True when *url* points to a Pinterest domain."""
+    from urllib.parse import urlparse
+
+    host = urlparse(url).hostname or ""
+    # Strip leading "www." for simpler matching, then check suffix
+    return host in _PINTEREST_HOSTS or host.endswith(".pinterest.com")
+
+
+def _extract_source_url(raw_html: str) -> Optional[str]:
+    """Extract the original source URL from a Pinterest pin page.
+
+    Pinterest embeds the source link in ``og:see_also`` and
+    ``pinterestapp:source`` meta tags.  We try both and return the first
+    match, or *None* if the pin doesn't link to an external page.
+    """
+    for attr in ("og:see_also", "pinterestapp:source"):
+        match = re.search(
+            rf'<meta\s[^>]*(?:property|name)=["\']?{re.escape(attr)}["\']?'
+            r'\s[^>]*content=["\']([^"\']+)["\']',
+            raw_html,
+            re.IGNORECASE,
+        )
+        if not match:
+            # meta tags may list content= before property=
+            match = re.search(
+                r'<meta\s[^>]*content=["\']([^"\']+)["\']'
+                rf'\s[^>]*(?:property|name)=["\']?{re.escape(attr)}["\']?',
+                raw_html,
+                re.IGNORECASE,
+            )
+        if match:
+            return match.group(1)
+    return None
+
+
 async def fetch_and_extract(url: str) -> dict[str, Any]:
     """Fetch *url*, extract visible text / title, and return them.
 
@@ -264,6 +305,19 @@ async def fetch_and_extract(url: str) -> dict[str, Any]:
         }
 
     raw_html = resp.text
+
+    # Pinterest pins are JS-rendered SPAs with no recipe content in the HTML.
+    # Extract the original source URL from meta tags and follow it instead.
+    if _is_pinterest_url(str(resp.url)):
+        source_url = _extract_source_url(raw_html)
+        if source_url:
+            logger.info("Pinterest pin detected – following source URL: %s", source_url)
+            return await fetch_and_extract(source_url)
+        return {
+            "ok": False,
+            "error": "This Pinterest pin doesn't link to an external recipe page.",
+            "status_code": 0,
+        }
 
     # Try structured data extraction first (JSON-LD → Microdata → RDFa)
     from app.services.structured_data import extract_structured_recipe

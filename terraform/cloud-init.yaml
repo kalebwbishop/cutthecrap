@@ -65,10 +65,31 @@ write_files:
       # ── Place the .env file ────────────────────────────────────────
       cp "$APP_DIR/backend/.env" "$REPO_DIR/backend/.env"
 
-      # ── Place TLS certificates ─────────────────────────────────────
+      # ── Obtain TLS certificate via Let's Encrypt (HTTP-01) ─────────
+      apt-get install -y certbot
+      certbot certonly --standalone --non-interactive --agree-tos \
+        --email kalebwbishop@gmail.com \
+        -d "${domain_name}" \
+        --preferred-challenges http-01
+
+      CERT_LIVE="/etc/letsencrypt/live/${domain_name}"
       mkdir -p "$REPO_DIR/certs"
-      cp "$APP_DIR/certs/fullchain.pem" "$REPO_DIR/certs/fullchain.pem"
-      cp "$APP_DIR/certs/privkey.pem"   "$REPO_DIR/certs/privkey.pem"
+      if [ -d "$CERT_LIVE" ]; then
+        cp "$CERT_LIVE/fullchain.pem" "$REPO_DIR/certs/fullchain.pem"
+        cp "$CERT_LIVE/privkey.pem"   "$REPO_DIR/certs/privkey.pem"
+        echo "Let's Encrypt cert obtained for ${domain_name}"
+      else
+        echo "Certbot failed, falling back to terraform-provided certs"
+        cp "$APP_DIR/certs/fullchain.pem" "$REPO_DIR/certs/fullchain.pem"
+        cp "$APP_DIR/certs/privkey.pem"   "$REPO_DIR/certs/privkey.pem"
+      fi
+
+      # ── Patch docker-compose.yml for production domain ────────────
+      cd "$REPO_DIR"
+      sed -i "s|EXPO_PUBLIC_API_BASE: \"\"|EXPO_PUBLIC_API_BASE: \"https://${domain_name}\"|" docker-compose.yml
+      sed -i "s|CORS_ORIGIN: http://localhost|CORS_ORIGIN: https://${domain_name}|" docker-compose.yml
+      sed -i "s|FRONTEND_URL: http://localhost|FRONTEND_URL: https://${domain_name}|" docker-compose.yml
+      sed -i "s|WORKOS_REDIRECT_URI: http://localhost|WORKOS_REDIRECT_URI: https://${domain_name}|" docker-compose.yml
 
       # ── Start the application ──────────────────────────────────────
       cd "$REPO_DIR"

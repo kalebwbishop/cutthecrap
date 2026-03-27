@@ -7,7 +7,7 @@ variable "resource_group_name" {
 variable "domain_name" {
   description = "Domain name for the application (e.g. cutthecrap.dev.deploy-box.com)"
   type        = string
-  default     = "cutthecrap.dev.deploy-box.com"
+  default     = "cutthecrap.deploy-box.com"
 }
 
 variable "vm_size" {

@@ -8,12 +8,12 @@ terraform {
     }
   }
 
-  backend "azurerm" {
-    resource_group_name  = "deploy-box-rg-dev"
-    storage_account_name = "tfstatedeployboxsadev"
-    container_name       = "tfstate"
-    key                  = "cutthecrap.tfstate"
-  }
+  # backend "azurerm" {
+  #   resource_group_name  = "deploy-box-rg-dev"
+  #   storage_account_name = "tfstatedeployboxsadev"
+  #   container_name       = "tfstate"
+  #   key                  = "cutthecrap.tfstate"
+  # }
 }
 
 provider "azurerm" {

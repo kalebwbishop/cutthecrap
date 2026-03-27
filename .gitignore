@@ -9,6 +9,8 @@ __pycache__/
 .env.cert
 certs/
 .expo/
+frontend/android/
+frontend/ios/
 
 logs/
 .playwright-cli/

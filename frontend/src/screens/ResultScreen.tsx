@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Pressable,
   StyleSheet,
   Modal,
+  BackHandler,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -83,10 +84,19 @@ export default function ResultScreen() {
     }
   };
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     reset();
     router.replace('/');
-  };
+  }, [reset, router]);
+
+  // Intercept Android hardware back button so it resets store state
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      handleBack();
+      return true;
+    });
+    return () => sub.remove();
+  }, [handleBack]);
 
   const recipe = result?.recipe;
   const isNotRecipe = result?.is_recipe === false;

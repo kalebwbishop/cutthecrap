@@ -74,12 +74,7 @@ export default function InputScreen() {
   const handleSubmit = async () => {
     Keyboard.dismiss();
     selectionFeedback();
-    await submitUrl();
-    // After submitUrl, check store state to decide navigation
-    const state = useRecipeStore.getState();
-    if (state.isLoading) {
-      router.push('/loading');
-    }
+    submitUrl();
   };
 
   // If the store is loading (e.g. submit triggered), navigate to loading

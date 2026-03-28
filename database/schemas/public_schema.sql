@@ -82,7 +82,33 @@ COMMENT ON COLUMN saved_recipes.ingredients IS 'Flat list of ingredient strings 
 COMMENT ON COLUMN saved_recipes.steps IS 'JSON array of {instruction, ingredients[]} objects';
 COMMENT ON COLUMN saved_recipes.notes IS 'Optional tips, substitutions, storage info';
 
--- ── Recipe History ───────────────────────────────────────────────────
+-- ── Recipe Folders ───────────────────────────────────────────────────
+
+CREATE TABLE recipe_folders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_user_folder_name UNIQUE (user_id, name)
+);
+
+CREATE INDEX idx_recipe_folders_user ON recipe_folders(user_id);
+
+CREATE TRIGGER update_recipe_folders_updated_at
+    BEFORE UPDATE ON recipe_folders
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+COMMENT ON TABLE recipe_folders IS 'Flat folders for organizing saved recipes per user';
+
+-- Add folder reference to saved recipes
+ALTER TABLE saved_recipes
+    ADD COLUMN folder_id UUID REFERENCES recipe_folders(id) ON DELETE SET NULL;
+
+CREATE INDEX idx_saved_recipes_folder ON saved_recipes(folder_id);
+
+-- ── Recipe History───────────────────────────────────────────────────
 
 CREATE TABLE recipe_history (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -408,7 +408,7 @@ async def get_saved_recipes(user_id: str) -> list[dict[str, Any]]:
     """Return all saved recipes for a user, newest first."""
     pool = await get_pool()
     rows = await pool.fetch(
-        "SELECT id, title, source_url, created_at FROM saved_recipes "
+        "SELECT id, title, source_url, folder_id, created_at FROM saved_recipes "
         "WHERE user_id = $1 ORDER BY created_at DESC",
         user_id,
     )
@@ -417,6 +417,7 @@ async def get_saved_recipes(user_id: str) -> list[dict[str, Any]]:
             "id": str(r["id"]),
             "title": r["title"],
             "sourceUrl": r["source_url"],
+            "folderId": str(r["folder_id"]) if r["folder_id"] else None,
             "createdAt": str(r["created_at"]) if r["created_at"] else None,
         }
         for r in rows
@@ -452,6 +453,7 @@ async def get_saved_recipe_by_id(user_id: str, recipe_id: str) -> dict[str, Any]
         "ingredients": list(row["ingredients"]) if row["ingredients"] else [],
         "steps": _json.loads(row["steps"]) if isinstance(row["steps"], str) else row["steps"],
         "notes": list(row["notes"]) if row["notes"] else [],
+        "folderId": str(row["folder_id"]) if row.get("folder_id") else None,
         "createdAt": str(row["created_at"]) if row["created_at"] else None,
     }
 
@@ -491,7 +493,7 @@ async def create_saved_recipe(
             $5, $6, $7, $8,
             $9, $10, $11, $12,
             $13, $14, $15::jsonb, $16
-        ) RETURNING id, title, source_url, created_at
+        ) RETURNING id, title, source_url, folder_id, created_at
         """,
         user_id,
         title,
@@ -516,6 +518,7 @@ async def create_saved_recipe(
         "id": str(row["id"]),
         "title": row["title"],
         "sourceUrl": row["source_url"],
+        "folderId": str(row["folder_id"]) if row["folder_id"] else None,
         "createdAt": str(row["created_at"]) if row["created_at"] else None,
     }
 

@@ -49,6 +49,7 @@ export interface SavedRecipeSummary {
   id: string;
   title: string;
   sourceUrl?: string;
+  folderId?: string | null;
   createdAt?: string;
 }
 
@@ -58,6 +59,7 @@ export interface SavedRecipeDetail {
   title: string;
   description?: string;
   sourceUrl?: string;
+  folderId?: string | null;
   prepTime?: string;
   cookTime?: string;
   coolTime?: string;
@@ -70,5 +72,13 @@ export interface SavedRecipeDetail {
   ingredients: string[];
   steps: (string | RecipeStep)[];
   notes?: string[];
+  createdAt?: string;
+}
+
+/** A recipe folder for organizing saved recipes. */
+export interface RecipeFolder {
+  id: string;
+  name: string;
+  recipeCount: number;
   createdAt?: string;
 }

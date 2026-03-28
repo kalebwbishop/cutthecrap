@@ -303,7 +303,7 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
             </Text>
           ) : null}
         </View>
-        {hoveredRecipeId === recipe.id && (
+        {(Platform.OS !== 'web' || hoveredRecipeId === recipe.id) && (
           <View style={s.recipeActions}>
             {showMove && activeTab === 'saved' && (
               <TouchableOpacity
@@ -383,7 +383,7 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
             ) : (
               historyRecipes.map((recipe) => renderRecipeItem(recipe))
             )
-          ) : savedRecipes.length === 0 ? (
+          ) : savedRecipes.length === 0 && folders.length === 0 ? (
             <Text style={s.emptyText}>No saved recipes yet.</Text>
           ) : (
             <>
@@ -446,19 +446,19 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
               )}
             </>
           )}
-        </ScrollView>
 
-        {/* Create folder button — only on Saved tab */}
-        {activeTab === 'saved' && (
-          <TouchableOpacity
-            style={s.createFolderButton}
-            onPress={openCreateFolderModal}
-            activeOpacity={0.7}
-          >
-            <PlusIcon size={16} color={colors.textMuted} />
-            <Text style={s.createFolderText}>New Folder</Text>
-          </TouchableOpacity>
-        )}
+          {/* Create folder button — always visible inside scroll on Saved tab */}
+          {activeTab === 'saved' && (
+            <TouchableOpacity
+              style={s.createFolderButton}
+              onPress={openCreateFolderModal}
+              activeOpacity={0.7}
+            >
+              <PlusIcon size={16} color={colors.textMuted} />
+              <Text style={s.createFolderText}>New Folder</Text>
+            </TouchableOpacity>
+          )}
+        </ScrollView>
 
         {/* Footer actions */}
         <View style={s.footer}>

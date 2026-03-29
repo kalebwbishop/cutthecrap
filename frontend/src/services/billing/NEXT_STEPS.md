@@ -52,14 +52,7 @@ RevenueCat Web Billing is required for the web purchase flow.
 
 1. **Apple:** Create subscriptions and in-app purchases in App Store Connect. Map them to RevenueCat products.
 2. **Google:** Create subscriptions in Google Play Console. Set up [Google Real-Time Developer Notifications](https://www.revenuecat.com/docs/google-server-notifications) for RevenueCat.
-3. **Add the RevenueCat Expo plugin** to `app.json` if using EAS Build:
-   ```json
-   {
-     "expo": {
-       "plugins": ["react-native-purchases"]
-     }
-   }
-   ```
+3. **`react-native-purchases` works via autolinking** with EAS Build — no config plugin entry needed in `app.json`. (It does NOT have an `app.plugin.js` file.)
 
 ## Environment Variables
 

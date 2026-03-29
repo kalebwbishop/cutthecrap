@@ -3,12 +3,12 @@
 ## App Build
 - [x] Bundle ID is correct <!-- com.cutthecrap.app in app.json -->
 - [x] Version number is updated <!-- 1.0.0 in app.json -->
-- [ ] Build number is updated <!-- ⚠️ MISSING: no ios.buildNumber in app.json — must add -->
-- [ ] Release build compiles successfully <!-- Needs EAS build verification. ⚠️ eas.json does not exist — must create before running eas build -->
+- [x] Build number is updated <!-- ios.buildNumber: "1" set, EAS autoIncrement enabled -->
+- [ ] Release build compiles successfully <!-- eas.json exists with production profile. Run: npx eas build --platform ios --profile production -->
 - [ ] App signing/certificates/profiles are valid <!-- Verify in Apple Developer portal -->
 - [x] App icon is set correctly <!-- ./assets/icon.png configured and file exists -->
 - [x] Launch screen displays correctly <!-- ./assets/splash.png configured and file exists -->
-- [ ] No debug code, test banners, or placeholder content remain <!-- ⚠️ BLOCKERS: (1) client.ts localhost fallback in production, (2) 3 console.log/error calls ship to prod (recipeApi.ts:158, authStore.ts:68,79), (3) RevenueCat test API keys in constants.ts, (4) empty eas.projectId in app.json -->
+- [x] No debug code, test banners, or placeholder content remain <!-- All console.log/error calls are __DEV__-gated (stripped in prod). client.ts __DEV__ block is dead-code-eliminated. RC keys loaded from env vars. eas.projectId is set. -->
 
 ## Functional QA
 - [ ] App launches cleanly on supported devices <!-- Needs device testing -->
@@ -38,7 +38,7 @@
 - [x] App preview video is uploaded, if applicable <!-- N/A — optional -->
 
 ## Privacy and Permissions
-- [ ] App Privacy details are completed in App Store Connect <!-- Must declare: email, name, purchase history (RevenueCat), user content (recipes), device identifiers (IDFV via RevenueCat). All "linked to identity", none "used for tracking" -->
+- [ ] App Privacy details are completed in App Store Connect <!-- Must declare: email, name, purchase history (RevenueCat), user content (recipes), device identifiers (IDFV via RevenueCat). All "linked to identity", none "used for tracking". Privacy manifest added to app.json with UserDefaults, SystemBootTime, FileTimestamp API declarations -->
 - [ ] Data collection disclosures match actual app behavior <!-- Verify in App Store Connect -->
 - [ ] Third-party SDK data usage is included <!-- RevenueCat collects: App User ID, purchase history, IDFV. Disclose in App Store Connect -->
 - [x] Permission prompts are only shown when needed <!-- App requests zero device permissions -->
@@ -58,7 +58,7 @@
 
 ## Payments and Subscriptions
 - [ ] In-App Purchases are created in App Store Connect, if applicable <!-- Verify monthly/yearly/lifetime products in ASC -->
-- [ ] Subscription products are configured correctly, if applicable <!-- ⚠️ Still using test API keys in constants.ts — must swap to production -->
+- [ ] Subscription products are configured correctly, if applicable <!-- Apple production key set in .env (appl_gJKH...). Create products in App Store Connect and RevenueCat dashboard -->
 - [ ] Purchases complete successfully <!-- Needs testing with production keys -->
 - [x] Restore Purchases works <!-- Implemented: native paywall uses RevenueCatUI built-in restore; web paywall has explicit "Restore Purchases" button in footer -->
 - [x] Subscription terms/pricing are shown correctly <!-- Dynamic pricing from RevenueCat offerings; Terms of Service screen covers auto-renewal in Section 4 -->

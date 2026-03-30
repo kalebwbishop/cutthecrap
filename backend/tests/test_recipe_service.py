@@ -175,10 +175,11 @@ class TestExtractVisibleText:
 # ═════════════════════════════════════════════════════════════════════
 
 
+@patch("app.services.token_service.get_bearer_token", new_callable=AsyncMock, return_value=None)
 class TestCallOpenaiChat:
     @pytest.mark.asyncio
     @patch("app.services.recipe_service.get_settings")
-    async def test_returns_error_when_api_key_missing(self, mock_get_settings):
+    async def test_returns_error_when_api_key_missing(self, mock_get_settings, _mock_token):
         mock_get_settings.return_value = MagicMock(openai_api_key="")
         result = await call_openai_chat(text="hello", system_prompt="you are helpful")
         assert result["success"] is False
@@ -187,7 +188,7 @@ class TestCallOpenaiChat:
     @pytest.mark.asyncio
     @patch("app.services.recipe_service.httpx.AsyncClient")
     @patch("app.services.recipe_service.get_settings")
-    async def test_successful_api_call(self, mock_get_settings, mock_client_cls):
+    async def test_successful_api_call(self, mock_get_settings, mock_client_cls, _mock_token):
         mock_get_settings.return_value = MagicMock(
             openai_api_key="sk-test",
             chatgpt_api_base="https://api.test",
@@ -209,7 +210,7 @@ class TestCallOpenaiChat:
     @pytest.mark.asyncio
     @patch("app.services.recipe_service.httpx.AsyncClient")
     @patch("app.services.recipe_service.get_settings")
-    async def test_timeout_returns_408(self, mock_get_settings, mock_client_cls):
+    async def test_timeout_returns_408(self, mock_get_settings, mock_client_cls, _mock_token):
         import httpx
 
         mock_get_settings.return_value = MagicMock(
@@ -229,7 +230,7 @@ class TestCallOpenaiChat:
     @pytest.mark.asyncio
     @patch("app.services.recipe_service.httpx.AsyncClient")
     @patch("app.services.recipe_service.get_settings")
-    async def test_request_error_returns_status_0(self, mock_get_settings, mock_client_cls):
+    async def test_request_error_returns_status_0(self, mock_get_settings, mock_client_cls, _mock_token):
         import httpx
 
         mock_get_settings.return_value = MagicMock(
@@ -249,7 +250,7 @@ class TestCallOpenaiChat:
     @pytest.mark.asyncio
     @patch("app.services.recipe_service.httpx.AsyncClient")
     @patch("app.services.recipe_service.get_settings")
-    async def test_non_200_returns_error_with_status(self, mock_get_settings, mock_client_cls):
+    async def test_non_200_returns_error_with_status(self, mock_get_settings, mock_client_cls, _mock_token):
         mock_get_settings.return_value = MagicMock(
             openai_api_key="sk-test",
             chatgpt_api_base="https://api.test",
@@ -271,7 +272,7 @@ class TestCallOpenaiChat:
     @pytest.mark.asyncio
     @patch("app.services.recipe_service.httpx.AsyncClient")
     @patch("app.services.recipe_service.get_settings")
-    async def test_text_truncated_to_12000(self, mock_get_settings, mock_client_cls):
+    async def test_text_truncated_to_12000(self, mock_get_settings, mock_client_cls, _mock_token):
         mock_get_settings.return_value = MagicMock(
             openai_api_key="sk-test",
             chatgpt_api_base="https://api.test",

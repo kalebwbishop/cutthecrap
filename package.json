@@ -1,0 +1,28 @@
+{
+  "name": "cutthecrap",
+  "version": "1.0.0",
+  "description": "Paste a recipe URL, get just the recipe — no life stories, no ads, no pop-ups.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalebwbishop/cutthecrap.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kalebwbishop/cutthecrap/issues"
+  },
+  "homepage": "https://github.com/kalebwbishop/cutthecrap#readme",
+  "dependencies": {
+    "@playwright/cli": "^0.1.1",
+    "playwright-cli": "^0.262.0"
+  }
+}

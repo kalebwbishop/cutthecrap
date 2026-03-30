@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 import { Platform } from 'react-native';
 import * as Linking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
 import apiClient from '@/api/client';
 import { authApi, User } from '@/api/authApi';
+import { tokenStorage } from '@/utils/tokenStorage';
 
 interface AuthState {
   user: User | null;
@@ -19,6 +21,9 @@ interface AuthState {
 
   /** Log out and clear tokens. */
   logout: () => Promise<void>;
+
+  /** Permanently delete the user's account and clear all local state. */
+  deleteAccount: () => Promise<void>;
 
   /** Attempt to restore the session from a stored refresh token. */
   restoreSession: () => Promise<void>;
@@ -38,7 +43,13 @@ function setAuthHeader(token: string | null) {
   }
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set, get) => {
+  // Track the last exchanged code to prevent duplicate exchange attempts.
+  // On mobile, both WebBrowser.openAuthSessionAsync and the deep-link route
+  // can trigger handleAuthCode for the same code simultaneously.
+  let lastExchangedCode: string | null = null;
+
+  return {
   user: null,
   accessToken: null,
   refreshToken: null,
@@ -47,8 +58,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   login: async () => {
     try {
-      // Build a redirect URI the backend callback will send the code to.
-      // On native this is the deep-link scheme; on web the current origin.
       const redirectUri =
         Platform.OS === 'web'
           ? `${window.location.origin}/auth`
@@ -59,21 +68,36 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (Platform.OS === 'web') {
         window.location.href = authorizationUrl;
       } else {
-        await Linking.openURL(authorizationUrl);
+        // In-app browser returns the redirect URL with the auth code
+        const result = await WebBrowser.openAuthSessionAsync(
+          authorizationUrl,
+          redirectUri,
+        );
+
+        if (result.type === 'success' && result.url) {
+          const params = Linking.parse(result.url);
+          const code = params.queryParams?.code;
+          if (typeof code === 'string') {
+            await get().handleAuthCode(code);
+          }
+        }
       }
     } catch (err) {
-      console.error('Login failed:', err);
+      if (__DEV__) console.error('Login failed:', err);
     }
   },
 
   handleAuthCode: async (code: string) => {
+    if (code === lastExchangedCode) return;
+    lastExchangedCode = code;
     set({ isLoading: true });
     try {
       const { user, accessToken, refreshToken } = await authApi.exchange(code);
       setAuthHeader(accessToken);
+      await tokenStorage.saveTokens(accessToken, refreshToken ?? null);
       set({ user, accessToken, refreshToken: refreshToken ?? null, isLoading: false });
     } catch (err) {
-      console.error('Token exchange failed:', err);
+      if (__DEV__) console.error('Token exchange failed:', err);
       set({ isLoading: false });
     }
   },
@@ -87,20 +111,29 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
     } finally {
       setAuthHeader(null);
+      await tokenStorage.clearTokens();
       set({ user: null, accessToken: null, refreshToken: null });
 
       if (logoutUrl) {
         if (Platform.OS === 'web') {
           window.location.href = logoutUrl;
         } else {
-          await Linking.openURL(logoutUrl);
+          await WebBrowser.openAuthSessionAsync(logoutUrl, Linking.createURL(''));
         }
       }
     }
   },
 
+  deleteAccount: async () => {
+    await authApi.deleteAccount();
+    setAuthHeader(null);
+    await tokenStorage.clearTokens();
+    set({ user: null, accessToken: null, refreshToken: null });
+  },
+
   restoreSession: async () => {
-    const { refreshToken } = get();
+    const storedRefreshToken = await tokenStorage.getRefreshToken();
+    const refreshToken = get().refreshToken ?? storedRefreshToken;
     if (!refreshToken) return;
 
     set({ isLoading: true });
@@ -108,15 +141,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const tokens = await authApi.refresh(refreshToken);
       setAuthHeader(tokens.accessToken);
 
+      const newRefreshToken = tokens.refreshToken ?? refreshToken;
+      await tokenStorage.saveTokens(tokens.accessToken, newRefreshToken);
+
       const user = await authApi.me();
       set({
         user,
         accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken ?? refreshToken,
+        refreshToken: newRefreshToken,
         isLoading: false,
       });
     } catch {
       // Refresh failed — session is no longer valid
+      await tokenStorage.clearTokens();
       get().handleSessionExpired();
     }
   },
@@ -124,6 +161,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   handleSessionExpired: () => {
     const wasLoggedIn = !!get().user;
     setAuthHeader(null);
+    tokenStorage.clearTokens();
     set({
       user: null,
       accessToken: null,
@@ -139,4 +177,5 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   clearSessionExpiredMessage: () => {
     set({ sessionExpiredMessage: null });
   },
-}));
+};
+});

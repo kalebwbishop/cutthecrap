@@ -19,8 +19,23 @@ async def send_feedback_email(*, message: str, user_email: str | None = None) ->
     ``{"success": False, "error": "..."}`` on failure.
     """
     settings = get_settings()
-    if not settings.openai_api_key:
-        return {"success": False, "error": "API key is not configured on the server."}
+
+    # Prefer OAuth2 client credentials; fall back to legacy API key
+    from app.services.token_service import get_bearer_token
+
+    bearer = await get_bearer_token()
+    if bearer:
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {bearer}",
+        }
+    elif settings.openai_api_key:
+        headers = {
+            "Content-Type": "application/json",
+            "x-api-key": settings.openai_api_key,
+        }
+    else:
+        return {"success": False, "error": "Deploy Box API credentials are not configured on the server."}
 
     url = f"{settings.chatgpt_api_base.rstrip('/')}/api/v1/email"
 
@@ -39,13 +54,8 @@ async def send_feedback_email(*, message: str, user_email: str | None = None) ->
         "html_content": html_content,
     }
 
-    headers = {
-        "Content-Type": "application/json",
-        "x-api-key": settings.openai_api_key,
-    }
-
     try:
-        async with httpx.AsyncClient(timeout=15, verify=False) as client:
+        async with httpx.AsyncClient(timeout=15, verify=not settings.is_dev) as client:
             resp = await client.post(url, headers=headers, json=payload)
     except httpx.TimeoutException:
         logger.error("Email endpoint timed out: %s", url)

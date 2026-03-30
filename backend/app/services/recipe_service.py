@@ -4,8 +4,10 @@ logic from the frontend recipeApi.ts into server-side Python.
 """
 
 import html
+import ipaddress
 import re
 from typing import Any, Optional
+from urllib.parse import urlparse
 
 import httpx
 
@@ -25,6 +27,11 @@ FETCH_HEADERS = {
 }
 
 FETCH_TIMEOUT = 15.0  # seconds
+
+# Domains whose pages act as wrappers around an external recipe link.
+# When detected, we extract the original source URL and follow it instead.
+_PINTEREST_HOSTS = {"pin.it", "pinterest.com", "www.pinterest.com",
+                    "pinterest.co.uk", "www.pinterest.co.uk"}
 
 RECIPE_SYSTEM_PROMPT = (
     "You are a recipe extraction assistant. Given the raw text content of a web page, "
@@ -50,7 +57,9 @@ RECIPE_SYSTEM_PROMPT = (
     "  - total_time: the overall total time from start to finish\n"
     "- Only include a time category if it genuinely applies. Use null for times that don't apply.\n"
     "- If something is truly not findable, use null for strings or empty arrays for lists.\n"
-    "- Clean up any ad copy, SEO filler, or life-story content - just the recipe facts."
+    "- Clean up any ad copy, SEO filler, or life-story content - just the recipe facts.\n"
+    "- IMPORTANT: Rewrite all text in your own words. Do not copy verbatim from the source. "
+    "Keep the same meaning, quantities, temperatures, and technique but rephrase naturally."
 )
 
 RECIPE_RESPONSE_FORMAT: dict[str, Any] = {
@@ -190,8 +199,23 @@ async def call_openai_chat(
     ``{"success": False, "error": "..."}`` on failure.
     """
     settings = get_settings()
-    if not settings.openai_api_key:
-        return {"success": False, "error": "OPENAI_API_KEY is not configured on the server."}
+
+    # Prefer OAuth2 client credentials; fall back to legacy API key
+    from app.services.token_service import get_bearer_token
+
+    bearer = await get_bearer_token()
+    if bearer:
+        headers: dict[str, str] = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {bearer}",
+        }
+    elif settings.openai_api_key:
+        headers = {
+            "Content-Type": "application/json",
+            "x-api-key": settings.openai_api_key,
+        }
+    else:
+        return {"success": False, "error": "Deploy Box API credentials are not configured on the server."}
 
     url = f"{settings.chatgpt_api_base.rstrip('/')}/api/v1/chatgpt"
 
@@ -205,14 +229,9 @@ async def call_openai_chat(
     if response_format:
         payload["response_format"] = response_format
 
-    headers: dict[str, str] = {
-        "Content-Type": "application/json",
-        "x-api-key": settings.openai_api_key,
-    }
-
     try:
         timeout_seconds = max(len(text) / 100, 10)  # ~100 tokens per second, minimum 10 seconds
-        async with httpx.AsyncClient(timeout=timeout_seconds, verify=False) as client:
+        async with httpx.AsyncClient(timeout=timeout_seconds, verify=not settings.is_dev) as client:
             resp = await client.post(url, headers=headers, json=payload)
     except httpx.TimeoutException:
         logger.error("Azure Function timed out: %s", url)
@@ -233,7 +252,77 @@ async def call_openai_chat(
     return resp.json()
 
 
+# ── SSRF protection ──────────────────────────────────────────────────
+
+
+def _validate_url(url: str) -> Optional[str]:
+    """Validate a user-supplied URL and return an error message if unsafe.
+
+    Returns None if the URL is safe, or an error string if it should be rejected.
+    """
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return "Invalid URL format."
+
+    if parsed.scheme not in ("http", "https"):
+        return f"Unsupported URL scheme: {parsed.scheme!r}. Only http and https are allowed."
+
+    hostname = parsed.hostname
+    if not hostname:
+        return "URL is missing a hostname."
+
+    # Block private/reserved IP ranges (SSRF protection)
+    try:
+        addr = ipaddress.ip_address(hostname)
+        if addr.is_private or addr.is_loopback or addr.is_reserved or addr.is_link_local:
+            return "URLs pointing to internal/private networks are not allowed."
+    except ValueError:
+        # hostname is a domain name, not a raw IP — that's fine
+        pass
+
+    # Block obviously internal hostnames
+    if hostname in ("localhost", "metadata.google.internal") or hostname.endswith(".local"):
+        return "URLs pointing to internal/private networks are not allowed."
+
+    return None
+
+
 # ── URL fetching ─────────────────────────────────────────────────────
+
+
+def _is_pinterest_url(url: str) -> bool:
+    """Return True when *url* points to a Pinterest domain."""
+    host = urlparse(url).hostname or ""
+    # Strip leading "www." for simpler matching, then check suffix
+    return host in _PINTEREST_HOSTS or host.endswith(".pinterest.com")
+
+
+def _extract_source_url(raw_html: str) -> Optional[str]:
+    """Extract the original source URL from a Pinterest pin page.
+
+    Pinterest embeds the source link in ``og:see_also`` and
+    ``pinterestapp:source`` meta tags.  We try both and return the first
+    match, or *None* if the pin doesn't link to an external page.
+    """
+    for attr in ("og:see_also", "pinterestapp:source"):
+        match = re.search(
+            rf'<meta\s[^>]*(?:property|name)=["\']?{re.escape(attr)}["\']?'
+            r'\s[^>]*content=["\']([^"\']+)["\']',
+            raw_html,
+            re.IGNORECASE,
+        )
+        if not match:
+            # meta tags may list content= before property=
+            match = re.search(
+                r'<meta\s[^>]*content=["\']([^"\']+)["\']'
+                rf'\s[^>]*(?:property|name)=["\']?{re.escape(attr)}["\']?',
+                raw_html,
+                re.IGNORECASE,
+            )
+        if match:
+            return match.group(1)
+    return None
 
 
 async def fetch_and_extract(url: str) -> dict[str, Any]:
@@ -242,12 +331,18 @@ async def fetch_and_extract(url: str) -> dict[str, Any]:
     Returns ``{"ok": True, "title": ..., "text": ...}`` on success, or
     ``{"ok": False, "error": ..., "status_code": ...}`` on failure.
     """
+    # SSRF protection — reject internal/private URLs
+    url_error = _validate_url(url)
+    if url_error:
+        return {"ok": False, "error": url_error, "status_code": 400}
+
+    settings = get_settings()
     try:
         async with httpx.AsyncClient(
             timeout=FETCH_TIMEOUT,
             follow_redirects=True,
             headers=FETCH_HEADERS,
-            verify=False,
+            verify=not settings.is_dev,
         ) as client:
             resp = await client.get(url)
     except httpx.TimeoutException:
@@ -264,6 +359,19 @@ async def fetch_and_extract(url: str) -> dict[str, Any]:
         }
 
     raw_html = resp.text
+
+    # Pinterest pins are JS-rendered SPAs with no recipe content in the HTML.
+    # Extract the original source URL from meta tags and follow it instead.
+    if _is_pinterest_url(str(resp.url)):
+        source_url = _extract_source_url(raw_html)
+        if source_url:
+            logger.info("Pinterest pin detected – following source URL: %s", source_url)
+            return await fetch_and_extract(source_url)
+        return {
+            "ok": False,
+            "error": "This Pinterest pin doesn't link to an external recipe page.",
+            "status_code": 0,
+        }
 
     # Try structured data extraction first (JSON-LD → Microdata → RDFa)
     from app.services.structured_data import extract_structured_recipe
@@ -300,7 +408,7 @@ async def get_saved_recipes(user_id: str) -> list[dict[str, Any]]:
     """Return all saved recipes for a user, newest first."""
     pool = await get_pool()
     rows = await pool.fetch(
-        "SELECT id, title, source_url, created_at FROM saved_recipes "
+        "SELECT id, title, source_url, folder_id, created_at FROM saved_recipes "
         "WHERE user_id = $1 ORDER BY created_at DESC",
         user_id,
     )
@@ -309,6 +417,7 @@ async def get_saved_recipes(user_id: str) -> list[dict[str, Any]]:
             "id": str(r["id"]),
             "title": r["title"],
             "sourceUrl": r["source_url"],
+            "folderId": str(r["folder_id"]) if r["folder_id"] else None,
             "createdAt": str(r["created_at"]) if r["created_at"] else None,
         }
         for r in rows
@@ -344,6 +453,7 @@ async def get_saved_recipe_by_id(user_id: str, recipe_id: str) -> dict[str, Any]
         "ingredients": list(row["ingredients"]) if row["ingredients"] else [],
         "steps": _json.loads(row["steps"]) if isinstance(row["steps"], str) else row["steps"],
         "notes": list(row["notes"]) if row["notes"] else [],
+        "folderId": str(row["folder_id"]) if row.get("folder_id") else None,
         "createdAt": str(row["created_at"]) if row["created_at"] else None,
     }
 
@@ -383,7 +493,7 @@ async def create_saved_recipe(
             $5, $6, $7, $8,
             $9, $10, $11, $12,
             $13, $14, $15::jsonb, $16
-        ) RETURNING id, title, source_url, created_at
+        ) RETURNING id, title, source_url, folder_id, created_at
         """,
         user_id,
         title,
@@ -408,6 +518,7 @@ async def create_saved_recipe(
         "id": str(row["id"]),
         "title": row["title"],
         "sourceUrl": row["source_url"],
+        "folderId": str(row["folder_id"]) if row["folder_id"] else None,
         "createdAt": str(row["created_at"]) if row["created_at"] else None,
     }
 

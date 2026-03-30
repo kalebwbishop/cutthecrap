@@ -241,6 +241,39 @@ async def me(current_user: CurrentUser = Depends(get_current_user)):
         )
 
 
+# ── DELETE /auth/account ──────────────────────────────────────────────
+
+
+@router.delete("/account")
+async def delete_account(current_user: CurrentUser = Depends(get_current_user)):
+    """Permanently delete the authenticated user's account and all associated data."""
+    try:
+        # Delete user from local database (cascades to saved_recipes + recipe_history)
+        deleted = await auth_service.delete_user(current_user.id)
+        if not deleted:
+            return JSONResponse(
+                status_code=404,
+                content={"error": "Not Found", "message": "User not found"},
+            )
+
+        # Best-effort: delete the user from WorkOS as well
+        try:
+            workos = get_workos_client()
+            workos.user_management.delete_user(user_id=current_user.workos_user_id)
+        except Exception:
+            logger.warning("Failed to delete user from WorkOS (local deletion succeeded)", exc_info=True)
+
+        logger.info("Account deleted for user: %s", current_user.id)
+        return {"message": "Account deleted successfully"}
+
+    except Exception:
+        logger.error("Account deletion failed", exc_info=True)
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Internal Server Error", "message": "Failed to delete account"},
+        )
+
+
 # ── POST /auth/logout ───────────────────────────────────────────────
 
 

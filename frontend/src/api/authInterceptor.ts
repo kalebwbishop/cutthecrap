@@ -1,6 +1,7 @@
 import apiClient from './client';
 import { authApi } from './authApi';
 import { useAuthStore } from '@/store/authStore';
+import { tokenStorage } from '@/utils/tokenStorage';
 
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -76,6 +77,7 @@ export function setupAuthInterceptor() {
           accessToken: newAccessToken,
           refreshToken: newRefreshToken,
         });
+        await tokenStorage.saveTokens(newAccessToken, newRefreshToken);
 
         // Retry all queued requests with the new token
         processQueue(null, newAccessToken);

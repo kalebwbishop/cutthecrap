@@ -4,6 +4,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from app.config.database import close_pool, get_pool
 from app.config.settings import get_settings
@@ -15,6 +18,9 @@ from app.middleware.error_handler import (
 from app.routes.auth import router as auth_router
 from app.routes.chatgpt import router as chatgpt_router
 from app.routes.feedback import router as feedback_router
+from app.routes.friends import router as friends_router
+from app.routes.folders import router as folders_router
+from app.routes.groups import router as groups_router
 from app.routes.recipes import router as recipes_router
 from app.utils.logger import logger
 
@@ -43,6 +49,8 @@ async def lifespan(app: FastAPI):
 
 settings = get_settings()
 
+limiter = Limiter(key_func=get_remote_address, default_limits=[])
+
 app = FastAPI(
     title="Cut The Crap API",
     version="1.0.0",
@@ -51,11 +59,14 @@ app = FastAPI(
     redirect_slashes=False,
 )
 
-# CORS
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# CORS — in dev mode with wildcard origins, disable credentials to comply with spec
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
-    allow_credentials=True,
+    allow_credentials="*" not in settings.cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -125,6 +136,9 @@ API_PREFIX = "/api/v1"
 app.include_router(auth_router, prefix=API_PREFIX)
 app.include_router(chatgpt_router, prefix=API_PREFIX)
 app.include_router(feedback_router, prefix=API_PREFIX)
+app.include_router(folders_router, prefix=API_PREFIX)
+app.include_router(friends_router, prefix=API_PREFIX)
+app.include_router(groups_router, prefix=API_PREFIX)
 app.include_router(recipes_router, prefix=API_PREFIX)
 
 

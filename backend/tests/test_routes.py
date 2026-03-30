@@ -14,7 +14,7 @@ from app.middleware.auth import CurrentUser, get_current_user
 
 
 FAKE_USER = CurrentUser(
-    id="user-uuid-1",
+    id="00000000-0000-0000-0000-000000000001",
     workos_user_id="user_01ABC",
     email="test@example.com",
     name="Test User",
@@ -265,7 +265,9 @@ class TestRecipeRoutes:
         assert response.status_code == 404
 
     @patch("app.routes.recipes.svc.create_saved_recipe")
-    def test_save_recipe(self, mock_create):
+    @patch("app.routes.recipes.svc.count_saved_recipes", new_callable=AsyncMock, return_value=0)
+    @patch("app.routes.recipes.is_pro", new_callable=AsyncMock, return_value=False)
+    def test_save_recipe(self, _mock_pro, _mock_count, mock_create):
         mock_create.return_value = {
             "id": "new-1",
             "title": "Cake",

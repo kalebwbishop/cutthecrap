@@ -23,7 +23,12 @@ class Settings(BaseSettings):
 
     # ChatGPT Azure Function
     chatgpt_api_base: str = "https://deploy-box-apis-func-dev.azurewebsites.net"
-    openai_api_key: str = ""
+    openai_api_key: str = ""  # deprecated – use client credentials below
+    deploy_box_client_id: str = ""
+    deploy_box_client_secret: str = ""
+
+    # RevenueCat (server-side entitlement verification)
+    revenuecat_api_key: str = ""
 
     # CORS
     cors_origin: str = "http://localhost:19006,http://localhost:19000,http://localhost:8081"
@@ -37,10 +42,16 @@ class Settings(BaseSettings):
     @property
     def cors_origins(self) -> list[str]:
         origins = [origin.strip() for origin in self.cors_origin.split(",")]
-        # In development, allow all origins so physical devices can connect
         if self.environment == "development" and "*" not in origins:
+            # In development, allow all origins so physical devices can connect.
+            # When using wildcard, credentials must be disabled — FastAPI/Starlette
+            # handles this automatically by converting to a permissive origin echo.
             origins.append("*")
         return origins
+
+    @property
+    def is_dev(self) -> bool:
+        return self.environment == "development"
 
 
 @lru_cache

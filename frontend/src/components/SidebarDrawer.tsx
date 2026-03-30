@@ -7,18 +7,30 @@ import {
   StyleSheet,
   Animated,
   ScrollView,
-  Dimensions,
   Platform,
+  Modal,
+  TextInput,
 } from 'react-native';
-import { CloseIcon, MailIcon, TrashIcon } from '@/components/Icons';
+import {
+  CloseIcon,
+  MailIcon,
+  TrashIcon,
+  FolderIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  PlusIcon,
+  EditIcon,
+  MoveIcon,
+} from '@/components/Icons';
 import { useAuthStore } from '@/store/authStore';
 import { useRecipeStore } from '@/store/recipeStore';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { recipeApi } from '@/api/recipeApi';
+import { folderApi } from '@/api/folderApi';
 import { useRouter } from 'expo-router';
 import { useThemeColors, fontSizes, spacing, radii } from '@/theme';
 import type { ThemeColors } from '@/theme';
-import type { SavedRecipeSummary } from '@/types/recipe';
+import type { SavedRecipeSummary, RecipeFolder } from '@/types/recipe';
 
 const DRAWER_WIDTH = 300;
 
@@ -34,6 +46,7 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
+  const deleteAccount = useAuthStore((s) => s.deleteAccount);
   const openSavedRecipe = useRecipeStore((s) => s.openSavedRecipe);
   const openHistoryRecipe = useRecipeStore((s) => s.openHistoryRecipe);
   const isPro = useSubscriptionStore((s) => s.isPro);
@@ -44,16 +57,35 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
   const [activeTab, setActiveTab] = useState<'saved' | 'history'>('saved');
   const [savedRecipes, setSavedRecipes] = useState<SavedRecipeSummary[]>([]);
   const [historyRecipes, setHistoryRecipes] = useState<SavedRecipeSummary[]>([]);
+  const [folders, setFolders] = useState<RecipeFolder[]>([]);
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
   const [recipesLoading, setRecipesLoading] = useState(false);
   const [hoveredRecipeId, setHoveredRecipeId] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Folder management modals
+  const [showFolderModal, setShowFolderModal] = useState(false);
+  const [folderModalMode, setFolderModalMode] = useState<'create' | 'rename'>('create');
+  const [folderModalName, setFolderModalName] = useState('');
+  const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
+  const [folderModalError, setFolderModalError] = useState('');
+
+  // Move-to-folder modal
+  const [showMoveModal, setShowMoveModal] = useState(false);
+  const [movingRecipeId, setMovingRecipeId] = useState<string | null>(null);
 
   const fetchRecipes = useCallback(async () => {
     if (!user) return;
     setRecipesLoading(true);
     try {
       if (activeTab === 'saved') {
-        const recipes = await recipeApi.getSavedRecipes();
+        const [recipes, flds] = await Promise.all([
+          recipeApi.getSavedRecipes(),
+          folderApi.getFolders(),
+        ]);
         setSavedRecipes(recipes);
+        setFolders(flds);
       } else {
         const recipes = await recipeApi.getRecipeHistory();
         setHistoryRecipes(recipes);
@@ -101,10 +133,11 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
     onClose();
     if (activeTab === 'saved') {
       await openSavedRecipe(id);
+      router.push({ pathname: '/result', params: { savedRecipeId: id } });
     } else {
       await openHistoryRecipe(id);
+      router.push({ pathname: '/result', params: { historyRecipeId: id } });
     }
-    router.push('/result');
   };
 
   const handleDeleteRecipe = (id: string) => {
@@ -120,6 +153,17 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
     await logout();
   };
 
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteAccount();
+      setShowDeleteModal(false);
+      onClose();
+    } catch {
+      setIsDeleting(false);
+    }
+  };
+
   const handleUpgrade = () => {
     onClose();
     if (isPro) {
@@ -128,6 +172,162 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
       router.push('/upgrade');
     }
   };
+
+  // ── Folder helpers ──────────────────────────────────────────────────
+
+  const toggleFolder = (folderId: string) => {
+    setExpandedFolders((prev) => {
+      const next = new Set(prev);
+      if (next.has(folderId)) next.delete(folderId);
+      else next.add(folderId);
+      return next;
+    });
+  };
+
+  const openCreateFolderModal = () => {
+    setFolderModalMode('create');
+    setFolderModalName('');
+    setFolderModalError('');
+    setEditingFolderId(null);
+    setShowFolderModal(true);
+  };
+
+  const openRenameFolderModal = (folder: RecipeFolder) => {
+    setFolderModalMode('rename');
+    setFolderModalName(folder.name);
+    setFolderModalError('');
+    setEditingFolderId(folder.id);
+    setShowFolderModal(true);
+  };
+
+  const handleFolderModalSubmit = async () => {
+    const name = folderModalName.trim();
+    if (!name) {
+      setFolderModalError('Folder name is required');
+      return;
+    }
+    try {
+      if (folderModalMode === 'create') {
+        const folder = await folderApi.createFolder(name);
+        setFolders((prev) => [...prev, folder].sort((a, b) => a.name.localeCompare(b.name)));
+      } else if (editingFolderId) {
+        const folder = await folderApi.renameFolder(editingFolderId, name);
+        setFolders((prev) =>
+          prev.map((f) => (f.id === editingFolderId ? folder : f)).sort((a, b) => a.name.localeCompare(b.name)),
+        );
+      }
+      setShowFolderModal(false);
+    } catch (e: any) {
+      const msg = e?.response?.data?.error;
+      setFolderModalError(typeof msg === 'string' ? msg : 'Something went wrong');
+    }
+  };
+
+  const handleDeleteFolder = async (folderId: string) => {
+    try {
+      await folderApi.deleteFolder(folderId);
+      setFolders((prev) => prev.filter((f) => f.id !== folderId));
+      // Recipes in deleted folder become uncategorized
+      setSavedRecipes((prev) =>
+        prev.map((r) => (r.folderId === folderId ? { ...r, folderId: null } : r)),
+      );
+    } catch {
+      // Silently fail
+    }
+  };
+
+  const openMoveModal = (recipeId: string) => {
+    setMovingRecipeId(recipeId);
+    setShowMoveModal(true);
+  };
+
+  const handleMoveRecipe = async (folderId: string | null) => {
+    if (!movingRecipeId) return;
+    try {
+      await folderApi.moveRecipeToFolder(movingRecipeId, folderId);
+      setSavedRecipes((prev) =>
+        prev.map((r) => (r.id === movingRecipeId ? { ...r, folderId } : r)),
+      );
+      // Update folder counts
+      setFolders((prev) =>
+        prev.map((f) => {
+          let count = f.recipeCount;
+          const oldFolder = savedRecipes.find((r) => r.id === movingRecipeId)?.folderId;
+          if (oldFolder === f.id) count--;
+          if (folderId === f.id) count++;
+          return { ...f, recipeCount: Math.max(0, count) };
+        }),
+      );
+    } catch {
+      // Silently fail
+    }
+    setShowMoveModal(false);
+    setMovingRecipeId(null);
+  };
+
+  // ── Derived data ────────────────────────────────────────────────────
+
+  const uncategorizedRecipes = useMemo(
+    () => savedRecipes.filter((r) => !r.folderId),
+    [savedRecipes],
+  );
+
+  const recipesByFolder = useMemo(() => {
+    const map = new Map<string, SavedRecipeSummary[]>();
+    for (const r of savedRecipes) {
+      if (r.folderId) {
+        const list = map.get(r.folderId) || [];
+        list.push(r);
+        map.set(r.folderId, list);
+      }
+    }
+    return map;
+  }, [savedRecipes]);
+
+  // ── Recipe row renderer ─────────────────────────────────────────────
+
+  const renderRecipeItem = (recipe: SavedRecipeSummary, showMove = false) => (
+    <Pressable
+      key={recipe.id}
+      style={({ pressed }) => [s.recipeItem, pressed && { opacity: 0.7 }]}
+      onPress={() => handleOpenRecipe(recipe.id)}
+      onHoverIn={() => setHoveredRecipeId(recipe.id)}
+      onHoverOut={() => setHoveredRecipeId(null)}
+    >
+      <View style={s.recipeItemRow}>
+        <View style={s.recipeItemText}>
+          <Text style={s.recipeTitle} numberOfLines={2}>{recipe.title}</Text>
+          {recipe.createdAt ? (
+            <Text style={s.recipeDate}>
+              {new Date(recipe.createdAt).toLocaleDateString()}
+            </Text>
+          ) : null}
+        </View>
+        {(Platform.OS !== 'web' || hoveredRecipeId === recipe.id) && (
+          <View style={s.recipeActions}>
+            {showMove && activeTab === 'saved' && (
+              <TouchableOpacity
+                onPress={() => openMoveModal(recipe.id)}
+                hitSlop={8}
+                activeOpacity={0.7}
+                style={s.trashButton}
+              >
+                <MoveIcon size={14} color={colors.textMuted} />
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={() => handleDeleteRecipe(recipe.id)}
+              hitSlop={8}
+              activeOpacity={0.7}
+              style={s.trashButton}
+            >
+              <TrashIcon size={16} color={colors.error} />
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    </Pressable>
+  );
 
   // Don't render anything until user is known
   if (!user) return null;
@@ -176,47 +376,111 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
         <ScrollView style={s.recipeList} contentContainerStyle={s.recipeListContent}>
           {recipesLoading ? (
             <Text style={s.emptyText}>Loading…</Text>
-          ) : (activeTab === 'saved' ? savedRecipes : historyRecipes).length === 0 ? (
-            <Text style={s.emptyText}>
-              {activeTab === 'saved' ? 'No saved recipes yet.' : 'No recent recipes yet.'}
-            </Text>
+          ) : activeTab === 'history' ? (
+            // History tab — flat list, no folders
+            historyRecipes.length === 0 ? (
+              <Text style={s.emptyText}>No recent recipes yet.</Text>
+            ) : (
+              historyRecipes.map((recipe) => renderRecipeItem(recipe))
+            )
+          ) : savedRecipes.length === 0 && folders.length === 0 ? (
+            <Text style={s.emptyText}>No saved recipes yet.</Text>
           ) : (
-            (activeTab === 'saved' ? savedRecipes : historyRecipes).map((recipe) => (
-              <Pressable
-                key={recipe.id}
-                style={({ pressed }) => [s.recipeItem, pressed && { opacity: 0.7 }]}
-                onPress={() => handleOpenRecipe(recipe.id)}
-                onHoverIn={() => setHoveredRecipeId(recipe.id)}
-                onHoverOut={() => setHoveredRecipeId(null)}
-              >
-                <View style={s.recipeItemRow}>
-                  <View style={s.recipeItemText}>
-                    <Text style={s.recipeTitle} numberOfLines={2}>{recipe.title}</Text>
-                    {recipe.createdAt ? (
-                      <Text style={s.recipeDate}>
-                        {new Date(recipe.createdAt).toLocaleDateString()}
-                      </Text>
-                    ) : null}
-                  </View>
-                  {hoveredRecipeId === recipe.id && (
-                    <TouchableOpacity
-                      onPress={() => handleDeleteRecipe(recipe.id)}
-                      hitSlop={8}
-                      activeOpacity={0.7}
-                      style={s.trashButton}
+            <>
+              {/* Folders */}
+              {folders.map((folder) => {
+                const isExpanded = expandedFolders.has(folder.id);
+                const folderRecipes = recipesByFolder.get(folder.id) || [];
+                return (
+                  <View key={folder.id}>
+                    <Pressable
+                      style={s.folderHeader}
+                      onPress={() => toggleFolder(folder.id)}
                     >
-                      <TrashIcon size={16} color={colors.error} />
-                    </TouchableOpacity>
+                      <View style={s.folderHeaderLeft}>
+                        {isExpanded
+                          ? <ChevronDownIcon size={16} color={colors.textMuted} />
+                          : <ChevronRightIcon size={16} color={colors.textMuted} />}
+                        <FolderIcon size={16} color={colors.textMuted} />
+                        <Text style={s.folderName} numberOfLines={1}>{folder.name}</Text>
+                        <Text style={s.folderCount}>({folderRecipes.length})</Text>
+                      </View>
+                      <View style={s.folderActions}>
+                        <TouchableOpacity
+                          onPress={() => openRenameFolderModal(folder)}
+                          hitSlop={6}
+                          activeOpacity={0.7}
+                        >
+                          <EditIcon size={14} color={colors.textMuted} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => handleDeleteFolder(folder.id)}
+                          hitSlop={6}
+                          activeOpacity={0.7}
+                        >
+                          <TrashIcon size={14} color={colors.error} />
+                        </TouchableOpacity>
+                      </View>
+                    </Pressable>
+                    {isExpanded && (
+                      <View style={s.folderContent}>
+                        {folderRecipes.length === 0 ? (
+                          <Text style={[s.emptyText, { paddingVertical: spacing.sm }]}>No recipes in this folder.</Text>
+                        ) : (
+                          folderRecipes.map((recipe) => renderRecipeItem(recipe, true))
+                        )}
+                      </View>
+                    )}
+                  </View>
+                );
+              })}
+
+              {/* Uncategorized recipes */}
+              {uncategorizedRecipes.length > 0 && (
+                <>
+                  {folders.length > 0 && (
+                    <Text style={s.uncategorizedLabel}>Uncategorized</Text>
                   )}
-                </View>
-              </Pressable>
-            ))
+                  {uncategorizedRecipes.map((recipe) => renderRecipeItem(recipe, true))}
+                </>
+              )}
+            </>
+          )}
+
+          {/* Create folder button — always visible inside scroll on Saved tab */}
+          {activeTab === 'saved' && (
+            <TouchableOpacity
+              style={s.createFolderButton}
+              onPress={openCreateFolderModal}
+              activeOpacity={0.7}
+            >
+              <PlusIcon size={16} color={colors.textMuted} />
+              <Text style={s.createFolderText}>New Folder</Text>
+            </TouchableOpacity>
           )}
         </ScrollView>
 
         {/* Footer actions */}
         <View style={s.footer}>
           <View style={s.divider} />
+
+          {/* Social navigation */}
+          <TouchableOpacity
+            style={s.navButton}
+            onPress={() => { onClose(); router.push('/friends' as any); }}
+            activeOpacity={0.7}
+          >
+            <Text style={s.navText}>👥  Friends</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={s.navButton}
+            onPress={() => { onClose(); router.push('/groups' as any); }}
+            activeOpacity={0.7}
+          >
+            <Text style={s.navText}>📋  Groups</Text>
+          </TouchableOpacity>
+
+          <View style={[s.divider, { marginTop: spacing.sm }]} />
           <TouchableOpacity style={isPro ? s.manageButton : s.upgradeButton} onPress={handleUpgrade} activeOpacity={0.7}>
             <Text style={isPro ? s.manageText : s.upgradeText}>
               {isPro ? 'Manage Subscription' : 'Upgrade'}
@@ -225,6 +489,10 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
           <TouchableOpacity style={s.logoutButton} onPress={handleLogout} activeOpacity={0.7}>
             <Text style={s.logoutText}>Log out</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={s.deleteAccountButton} onPress={() => setShowDeleteModal(true)} activeOpacity={0.7}>
+            <TrashIcon size={16} color={colors.error} />
+            <Text style={s.deleteAccountText}>Delete Account</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={s.feedbackButton}
             onPress={() => { onClose(); router.push('/feedback'); }}
@@ -232,13 +500,6 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
           >
             <MailIcon size={16} color={colors.textMuted} />
             <Text style={s.feedbackText}>Send Feedback</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={s.feedbackButton}
-            onPress={() => { onClose(); router.push('/upcoming-features'); }}
-            activeOpacity={0.7}
-          >
-            <Text style={s.feedbackText}>Upcoming Features</Text>
           </TouchableOpacity>
           <View style={s.legalRow}>
             <TouchableOpacity onPress={() => { onClose(); router.push('/terms'); }} activeOpacity={0.7}>
@@ -251,6 +512,114 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
           </View>
         </View>
       </Animated.View>
+
+      {/* Delete account confirmation modal */}
+      <Modal visible={showDeleteModal} transparent animationType="fade" onRequestClose={() => setShowDeleteModal(false)}>
+        <View style={s.modalOverlay}>
+          <View style={s.modalContent}>
+            <Text style={s.modalTitle}>Delete Account?</Text>
+            <Text style={s.modalBody}>
+              This will permanently delete your account and all saved recipes. This action cannot be undone.
+            </Text>
+            <View style={s.modalActions}>
+              <TouchableOpacity
+                style={s.modalCancelButton}
+                onPress={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+                activeOpacity={0.7}
+              >
+                <Text style={s.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.modalDeleteButton, isDeleting && { opacity: 0.6 }]}
+                onPress={handleDeleteAccount}
+                disabled={isDeleting}
+                activeOpacity={0.7}
+              >
+                <Text style={s.modalDeleteText}>{isDeleting ? 'Deleting…' : 'Delete'}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Create / Rename folder modal */}
+      <Modal visible={showFolderModal} transparent animationType="fade" onRequestClose={() => setShowFolderModal(false)}>
+        <View style={s.modalOverlay}>
+          <View style={s.modalContent}>
+            <Text style={s.modalTitle}>
+              {folderModalMode === 'create' ? 'New Folder' : 'Rename Folder'}
+            </Text>
+            <TextInput
+              style={s.folderInput}
+              value={folderModalName}
+              onChangeText={(t) => { setFolderModalName(t); setFolderModalError(''); }}
+              placeholder="Folder name"
+              placeholderTextColor={colors.textMuted}
+              autoFocus
+              maxLength={255}
+              onSubmitEditing={handleFolderModalSubmit}
+            />
+            {folderModalError ? (
+              <Text style={s.folderInputError}>{folderModalError}</Text>
+            ) : null}
+            <View style={s.modalActions}>
+              <TouchableOpacity
+                style={s.modalCancelButton}
+                onPress={() => setShowFolderModal(false)}
+                activeOpacity={0.7}
+              >
+                <Text style={s.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={s.folderSubmitButton}
+                onPress={handleFolderModalSubmit}
+                activeOpacity={0.7}
+              >
+                <Text style={s.folderSubmitText}>
+                  {folderModalMode === 'create' ? 'Create' : 'Rename'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Move to folder modal */}
+      <Modal visible={showMoveModal} transparent animationType="fade" onRequestClose={() => setShowMoveModal(false)}>
+        <View style={s.modalOverlay}>
+          <View style={s.modalContent}>
+            <Text style={s.modalTitle}>Move to Folder</Text>
+            <ScrollView style={s.moveList}>
+              <TouchableOpacity
+                style={s.moveOption}
+                onPress={() => handleMoveRecipe(null)}
+                activeOpacity={0.7}
+              >
+                <Text style={s.moveOptionText}>Uncategorized</Text>
+              </TouchableOpacity>
+              {folders.map((folder) => (
+                <TouchableOpacity
+                  key={folder.id}
+                  style={s.moveOption}
+                  onPress={() => handleMoveRecipe(folder.id)}
+                  activeOpacity={0.7}
+                >
+                  <FolderIcon size={16} color={colors.textMuted} />
+                  <Text style={s.moveOptionText}>{folder.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <TouchableOpacity
+              style={[s.modalCancelButton, { marginTop: spacing.sm }]}
+              onPress={() => setShowMoveModal(false)}
+              activeOpacity={0.7}
+            >
+              <Text style={s.modalCancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -369,6 +738,11 @@ const createStyles = (colors: ThemeColors) =>
     trashButton: {
       padding: spacing.xs,
     },
+    recipeActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+    },
     recipeTitle: {
       fontSize: fontSizes.base,
       fontWeight: '500',
@@ -384,12 +758,109 @@ const createStyles = (colors: ThemeColors) =>
       color: colors.textMuted,
       paddingVertical: spacing.lg,
     },
+    folderHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: spacing.sm,
+      paddingTop: spacing.md,
+    },
+    folderHeaderLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+      gap: 4,
+    },
+    folderName: {
+      fontSize: fontSizes.sm,
+      fontWeight: '600',
+      color: colors.text,
+      flex: 1,
+    },
+    folderCount: {
+      fontSize: fontSizes.xs,
+      color: colors.textMuted,
+      marginLeft: 2,
+    },
+    folderActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    folderContent: {
+      paddingLeft: spacing.md,
+    },
+    uncategorizedLabel: {
+      fontSize: fontSizes.sm,
+      fontWeight: '600',
+      color: colors.textMuted,
+      paddingTop: spacing.md,
+      paddingBottom: spacing.xs,
+    },
+    createFolderButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: spacing.xs,
+      paddingVertical: spacing.sm,
+      marginHorizontal: spacing.lg,
+      borderTopWidth: 1,
+      borderTopColor: colors.sidebarDivider,
+    },
+    createFolderText: {
+      fontSize: fontSizes.sm,
+      color: colors.textMuted,
+      fontWeight: '500',
+    },
+    folderInput: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: radii.md,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      fontSize: fontSizes.base,
+      color: colors.text,
+      marginBottom: spacing.sm,
+    },
+    folderInputError: {
+      fontSize: fontSizes.sm,
+      color: colors.error,
+      marginBottom: spacing.sm,
+    },
+    folderSubmitButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: radii.md,
+      backgroundColor: colors.bgButton,
+      alignItems: 'center',
+    },
+    folderSubmitText: {
+      fontSize: fontSizes.base,
+      fontWeight: '600',
+      color: '#FFFFFF',
+    },
+    moveList: {
+      maxHeight: 250,
+      marginBottom: spacing.sm,
+    },
+    moveOption: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+      paddingVertical: spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.sidebarDivider,
+    },
+    moveOptionText: {
+      fontSize: fontSizes.base,
+      color: colors.text,
+    },
     footer: {
       paddingBottom: Platform.OS === 'ios' ? 34 : spacing.lg,
     },
     upgradeButton: {
       marginHorizontal: spacing.lg,
-      marginTop: spacing.md,
+      marginTop: spacing.sm,
       paddingVertical: 10,
       borderRadius: radii.md,
       backgroundColor: colors.bgButton,
@@ -428,6 +899,20 @@ const createStyles = (colors: ThemeColors) =>
       fontWeight: '600',
       color: colors.text,
     },
+    deleteAccountButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginHorizontal: spacing.lg,
+      marginTop: spacing.sm,
+      paddingVertical: 10,
+      gap: spacing.sm,
+    },
+    deleteAccountText: {
+      fontSize: fontSizes.sm,
+      fontWeight: '600',
+      color: colors.error,
+    },
     feedbackButton: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -455,5 +940,70 @@ const createStyles = (colors: ThemeColors) =>
     legalSeparator: {
       fontSize: fontSizes.sm,
       color: colors.textMuted,
+    },
+    navButton: {
+      paddingHorizontal: spacing.lg,
+      paddingVertical: 10,
+      marginTop: spacing.xs,
+    },
+    navText: {
+      fontSize: fontSizes.base,
+      fontWeight: '500',
+      color: colors.text,
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: spacing.lg,
+    },
+    modalContent: {
+      backgroundColor: colors.background,
+      borderRadius: radii.lg,
+      padding: spacing.xl,
+      width: '100%',
+      maxWidth: 340,
+    },
+    modalTitle: {
+      fontSize: fontSizes.xl,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: spacing.sm,
+    },
+    modalBody: {
+      fontSize: fontSizes.base,
+      color: colors.textMuted,
+      lineHeight: 22,
+      marginBottom: spacing.lg,
+    },
+    modalActions: {
+      flexDirection: 'row',
+      gap: spacing.sm,
+    },
+    modalCancelButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: radii.md,
+      borderWidth: 1,
+      borderColor: colors.border,
+      alignItems: 'center',
+    },
+    modalCancelText: {
+      fontSize: fontSizes.base,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    modalDeleteButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: radii.md,
+      backgroundColor: colors.error,
+      alignItems: 'center',
+    },
+    modalDeleteText: {
+      fontSize: fontSizes.base,
+      fontWeight: '600',
+      color: '#FFFFFF',
     },
   });

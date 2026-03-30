@@ -52,3 +52,13 @@ async def get_user_with_profile(workos_user_id: str) -> Optional[dict]:
     d = dict(row)
     d["id"] = str(d["id"])
     return d
+
+
+async def delete_user(user_id: str) -> bool:
+    """Delete a user and all associated data (cascades to saved_recipes and recipe_history)."""
+    pool = await get_pool()
+    result = await pool.execute("DELETE FROM users WHERE id = $1", user_id)
+    deleted = result == "DELETE 1"
+    if deleted:
+        logger.info("User deleted: %s", user_id)
+    return deleted

@@ -155,7 +155,7 @@ export const recipeApi = {
         if (recipe && !recipe.is_recipe) return { title: recipe.title, is_recipe: false };
       }
 
-      console.log('Unexpected response from backend:', response.data);
+      if (__DEV__) console.log('Unexpected response from backend:', response.data);
 
       return buildSummaryResponse(
         '🤔 Could not extract a recipe from that page.\n\n📋 Error code: PARSE_FAILED',

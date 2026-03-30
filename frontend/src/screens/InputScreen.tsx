@@ -16,6 +16,7 @@ import { ArrowUpIcon, MenuIcon } from '@/components/Icons';
 import SidebarDrawer from '@/components/SidebarDrawer';
 import { useRecipeStore } from '@/store/recipeStore';
 import { useAuthStore } from '@/store/authStore';
+import { selectionFeedback } from '@/utils/haptics';
 import { useThemeColors, fontSizes, spacing, radii } from '@/theme';
 import type { ThemeColors } from '@/theme';
 
@@ -72,12 +73,8 @@ export default function InputScreen() {
 
   const handleSubmit = async () => {
     Keyboard.dismiss();
-    await submitUrl();
-    // After submitUrl, check store state to decide navigation
-    const state = useRecipeStore.getState();
-    if (state.isLoading) {
-      router.push('/loading');
-    }
+    selectionFeedback();
+    submitUrl();
   };
 
   // If the store is loading (e.g. submit triggered), navigate to loading

@@ -8,8 +8,10 @@ Provides two endpoints consumed by the frontend:
 
 from typing import Any, Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.services.recipe_service import (
     RECIPE_RESPONSE_FORMAT,
@@ -21,6 +23,7 @@ from app.services.recipe_service import (
 from app.utils.logger import logger
 
 router = APIRouter(prefix="/chatgpt", tags=["chatgpt"])
+limiter = Limiter(key_func=get_remote_address)
 
 
 # ── request models ───────────────────────────────────────────────────
@@ -32,7 +35,7 @@ class ParseTextPayload(BaseModel):
     model: str = "gpt-4o-mini"
     response_format: Optional[dict[str, Any]] = None
     temperature: float = 0.2
-    max_tokens: int = 2000
+    max_tokens: int = 4000
 
 
 class ParseUrlPayload(BaseModel):
@@ -41,14 +44,15 @@ class ParseUrlPayload(BaseModel):
     model: str = "gpt-4o-mini"
     response_format: Optional[dict[str, Any]] = None
     temperature: float = 0.2
-    max_tokens: int = 2000
+    max_tokens: int = 4000
 
 
 # ── POST /chatgpt/parse ─────────────────────────────────────────────
 
 
 @router.post("/parse")
-async def parse_text(payload: ParseTextPayload):
+@limiter.limit("10/minute")
+async def parse_text(payload: ParseTextPayload, request: Request):
     """Send raw text to OpenAI and return the structured result."""
     logger.info("chatgpt/parse – model=%s, text length=%d", payload.model, len(payload.text))
 
@@ -68,7 +72,8 @@ async def parse_text(payload: ParseTextPayload):
 
 
 @router.post("/parse-url")
-async def parse_url(payload: ParseUrlPayload):
+@limiter.limit("10/minute")
+async def parse_url(payload: ParseUrlPayload, request: Request):
     """Fetch a URL, extract visible text, then send it to OpenAI."""
     logger.info("chatgpt/parse-url – url=%s, model=%s", payload.url, payload.model)
 
@@ -83,13 +88,17 @@ async def parse_url(payload: ParseUrlPayload):
             }
         )
 
-    # If structured data extraction succeeded, return directly (skip OpenAI)
+    # Build the best available text for ChatGPT.
+    # Structured data gives cleaner input; fall back to raw visible text.
     if fetch_result.get("structured_recipe"):
-        logger.info("Returning structured data result for %s", payload.url)
-        return sanitize_recipe_strings({"success": True, "data": fetch_result["structured_recipe"]})
+        import json
+        input_text = json.dumps(fetch_result["structured_recipe"], indent=2)
+        logger.info("Using structured data as ChatGPT input for %s", payload.url)
+    else:
+        input_text = fetch_result["text"][:12_000]
 
     result = await call_openai_chat(
-        text=fetch_result["text"][:12_000],
+        text=input_text[:12_000],
         system_prompt=payload.system_prompt or RECIPE_SYSTEM_PROMPT,
         model=payload.model,
         response_format=payload.response_format or RECIPE_RESPONSE_FORMAT,

@@ -18,6 +18,14 @@ export const billingService: BillingService = {
   async configure(appUserId?: string) {
     if (configured) return;
     const apiKey = Platform.OS === 'ios' ? API_KEYS.apple : API_KEYS.google;
+    // Skip configuration if placeholder key is present (e.g. local dev without RevenueCat)
+    if (!apiKey || apiKey.startsWith('your_')) return;
+    // On hot reload in dev, the native SDK stays configured even though JS state resets.
+    // Sync the JS flag to avoid triggering the "Purchases instance already set" warning.
+    if (Purchases.isConfigured()) {
+      configured = true;
+      return;
+    }
     if (__DEV__) Purchases.setLogLevel(LOG_LEVEL.DEBUG);
     Purchases.configure({ apiKey, appUserID: appUserId ?? undefined });
     configured = true;

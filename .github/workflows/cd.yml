@@ -263,6 +263,7 @@ jobs:
           FRONTEND_URL=https://${{ steps.kv.outputs.DOMAIN_NAME }}
           ENVEOF
 
+          ssh azureuser@$VM_IP "mkdir -p /opt/cutthecrap/repo/backend"
           scp /tmp/backend.env azureuser@$VM_IP:/opt/cutthecrap/repo/backend/.env
           rm -f /tmp/backend.env
 

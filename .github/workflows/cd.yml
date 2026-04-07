@@ -1,0 +1,341 @@
+name: CD
+
+on:
+  push:
+    branches: ['dev', 'main']
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  TF_DIR: "./terraform"
+  KEY_VAULT: "deploy-box-kv-prod"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Required GitHub configuration (per environment: dev / prod)
+#
+# Variables (vars.*):
+#   AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
+#     — OIDC service principal for Azure Login (needed before KV access)
+#
+# All other secrets are fetched from Azure Key Vault (deploy-box-kv-prod)
+# with the prefix "ctc-". See README or KV for the full list.
+# ─────────────────────────────────────────────────────────────────────────────
+
+jobs:
+  # ── Step 1: Provision / update Azure infrastructure ────────────────────
+  deploy-infrastructure:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
+    permissions:
+      id-token: write
+      contents: read
+
+    outputs:
+      vm_ip: ${{ steps.tf_outputs.outputs.vm_ip }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Fetch secrets from Key Vault
+        id: kv
+        run: |
+          for secret in ctc-env ctc-vm-ssh-public-key ctc-tls-fullchain ctc-tls-privkey \
+                         ctc-workos-api-key ctc-workos-client-id \
+                         ctc-deploy-box-client-id ctc-deploy-box-client-secret \
+                         ctc-chatgpt-api-base ctc-chatgpt-api-key; do
+            key=$(echo "$secret" | sed 's/^ctc-//' | tr '-' '_' | tr '[:lower:]' '[:upper:]')
+            value=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name "$secret" --query value -o tsv)
+            echo "::add-mask::$value"
+            echo "$key<<KVEOF" >> $GITHUB_OUTPUT
+            echo "$value" >> $GITHUB_OUTPUT
+            echo "KVEOF" >> $GITHUB_OUTPUT
+          done
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.x
+          terraform_wrapper: false
+
+      - name: Export OIDC env for Terraform
+        run: |
+          echo "ARM_USE_OIDC=true"                                     >> $GITHUB_ENV
+          echo "ARM_CLIENT_ID=${{ vars.AZURE_CLIENT_ID }}"             >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ vars.AZURE_TENANT_ID }}"             >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ vars.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+
+      - name: Write SSH public key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ steps.kv.outputs.VM_SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
+          chmod 644 ~/.ssh/id_rsa.pub
+
+      - name: Write TLS certificates
+        run: |
+          mkdir -p certs
+          echo "${{ steps.kv.outputs.TLS_FULLCHAIN }}" > certs/fullchain.pem
+          echo "${{ steps.kv.outputs.TLS_PRIVKEY }}"   > certs/privkey.pem
+
+      - name: Terraform Init
+        working-directory: ${{ env.TF_DIR }}
+        run: |
+          terraform init \
+            -reconfigure \
+            -backend-config="config/backend-${{ steps.kv.outputs.ENV }}.conf"
+
+      - name: Terraform Plan
+        working-directory: ${{ env.TF_DIR }}
+        run: |
+          terraform plan \
+            -var-file="tfvars/${{ steps.kv.outputs.ENV }}.tfvars" \
+            -var="workos_api_key=${{ steps.kv.outputs.WORKOS_API_KEY }}" \
+            -var="workos_client_id=${{ steps.kv.outputs.WORKOS_CLIENT_ID }}" \
+            -var="deploy_box_client_id=${{ steps.kv.outputs.DEPLOY_BOX_CLIENT_ID }}" \
+            -var="deploy_box_client_secret=${{ steps.kv.outputs.DEPLOY_BOX_CLIENT_SECRET }}" \
+            -var="chatgpt_api_base=${{ steps.kv.outputs.CHATGPT_API_BASE }}" \
+            -var="chatgpt_api_key=${{ steps.kv.outputs.CHATGPT_API_KEY }}" \
+            -var="ssh_public_key_path=$HOME/.ssh/id_rsa.pub" \
+            -var="tls_fullchain_path=${{ github.workspace }}/certs/fullchain.pem" \
+            -var="tls_privkey_path=${{ github.workspace }}/certs/privkey.pem" \
+            -out=tfplan
+
+      - name: Terraform Apply
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform apply tfplan
+
+      - id: tf_outputs
+        name: Get Terraform Outputs
+        working-directory: ${{ env.TF_DIR }}
+        run: |
+          echo "vm_ip=$(terraform output -raw public_ip_address)" >> $GITHUB_OUTPUT
+
+  # ── Step 2: Build images and push to ACR ───────────────────────────────
+  build-and-push:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Fetch ACR secrets from Key Vault
+        id: kv
+        run: |
+          for secret in ctc-acr-login-server ctc-acr-username ctc-acr-password ctc-domain-name; do
+            key=$(echo "$secret" | sed 's/^ctc-//' | tr '-' '_' | tr '[:lower:]' '[:upper:]')
+            value=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name "$secret" --query value -o tsv)
+            echo "::add-mask::$value"
+            echo "$key=$value" >> $GITHUB_OUTPUT
+          done
+
+      - name: Log in to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}
+          username: ${{ steps.kv.outputs.ACR_USERNAME }}
+          password: ${{ steps.kv.outputs.ACR_PASSWORD }}
+
+      - name: Build and push backend
+        run: |
+          docker build -t ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-backend:${{ github.sha }} \
+                        -t ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-backend:latest \
+                        ./backend
+          docker push ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-backend:${{ github.sha }}
+          docker push ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-backend:latest
+
+      - name: Build and push frontend
+        run: |
+          docker build -t ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-frontend:${{ github.sha }} \
+                        -t ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-frontend:latest \
+                        --build-arg EXPO_PUBLIC_API_BASE="https://${{ steps.kv.outputs.DOMAIN_NAME }}" \
+                        ./frontend
+          docker push ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-frontend:${{ github.sha }}
+          docker push ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-frontend:latest
+
+  # ── Step 3: Deploy application code to the VM ─────────────────────────
+  deploy-application:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
+    needs: [deploy-infrastructure, build-and-push]
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Azure Login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Fetch secrets from Key Vault
+        id: kv
+        run: |
+          for secret in ctc-vm-ssh-private-key ctc-acr-login-server ctc-acr-username ctc-acr-password \
+                         ctc-domain-name ctc-workos-api-key ctc-workos-client-id \
+                         ctc-deploy-box-client-id ctc-deploy-box-client-secret ctc-chatgpt-api-base; do
+            key=$(echo "$secret" | sed 's/^ctc-//' | tr '-' '_' | tr '[:lower:]' '[:upper:]')
+            value=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name "$secret" --query value -o tsv)
+            echo "::add-mask::$value"
+            echo "$key<<KVEOF" >> $GITHUB_OUTPUT
+            echo "$value" >> $GITHUB_OUTPUT
+            echo "KVEOF" >> $GITHUB_OUTPUT
+          done
+
+      - name: Set up SSH
+        env:
+          VM_IP: ${{ needs.deploy-infrastructure.outputs.vm_ip }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ steps.kv.outputs.VM_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          for i in $(seq 1 10); do
+            if ssh-keyscan -H "$VM_IP" >> ~/.ssh/known_hosts 2>/dev/null; then
+              echo "SSH host key added"
+              break
+            fi
+            echo "Waiting for VM SSH to be ready... (attempt $i/10)"
+            sleep 15
+          done
+
+      - name: Write backend environment file
+        env:
+          VM_IP: ${{ needs.deploy-infrastructure.outputs.vm_ip }}
+        run: |
+          cat > /tmp/backend.env << ENVEOF
+          POSTGRES_CONNECTION_STRING=postgresql://postgres:postgres@db:5432/cutthecrap_dev
+          WORKOS_API_KEY=${{ steps.kv.outputs.WORKOS_API_KEY }}
+          WORKOS_CLIENT_ID=${{ steps.kv.outputs.WORKOS_CLIENT_ID }}
+          WORKOS_REDIRECT_URI=https://${{ steps.kv.outputs.DOMAIN_NAME }}/api/v1/auth/callback
+          DEPLOY_BOX_CLIENT_ID=${{ steps.kv.outputs.DEPLOY_BOX_CLIENT_ID }}
+          DEPLOY_BOX_CLIENT_SECRET=${{ steps.kv.outputs.DEPLOY_BOX_CLIENT_SECRET }}
+          CHATGPT_API_BASE=${{ steps.kv.outputs.CHATGPT_API_BASE }}
+          CORS_ORIGIN=https://${{ steps.kv.outputs.DOMAIN_NAME }}
+          FRONTEND_URL=https://${{ steps.kv.outputs.DOMAIN_NAME }}
+          ENVEOF
+
+          scp /tmp/backend.env azureuser@$VM_IP:/opt/cutthecrap/repo/backend/.env
+          rm -f /tmp/backend.env
+
+      - name: Pull images and start containers
+        env:
+          VM_IP: ${{ needs.deploy-infrastructure.outputs.vm_ip }}
+          BRANCH: ${{ github.ref_name }}
+          ACR_LOGIN_SERVER: ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}
+          ACR_USERNAME: ${{ steps.kv.outputs.ACR_USERNAME }}
+          ACR_PASSWORD: ${{ steps.kv.outputs.ACR_PASSWORD }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          ssh azureuser@$VM_IP << DEPLOY
+          set -euo pipefail
+
+          # On first deployment, wait for cloud-init to finish
+          if [ ! -d /opt/cutthecrap/repo/.git ]; then
+            echo "First deployment detected — waiting for cloud-init..."
+            sudo cloud-init status --wait
+          fi
+
+          cd /opt/cutthecrap/repo
+
+          git fetch origin
+          git checkout $BRANCH
+          git pull origin $BRANCH
+
+          # Log in to ACR to pull pre-built images
+          echo "$ACR_PASSWORD" | docker login $ACR_LOGIN_SERVER -u $ACR_USERNAME --password-stdin
+
+          # Pull and start containers using pre-built ACR images
+          ACR_REGISTRY=${ACR_LOGIN_SERVER}/ IMAGE_TAG=${IMAGE_TAG} \
+            docker compose -p cutthecrap up -d --pull always --no-build
+
+          echo "✅ Application deployed successfully"
+          DEPLOY
+
+  # ── Step 4: Run database migrations ────────────────────────────────────
+  migrations:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
+    needs: [deploy-infrastructure, deploy-application]
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Azure Login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Fetch SSH key from Key Vault
+        id: kv
+        run: |
+          value=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name ctc-vm-ssh-private-key --query value -o tsv)
+          echo "::add-mask::$value"
+          echo "VM_SSH_PRIVATE_KEY<<KVEOF" >> $GITHUB_OUTPUT
+          echo "$value" >> $GITHUB_OUTPUT
+          echo "KVEOF" >> $GITHUB_OUTPUT
+
+      - name: Set up SSH
+        env:
+          VM_IP: ${{ needs.deploy-infrastructure.outputs.vm_ip }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ steps.kv.outputs.VM_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$VM_IP" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Run database migrations
+        env:
+          VM_IP: ${{ needs.deploy-infrastructure.outputs.vm_ip }}
+        run: |
+          ssh azureuser@$VM_IP << 'MIGRATE'
+          set -euo pipefail
+          cd /opt/cutthecrap/repo
+
+          echo "Waiting for database to be ready..."
+          for i in $(seq 1 30); do
+            if docker compose -p cutthecrap exec -T db pg_isready -U postgres > /dev/null 2>&1; then
+              echo "Database is ready."
+              break
+            fi
+            sleep 2
+          done
+
+          # Ensure migrations directory exists for node-pg-migrate
+          mkdir -p database/migrations
+
+          # Run incremental migrations via node-pg-migrate in a temporary Node container
+          # connected to the compose network so it can reach the 'db' service
+          docker run --rm \
+            --network cutthecrap_default \
+            -v "$(pwd)/database:/app/database" \
+            -v "$(pwd)/backend/.env:/app/backend/.env" \
+            -w /app/database \
+            node:20-alpine sh -c "npm ci --omit=dev 2>/dev/null && npm run migrate"
+
+          echo "✅ Migrations completed successfully"
+          MIGRATE

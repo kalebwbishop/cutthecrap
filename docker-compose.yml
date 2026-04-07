@@ -15,6 +15,7 @@ services:
       retries: 5
 
   backend:
+    image: ${ACR_REGISTRY:-}cutthecrap-backend:${IMAGE_TAG:-latest}
     build: ./backend
     restart: unless-stopped
     env_file: ./backend/.env
@@ -28,6 +29,7 @@ services:
         condition: service_healthy
 
   frontend:
+    image: ${ACR_REGISTRY:-}cutthecrap-frontend:${IMAGE_TAG:-latest}
     build:
       context: ./frontend
       args:

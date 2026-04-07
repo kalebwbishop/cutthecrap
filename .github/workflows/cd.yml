@@ -279,10 +279,13 @@ jobs:
           ssh azureuser@$VM_IP << DEPLOY
           set -euo pipefail
 
-          # On first deployment, wait for cloud-init to finish
+          # On first deployment, clone the repo
           if [ ! -d /opt/cutthecrap/repo/.git ]; then
-            echo "First deployment detected — waiting for cloud-init..."
+            echo "First deployment — waiting for cloud-init..."
             sudo cloud-init status --wait
+            sudo mkdir -p /opt/cutthecrap
+            sudo chown -R azureuser:azureuser /opt/cutthecrap
+            git clone https://github.com/kalebwbishop/cutthecrap.git /opt/cutthecrap/repo
           fi
 
           cd /opt/cutthecrap/repo

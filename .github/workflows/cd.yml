@@ -283,6 +283,7 @@ jobs:
           if [ ! -d /opt/cutthecrap/repo/.git ]; then
             echo "First deployment — waiting for cloud-init..."
             sudo cloud-init status --wait
+            sudo rm -rf /opt/cutthecrap/repo
             sudo mkdir -p /opt/cutthecrap
             sudo chown -R azureuser:azureuser /opt/cutthecrap
             git clone https://github.com/kalebwbishop/cutthecrap.git /opt/cutthecrap/repo

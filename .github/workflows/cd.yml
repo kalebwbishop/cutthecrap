@@ -49,12 +49,21 @@ jobs:
       - name: Fetch secrets from Key Vault
         id: kv
         run: |
+          BASE64_SECRETS="ctc-vm-ssh-public-key ctc-tls-fullchain ctc-tls-privkey"
+
           for secret in ctc-env ctc-vm-ssh-public-key ctc-tls-fullchain ctc-tls-privkey \
                          ctc-workos-api-key ctc-workos-client-id \
                          ctc-deploy-box-client-id ctc-deploy-box-client-secret \
                          ctc-chatgpt-api-base ctc-chatgpt-api-key; do
             key=$(echo "$secret" | sed 's/^ctc-//' | tr '-' '_' | tr '[:lower:]' '[:upper:]')
-            value=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name "$secret" --query value -o tsv)
+            raw=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name "$secret" --query value -o tsv)
+
+            if echo "$BASE64_SECRETS" | grep -qw "$secret"; then
+              value=$(echo "$raw" | base64 -d)
+            else
+              value="$raw"
+            fi
+
             echo "::add-mask::$value"
             echo "$key<<KVEOF" >> $GITHUB_OUTPUT
             echo "$value" >> $GITHUB_OUTPUT
@@ -192,11 +201,20 @@ jobs:
       - name: Fetch secrets from Key Vault
         id: kv
         run: |
+          BASE64_SECRETS="ctc-vm-ssh-private-key"
+
           for secret in ctc-vm-ssh-private-key ctc-acr-login-server ctc-acr-username ctc-acr-password \
                          ctc-domain-name ctc-workos-api-key ctc-workos-client-id \
                          ctc-deploy-box-client-id ctc-deploy-box-client-secret ctc-chatgpt-api-base; do
             key=$(echo "$secret" | sed 's/^ctc-//' | tr '-' '_' | tr '[:lower:]' '[:upper:]')
-            value=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name "$secret" --query value -o tsv)
+            raw=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name "$secret" --query value -o tsv)
+
+            if echo "$BASE64_SECRETS" | grep -qw "$secret"; then
+              value=$(echo "$raw" | base64 -d)
+            else
+              value="$raw"
+            fi
+
             echo "::add-mask::$value"
             echo "$key<<KVEOF" >> $GITHUB_OUTPUT
             echo "$value" >> $GITHUB_OUTPUT
@@ -293,7 +311,8 @@ jobs:
       - name: Fetch SSH key from Key Vault
         id: kv
         run: |
-          value=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name ctc-vm-ssh-private-key --query value -o tsv)
+          raw=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name ctc-vm-ssh-private-key --query value -o tsv)
+          value=$(echo "$raw" | base64 -d)
           echo "::add-mask::$value"
           echo "VM_SSH_PRIVATE_KEY<<KVEOF" >> $GITHUB_OUTPUT
           echo "$value" >> $GITHUB_OUTPUT

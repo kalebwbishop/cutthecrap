@@ -207,10 +207,11 @@ jobs:
       - name: Fetch secrets from Key Vault
         id: kv
         run: |
-          BASE64_SECRETS="ctc-vm-ssh-private-key"
+          BASE64_SECRETS="ctc-vm-ssh-private-key ctc-tls-fullchain ctc-tls-privkey"
           NO_MASK="ctc-acr-login-server ctc-domain-name"
 
-          for secret in ctc-vm-ssh-private-key ctc-acr-login-server ctc-acr-username ctc-acr-password \
+          for secret in ctc-vm-ssh-private-key ctc-tls-fullchain ctc-tls-privkey \
+                         ctc-acr-login-server ctc-acr-username ctc-acr-password \
                          ctc-domain-name ctc-workos-api-key ctc-workos-client-id \
                          ctc-deploy-box-client-id ctc-deploy-box-client-secret ctc-chatgpt-api-base; do
             key=$(echo "$secret" | sed 's/^ctc-//' | tr '-' '_' | tr '[:lower:]' '[:upper:]')
@@ -269,6 +270,8 @@ jobs:
           ACR_USERNAME: ${{ steps.kv.outputs.ACR_USERNAME }}
           ACR_PASSWORD: ${{ steps.kv.outputs.ACR_PASSWORD }}
           IMAGE_TAG: ${{ github.sha }}
+          TLS_FULLCHAIN: ${{ steps.kv.outputs.TLS_FULLCHAIN }}
+          TLS_PRIVKEY: ${{ steps.kv.outputs.TLS_PRIVKEY }}
         run: |
           ssh azureuser@$VM_IP << DEPLOY
           set -euo pipefail
@@ -310,9 +313,13 @@ jobs:
           git pull origin $BRANCH
           DEPLOY
 
-          # Upload .env after repo exists on VM
+          # Upload .env and TLS certs after repo exists on VM
           scp /tmp/backend.env azureuser@$VM_IP:/opt/cutthecrap/repo/backend/.env
           rm -f /tmp/backend.env
+
+          ssh azureuser@$VM_IP "mkdir -p /opt/cutthecrap/repo/certs"
+          echo "$TLS_FULLCHAIN" | ssh azureuser@$VM_IP "cat > /opt/cutthecrap/repo/certs/fullchain.pem"
+          echo "$TLS_PRIVKEY"   | ssh azureuser@$VM_IP "cat > /opt/cutthecrap/repo/certs/privkey.pem"
 
           ssh azureuser@$VM_IP << DEPLOY2
           set -euo pipefail

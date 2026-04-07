@@ -198,14 +198,15 @@ export default function ResultScreen() {
           style={s.backButton}
           onPress={handleBack}
           activeOpacity={0.7}
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
         >
           <ArrowLeftIcon size={20} color={colors.text} />
         </TouchableOpacity>
         <View style={s.headerCenter}>
-          <Text style={s.headerTitle}>Cut The Crap</Text>
           {pageTitle ? (
             <Text style={s.headerPageTitle} numberOfLines={1}>
-              — {pageTitle}
+              {pageTitle}
             </Text>
           ) : null}
         </View>
@@ -216,6 +217,8 @@ export default function ResultScreen() {
               onPress={handleCopy}
               disabled={copied}
               activeOpacity={0.7}
+              accessibilityLabel={copied ? "Recipe copied" : "Copy recipe to clipboard"}
+              accessibilityRole="button"
             >
               <Text style={[s.copyButtonText, copied && { color: colors.success }]}>
                 {copied ? '✓ Copied' : '📋 Copy'}
@@ -227,6 +230,8 @@ export default function ResultScreen() {
                 onPress={handleSave}
                 disabled={saving || saved}
                 activeOpacity={0.7}
+                accessibilityLabel={saved ? "Recipe saved" : "Save recipe"}
+                accessibilityRole="button"
               >
                 {saved ? (
                   <BookmarkFilledIcon size={20} color={colors.success} />
@@ -264,6 +269,8 @@ export default function ResultScreen() {
               style={s.tryAgainButton}
               onPress={handleBack}
               activeOpacity={0.7}
+              accessibilityLabel="Try another URL"
+              accessibilityRole="button"
             >
               <ArrowLeftIcon size={20} color={colors.text} />
               <Text style={s.tryAgainText}>Try another URL</Text>
@@ -276,6 +283,8 @@ export default function ResultScreen() {
               style={s.tryAgainButton}
               onPress={handleBack}
               activeOpacity={0.7}
+              accessibilityLabel="Try another URL"
+              accessibilityRole="button"
             >
               <ArrowLeftIcon size={20} color={colors.text} />
               <Text style={s.tryAgainText}>Try another URL</Text>
@@ -291,7 +300,7 @@ export default function ResultScreen() {
         animationType="fade"
         onRequestClose={() => setShowLimitModal(false)}
       >
-        <Pressable style={s.modalOverlay} onPress={() => setShowLimitModal(false)}>
+        <Pressable style={s.modalOverlay} onPress={() => setShowLimitModal(false)} accessibilityLabel="Dismiss" accessibilityRole="button">
           <Pressable style={s.modalCard} onPress={(e) => e.stopPropagation()}>
             <Text style={s.modalTitle}>Recipe Limit Reached</Text>
             <Text style={s.modalBody}>
@@ -302,6 +311,8 @@ export default function ResultScreen() {
                 style={s.modalSecondaryBtn}
                 onPress={() => setShowLimitModal(false)}
                 activeOpacity={0.7}
+                accessibilityLabel="Maybe later"
+                accessibilityRole="button"
               >
                 <Text style={s.modalSecondaryText}>Maybe Later</Text>
               </TouchableOpacity>
@@ -312,6 +323,8 @@ export default function ResultScreen() {
                   router.push('/upgrade');
                 }}
                 activeOpacity={0.7}
+                accessibilityLabel="Upgrade to Pro"
+                accessibilityRole="button"
               >
                 <Text style={s.modalPrimaryText}>Upgrade</Text>
               </TouchableOpacity>
@@ -332,21 +345,20 @@ const createStyles = (colors: ThemeColors) =>
       flexDirection: 'row',
       alignItems: 'center',
       paddingVertical: 12,
-      paddingHorizontal: 20,
+      paddingHorizontal: 16,
       borderBottomWidth: 1,
       borderBottomColor: colors.border,
       minHeight: 48,
+      gap: 8,
     },
     backButton: {
-      position: 'absolute',
-      left: 16,
-      zIndex: 1,
       width: 34,
       height: 34,
       borderRadius: radii.sm,
       backgroundColor: colors.bgInput,
       alignItems: 'center',
       justifyContent: 'center',
+      flexShrink: 0,
     },
     saveButton: {
       flexDirection: 'row',
@@ -358,12 +370,10 @@ const createStyles = (colors: ThemeColors) =>
       backgroundColor: colors.bgInput,
     },
     headerActions: {
-      position: 'absolute',
-      right: 16,
-      zIndex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       gap: 6,
+      flexShrink: 0,
     },
     copyButton: {
       height: 34,
@@ -387,13 +397,8 @@ const createStyles = (colors: ThemeColors) =>
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      gap: 8,
-    },
-    headerTitle: {
-      fontSize: fontSizes.xl,
-      fontWeight: '600',
-      color: colors.text,
+      gap: 4,
+      overflow: 'hidden',
     },
     headerPageTitle: {
       fontSize: fontSizes.base,

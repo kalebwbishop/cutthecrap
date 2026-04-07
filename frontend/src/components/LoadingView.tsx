@@ -3,13 +3,15 @@ import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useThemeColors, fontSizes } from '@/theme';
 import type { ThemeColors } from '@/theme';
 
+const logo = require('../../assets/icon.png');
+
 interface LoadingViewProps {
   message: string;
   progress: Animated.Value;
 }
 
 /**
- * Full-screen animated loading state: spinning scissors, cycling message,
+ * Full-screen animated loading state: spinning logo, cycling message,
  * progress bar, and bouncing dots.
  */
 export default function LoadingView({ message, progress }: LoadingViewProps) {
@@ -89,12 +91,12 @@ export default function LoadingView({ message, progress }: LoadingViewProps) {
 
   return (
     <View style={s.container}>
-      {/* Spinning icon */}
-      <Animated.Text
-        style={[s.icon, { transform: [{ rotate: spinInterpolate }] }]}
-      >
-        ✂
-      </Animated.Text>
+      {/* Spinning logo */}
+      <Animated.Image
+        source={logo}
+        style={[s.logo, { transform: [{ rotate: spinInterpolate }] }]}
+        resizeMode="contain"
+      />
 
       {/* Cycling message */}
       <Animated.Text style={[s.message, { opacity: messageFade }]}>
@@ -134,8 +136,9 @@ const createStyles = (colors: ThemeColors) =>
       justifyContent: 'center',
       gap: 20,
     },
-    icon: {
-      fontSize: 48,
+    logo: {
+      width: 80,
+      height: 80,
     },
     message: {
       fontSize: fontSizes.lg,

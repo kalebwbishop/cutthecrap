@@ -248,8 +248,6 @@ jobs:
           done
 
       - name: Write backend environment file
-        env:
-          VM_IP: ${{ needs.deploy-infrastructure.outputs.vm_ip }}
         run: |
           cat > /tmp/backend.env << ENVEOF
           POSTGRES_CONNECTION_STRING=postgresql://postgres:postgres@db:5432/cutthecrap_dev
@@ -262,10 +260,6 @@ jobs:
           CORS_ORIGIN=https://${{ steps.kv.outputs.DOMAIN_NAME }}
           FRONTEND_URL=https://${{ steps.kv.outputs.DOMAIN_NAME }}
           ENVEOF
-
-          ssh azureuser@$VM_IP "sudo mkdir -p /opt/cutthecrap/repo/backend && sudo chown -R azureuser:azureuser /opt/cutthecrap"
-          scp /tmp/backend.env azureuser@$VM_IP:/opt/cutthecrap/repo/backend/.env
-          rm -f /tmp/backend.env
 
       - name: Pull images and start containers
         env:
@@ -314,6 +308,15 @@ jobs:
           git fetch origin
           git checkout $BRANCH
           git pull origin $BRANCH
+          DEPLOY
+
+          # Upload .env after repo exists on VM
+          scp /tmp/backend.env azureuser@$VM_IP:/opt/cutthecrap/repo/backend/.env
+          rm -f /tmp/backend.env
+
+          ssh azureuser@$VM_IP << DEPLOY2
+          set -euo pipefail
+          cd /opt/cutthecrap/repo
 
           # Log in to ACR to pull pre-built images
           sg docker -c "echo '$ACR_PASSWORD' | docker login $ACR_LOGIN_SERVER -u $ACR_USERNAME --password-stdin"
@@ -322,7 +325,7 @@ jobs:
           sg docker -c "ACR_REGISTRY=${ACR_LOGIN_SERVER}/ IMAGE_TAG=${IMAGE_TAG} docker compose -p cutthecrap up -d --pull always --no-build"
 
           echo "✅ Application deployed successfully"
-          DEPLOY
+          DEPLOY2
 
   # ── Step 4: Run database migrations ────────────────────────────────────
   migrations:

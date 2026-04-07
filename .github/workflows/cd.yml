@@ -50,6 +50,7 @@ jobs:
         id: kv
         run: |
           BASE64_SECRETS="ctc-vm-ssh-public-key ctc-tls-fullchain ctc-tls-privkey"
+          NO_MASK_SECRETS="ctc-env ctc-domain-name ctc-acr-login-server"
 
           for secret in ctc-env ctc-vm-ssh-public-key ctc-tls-fullchain ctc-tls-privkey \
                          ctc-workos-api-key ctc-workos-client-id \
@@ -64,7 +65,9 @@ jobs:
               value="$raw"
             fi
 
-            echo "::add-mask::$value"
+            if ! echo "$NO_MASK_SECRETS" | grep -qw "$secret"; then
+              echo "::add-mask::$value"
+            fi
             echo "$key<<KVEOF" >> $GITHUB_OUTPUT
             echo "$value" >> $GITHUB_OUTPUT
             echo "KVEOF" >> $GITHUB_OUTPUT
@@ -150,10 +153,13 @@ jobs:
       - name: Fetch ACR secrets from Key Vault
         id: kv
         run: |
+          NO_MASK="ctc-acr-login-server ctc-domain-name"
           for secret in ctc-acr-login-server ctc-acr-username ctc-acr-password ctc-domain-name; do
             key=$(echo "$secret" | sed 's/^ctc-//' | tr '-' '_' | tr '[:lower:]' '[:upper:]')
             value=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name "$secret" --query value -o tsv)
-            echo "::add-mask::$value"
+            if ! echo "$NO_MASK" | grep -qw "$secret"; then
+              echo "::add-mask::$value"
+            fi
             echo "$key=$value" >> $GITHUB_OUTPUT
           done
 
@@ -202,6 +208,7 @@ jobs:
         id: kv
         run: |
           BASE64_SECRETS="ctc-vm-ssh-private-key"
+          NO_MASK="ctc-acr-login-server ctc-domain-name"
 
           for secret in ctc-vm-ssh-private-key ctc-acr-login-server ctc-acr-username ctc-acr-password \
                          ctc-domain-name ctc-workos-api-key ctc-workos-client-id \
@@ -215,7 +222,9 @@ jobs:
               value="$raw"
             fi
 
-            echo "::add-mask::$value"
+            if ! echo "$NO_MASK" | grep -qw "$secret"; then
+              echo "::add-mask::$value"
+            fi
             echo "$key<<KVEOF" >> $GITHUB_OUTPUT
             echo "$value" >> $GITHUB_OUTPUT
             echo "KVEOF" >> $GITHUB_OUTPUT

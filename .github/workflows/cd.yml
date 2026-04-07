@@ -279,7 +279,7 @@ jobs:
           ssh azureuser@$VM_IP << DEPLOY
           set -euo pipefail
 
-          # On first deployment, clone the repo
+          # On first deployment, clone the repo and install Docker
           if [ ! -d /opt/cutthecrap/repo/.git ]; then
             echo "First deployment — waiting for cloud-init..."
             sudo cloud-init status --wait
@@ -289,6 +289,19 @@ jobs:
             git clone https://github.com/kalebwbishop/cutthecrap.git /opt/cutthecrap/repo
           fi
 
+          # Install Docker if not present
+          if ! command -v docker &> /dev/null; then
+            echo "Installing Docker..."
+            sudo install -m 0755 -d /etc/apt/keyrings
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
+            sudo chmod a+r /etc/apt/keyrings/docker.asc
+            echo "deb [arch=\$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \$(. /etc/os-release && echo \$VERSION_CODENAME) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            sudo systemctl enable --now docker
+            sudo usermod -aG docker azureuser
+          fi
+
           cd /opt/cutthecrap/repo
 
           git fetch origin
@@ -296,11 +309,10 @@ jobs:
           git pull origin $BRANCH
 
           # Log in to ACR to pull pre-built images
-          echo "$ACR_PASSWORD" | docker login $ACR_LOGIN_SERVER -u $ACR_USERNAME --password-stdin
+          sg docker -c "echo '$ACR_PASSWORD' | docker login $ACR_LOGIN_SERVER -u $ACR_USERNAME --password-stdin"
 
           # Pull and start containers using pre-built ACR images
-          ACR_REGISTRY=${ACR_LOGIN_SERVER}/ IMAGE_TAG=${IMAGE_TAG} \
-            docker compose -p cutthecrap up -d --pull always --no-build
+          sg docker -c "ACR_REGISTRY=${ACR_LOGIN_SERVER}/ IMAGE_TAG=${IMAGE_TAG} docker compose -p cutthecrap up -d --pull always --no-build"
 
           echo "✅ Application deployed successfully"
           DEPLOY
@@ -351,7 +363,7 @@ jobs:
 
           echo "Waiting for database to be ready..."
           for i in $(seq 1 30); do
-            if docker compose -p cutthecrap exec -T db pg_isready -U postgres > /dev/null 2>&1; then
+            if sg docker -c "docker compose -p cutthecrap exec -T db pg_isready -U postgres" > /dev/null 2>&1; then
               echo "Database is ready."
               break
             fi
@@ -363,12 +375,12 @@ jobs:
 
           # Run incremental migrations via node-pg-migrate in a temporary Node container
           # connected to the compose network so it can reach the 'db' service
-          docker run --rm \
+          sg docker -c "docker run --rm \
             --network cutthecrap_default \
-            -v "$(pwd)/database:/app/database" \
-            -v "$(pwd)/backend/.env:/app/backend/.env" \
+            -v $(pwd)/database:/app/database \
+            -v $(pwd)/backend/.env:/app/backend/.env \
             -w /app/database \
-            node:20-alpine sh -c "npm ci --omit=dev 2>/dev/null && npm run migrate"
+            node:20-alpine sh -c 'npm ci --omit=dev 2>/dev/null && npm run migrate'"
 
           echo "✅ Migrations completed successfully"
           MIGRATE

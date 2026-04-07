@@ -320,6 +320,8 @@ jobs:
 
           # Stop any existing containers or services occupying ports 80/443
           sg docker -c "docker compose -p cutthecrap down" 2>/dev/null || true
+          sg docker -c "docker compose down" 2>/dev/null || true
+          sg docker -c "docker ps -q | xargs -r docker stop" 2>/dev/null || true
           sudo systemctl stop nginx 2>/dev/null || true
           sudo systemctl stop apache2 2>/dev/null || true
 

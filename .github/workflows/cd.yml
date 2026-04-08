@@ -49,13 +49,10 @@ jobs:
       - name: Fetch secrets from Key Vault
         id: kv
         run: |
-          BASE64_SECRETS="ctc-vm-ssh-public-key ctc-tls-fullchain ctc-tls-privkey"
-          NO_MASK_SECRETS="ctc-env ctc-domain-name ctc-acr-login-server"
+          BASE64_SECRETS="ctc-vm-ssh-public-key"
+          NO_MASK_SECRETS="ctc-env"
 
-          for secret in ctc-env ctc-vm-ssh-public-key ctc-tls-fullchain ctc-tls-privkey \
-                         ctc-workos-api-key ctc-workos-client-id \
-                         ctc-deploy-box-client-id ctc-deploy-box-client-secret \
-                         ctc-chatgpt-api-base ctc-chatgpt-api-key; do
+          for secret in ctc-env ctc-vm-ssh-public-key; do
             key=$(echo "$secret" | sed 's/^ctc-//' | tr '-' '_' | tr '[:lower:]' '[:upper:]')
             raw=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name "$secret" --query value -o tsv)
 
@@ -92,12 +89,6 @@ jobs:
           echo "${{ steps.kv.outputs.VM_SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
           chmod 644 ~/.ssh/id_rsa.pub
 
-      - name: Write TLS certificates
-        run: |
-          mkdir -p certs
-          echo "${{ steps.kv.outputs.TLS_FULLCHAIN }}" > certs/fullchain.pem
-          echo "${{ steps.kv.outputs.TLS_PRIVKEY }}"   > certs/privkey.pem
-
       - name: Terraform Init
         working-directory: ${{ env.TF_DIR }}
         run: |
@@ -110,15 +101,7 @@ jobs:
         run: |
           terraform plan \
             -var-file="tfvars/${{ steps.kv.outputs.ENV }}.tfvars" \
-            -var="workos_api_key=${{ steps.kv.outputs.WORKOS_API_KEY }}" \
-            -var="workos_client_id=${{ steps.kv.outputs.WORKOS_CLIENT_ID }}" \
-            -var="deploy_box_client_id=${{ steps.kv.outputs.DEPLOY_BOX_CLIENT_ID }}" \
-            -var="deploy_box_client_secret=${{ steps.kv.outputs.DEPLOY_BOX_CLIENT_SECRET }}" \
-            -var="chatgpt_api_base=${{ steps.kv.outputs.CHATGPT_API_BASE }}" \
-            -var="chatgpt_api_key=${{ steps.kv.outputs.CHATGPT_API_KEY }}" \
             -var="ssh_public_key_path=$HOME/.ssh/id_rsa.pub" \
-            -var="tls_fullchain_path=${{ github.workspace }}/certs/fullchain.pem" \
-            -var="tls_privkey_path=${{ github.workspace }}/certs/privkey.pem" \
             -out=tfplan
 
       - name: Terraform Apply
@@ -276,38 +259,47 @@ jobs:
           ssh azureuser@$VM_IP << DEPLOY
           set -euo pipefail
 
-          # On first deployment, clone the repo and install Docker
-          if [ ! -d /opt/cutthecrap/repo/.git ]; then
-            echo "First deployment — waiting for cloud-init..."
-            sudo cloud-init status --wait
-            sudo rm -rf /opt/cutthecrap/repo
-            sudo mkdir -p /opt/cutthecrap
-            sudo chown -R azureuser:azureuser /opt/cutthecrap
-            git clone https://github.com/kalebwbishop/cutthecrap.git /opt/cutthecrap/repo
-          fi
+          # ── Ensure app directory exists ──────────────────────────────
+          sudo mkdir -p /opt/cutthecrap
+          sudo chown -R azureuser:azureuser /opt/cutthecrap
 
-          # Install Docker if not present
+          # ── Install Docker if not present ────────────────────────────
           if ! command -v docker &> /dev/null; then
             echo "Installing Docker..."
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ca-certificates curl gnupg
             sudo install -m 0755 -d /etc/apt/keyrings
             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
             sudo chmod a+r /etc/apt/keyrings/docker.asc
             echo "deb [arch=\$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \$(. /etc/os-release && echo \$VERSION_CODENAME) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
             sudo apt-get update -qq
-            # OOM killer may hit apt-get on low-memory VMs even after install completes
             sudo apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || true
             sudo systemctl enable --now docker
             sudo usermod -aG docker azureuser
-            # Verify Docker actually installed
             if ! command -v docker &> /dev/null; then
               echo "❌ Docker installation failed"
               exit 1
             fi
-            echo "Docker installed successfully"
+            echo "✅ Docker installed"
+          else
+            echo "✅ Docker already installed"
+          fi
+
+          # ── Install git if not present ───────────────────────────────
+          if ! command -v git &> /dev/null; then
+            echo "Installing git..."
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq git
+          fi
+
+          # ── Clone or update repository ───────────────────────────────
+          if [ ! -d /opt/cutthecrap/repo/.git ]; then
+            echo "Cloning repository..."
+            rm -rf /opt/cutthecrap/repo
+            git clone https://github.com/kalebwbishop/cutthecrap.git /opt/cutthecrap/repo
           fi
 
           cd /opt/cutthecrap/repo
-
           git fetch origin
           git checkout $BRANCH
           git pull origin $BRANCH

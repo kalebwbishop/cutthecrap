@@ -26,20 +26,4 @@ resource "azurerm_linux_virtual_machine" "this" {
     sku       = "server"
     version   = "latest"
   }
-
-  custom_data = base64encode(templatefile("${path.module}/cloud-init.yaml", {
-    admin_username     = var.admin_username
-    github_repo_url    = var.github_repo_url
-    github_repo_branch = var.github_repo_branch
-    domain_name        = var.domain_name
-    public_ip          = azurerm_public_ip.this.ip_address
-    workos_api_key     = var.workos_api_key
-    workos_client_id   = var.workos_client_id
-    deploy_box_client_id     = var.deploy_box_client_id
-    deploy_box_client_secret = var.deploy_box_client_secret
-    chatgpt_api_base   = var.chatgpt_api_base
-    chatgpt_api_key    = var.chatgpt_api_key
-    tls_fullchain      = file(var.tls_fullchain_path)
-    tls_privkey        = file(var.tls_privkey_path)
-  }))
 }

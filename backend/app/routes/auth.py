@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import Optional
 import base64
 import json
-from urllib.parse import urlencode
+from urllib.parse import quote, urlencode
 
 from app.config.settings import get_settings
 from app.config.workos_client import get_workos_client
@@ -105,7 +105,7 @@ async def callback(code: Optional[str] = None, state: Optional[str] = None):
             logger.warning("Failed to decode state parameter, using default redirect", exc_info=True)
 
     separator = "&" if "?" in redirect_target else "?"
-    final_url = f"{redirect_target}{separator}code={code}"
+    final_url = f"{redirect_target}{separator}code={quote(code, safe='')}"
     logger.info("Callback redirecting (302) to: %s", final_url)
 
     # Use a 302 redirect. ASWebAuthenticationSession on iOS intercepts HTTP

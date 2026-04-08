@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     # WorkOS
     workos_api_key: str = ""
     workos_client_id: str = ""
-    workos_redirect_uri: str = "http://localhost:8000/api/v1/auth/callback"
+    workos_redirect_uri: str = "https://cutthecrap.deploy-box.com/api/v1/auth/callback"
 
     # ChatGPT Azure Function
     chatgpt_api_base: str = "https://deploy-box-apis-func-dev.azurewebsites.net"

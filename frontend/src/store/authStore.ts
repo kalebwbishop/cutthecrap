@@ -96,8 +96,9 @@ export const useAuthStore = create<AuthState>((set, get) => {
       setAuthHeader(accessToken);
       await tokenStorage.saveTokens(accessToken, refreshToken ?? null);
       set({ user, accessToken, refreshToken: refreshToken ?? null, isLoading: false });
-    } catch (err) {
-      if (__DEV__) console.error('Token exchange failed:', err);
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail ?? err?.message ?? String(err);
+      console.error('Token exchange failed:', detail);
       set({ isLoading: false });
     }
   },

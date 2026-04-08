@@ -177,7 +177,11 @@ async def exchange(payload: ExchangePayload):
         logger.error("OAuth exchange failed: %s", str(e), exc_info=True)
         return JSONResponse(
             status_code=500,
-            content={"error": "Internal Server Error", "message": "Authentication failed"},
+            content={
+                "error": "Internal Server Error",
+                "message": "Authentication failed",
+                "detail": f"{type(e).__name__}: {e}",
+            },
         )
 
 

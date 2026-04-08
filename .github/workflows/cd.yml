@@ -318,17 +318,17 @@ jobs:
           cd /opt/cutthecrap/repo
 
           # Stop any existing containers or services occupying ports 80/443
-          sg docker -c "docker compose -p cutthecrap down" 2>/dev/null || true
-          sg docker -c "docker compose down" 2>/dev/null || true
-          sg docker -c "docker ps -q | xargs -r docker stop" 2>/dev/null || true
+          sg docker -c "docker compose -p cutthecrap down" </dev/null 2>/dev/null || true
+          sg docker -c "docker compose down" </dev/null 2>/dev/null || true
+          sg docker -c "docker ps -q | xargs -r docker stop" </dev/null 2>/dev/null || true
           sudo systemctl stop nginx 2>/dev/null || true
           sudo systemctl stop apache2 2>/dev/null || true
 
           # Log in to ACR to pull pre-built images
-          sg docker -c "echo '$ACR_PASSWORD' | docker login $ACR_LOGIN_SERVER -u $ACR_USERNAME --password-stdin"
+          sg docker -c "echo '$ACR_PASSWORD' | docker login $ACR_LOGIN_SERVER -u $ACR_USERNAME --password-stdin" </dev/null
 
           # Pull and start containers using pre-built ACR images
-          sg docker -c "ACR_REGISTRY=${ACR_LOGIN_SERVER}/ IMAGE_TAG=${IMAGE_TAG} docker compose -p cutthecrap up -d --pull always --no-build"
+          sg docker -c "ACR_REGISTRY=${ACR_LOGIN_SERVER}/ IMAGE_TAG=${IMAGE_TAG} docker compose -p cutthecrap up -d --pull always --no-build" </dev/null
 
           echo "✅ Application deployed successfully"
           DEPLOY2
@@ -379,7 +379,7 @@ jobs:
 
           echo "Waiting for database to be ready..."
           for i in $(seq 1 30); do
-            if sg docker -c "docker compose -p cutthecrap exec -T db pg_isready -U postgres" > /dev/null 2>&1; then
+            if sg docker -c "docker compose -p cutthecrap exec -T db pg_isready -U postgres" </dev/null > /dev/null 2>&1; then
               echo "Database is ready."
               break
             fi
@@ -396,7 +396,7 @@ jobs:
             -v $(pwd)/database:/app/database \
             -v $(pwd)/backend/.env:/app/backend/.env \
             -w /app/database \
-            node:20-alpine sh -c 'npm ci --omit=dev 2>/dev/null && npm run migrate'"
+            node:20-alpine sh -c 'npm ci --omit=dev 2>/dev/null && npm run migrate'" </dev/null
 
           echo "✅ Migrations completed successfully"
           MIGRATE

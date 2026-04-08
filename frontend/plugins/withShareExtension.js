@@ -1,14 +1,16 @@
 const {
   withXcodeProject,
-  withEntitlementsPlist,
-  withInfoPlist,
 } = require("expo/config-plugins");
 const path = require("path");
 const fs = require("fs");
+const { execSync } = require("child_process");
 
 const APP_GROUP = "group.com.cutthecrap.app";
 const EXTENSION_NAME = "ShareExtension";
-const EXTENSION_BUNDLE_ID_SUFFIX = ".ShareExtension";
+const EXTENSION_BUNDLE_ID = "com.cutthecrap.app.ShareExtension";
+const APPLE_TEAM_ID = "RS528XGBD7";
+const EXTENSION_PROFILE_FILENAME =
+  "Cut_The_Crap_Share_Extension_Provisioning_Profile.mobileprovision";
 
 /**
  * Expo config plugin that adds an iOS Share Extension target.
@@ -18,31 +20,14 @@ const EXTENSION_BUNDLE_ID_SUFFIX = ".ShareExtension";
  * then opens the main app via deep link.
  */
 const withShareExtension = (config) => {
-  // 1. Add App Group entitlement to the main app
-  config = withEntitlementsPlist(config, (config) => {
-    const entitlements = config.modResults;
-    if (!entitlements["com.apple.security.application-groups"]) {
-      entitlements["com.apple.security.application-groups"] = [];
-    }
-    if (
-      !entitlements["com.apple.security.application-groups"].includes(APP_GROUP)
-    ) {
-      entitlements["com.apple.security.application-groups"].push(APP_GROUP);
-    }
-    return config;
-  });
+  // The Share Extension communicates with the main app via URL scheme
+  // (cutthecrap://extract?url=...), so the main app does NOT need App Groups.
+  // The extension itself has App Groups in its own entitlements.
 
-  // 2. Add NSAppGroup to Info.plist so JS can read it
-  config = withInfoPlist(config, (config) => {
-    config.modResults.AppGroupIdentifier = APP_GROUP;
-    return config;
-  });
-
-  // 3. Add the Share Extension target to the Xcode project
+  // 1. Add the Share Extension target to the Xcode project
   config = withXcodeProject(config, (config) => {
     const xcodeProject = config.modResults;
-    const bundleId =
-      config.ios?.bundleIdentifier + EXTENSION_BUNDLE_ID_SUFFIX;
+    const bundleId = EXTENSION_BUNDLE_ID;
     const targetName = EXTENSION_NAME;
     const platformProjectRoot = config.modRequest.platformProjectRoot; // ios/
 
@@ -70,6 +55,40 @@ const withShareExtension = (config) => {
       path.join(extensionDir, entitlementsFileName),
       getExtensionEntitlements()
     );
+
+    // Install the Share Extension provisioning profile so Xcode can find it
+    const projectRoot = config.modRequest.projectRoot; // frontend/
+    const profileSrc = path.resolve(projectRoot, "..", EXTENSION_PROFILE_FILENAME);
+    let profileUUID = null;
+    if (fs.existsSync(profileSrc)) {
+      try {
+        const plistXml = execSync(
+          `security cms -D -i "${profileSrc}"`,
+          { encoding: "utf8" }
+        );
+        const uuidMatch = plistXml.match(
+          /<key>UUID<\/key>\s*<string>([^<]+)<\/string>/
+        );
+        if (uuidMatch) {
+          profileUUID = uuidMatch[1];
+          const profilesDir = path.join(
+            process.env.HOME,
+            "Library",
+            "MobileDevice",
+            "Provisioning Profiles"
+          );
+          if (!fs.existsSync(profilesDir)) {
+            fs.mkdirSync(profilesDir, { recursive: true });
+          }
+          fs.copyFileSync(
+            profileSrc,
+            path.join(profilesDir, `${profileUUID}.mobileprovision`)
+          );
+        }
+      } catch (e) {
+        console.warn("Could not install Share Extension provisioning profile:", e.message);
+      }
+    }
 
     // Check if target already exists
     const existingTarget = xcodeProject.pbxTargetByName(targetName);
@@ -150,10 +169,11 @@ const withShareExtension = (config) => {
         buildSettings.CODE_SIGN_ENTITLEMENTS = `"${targetName}/${entitlementsFileName}"`;
         buildSettings.INFOPLIST_FILE = `"${targetName}/Info.plist"`;
         buildSettings.CODE_SIGN_STYLE = "Automatic";
+        buildSettings.DEVELOPMENT_TEAM = `"${APPLE_TEAM_ID}"`;
         buildSettings.MARKETING_VERSION = "1.0";
         buildSettings.CURRENT_PROJECT_VERSION = "1";
         buildSettings.GENERATE_INFOPLIST_FILE = "NO";
-        // Inherit team and version from main target
+        // Inherit version from main target
         const mainTarget = xcodeProject.getFirstTarget();
         if (mainTarget) {
           const mainConfigs =
@@ -164,9 +184,6 @@ const withShareExtension = (config) => {
             const mainConfigKey = mainConfigs.buildConfigurations[0]?.value;
             if (mainConfigKey && configurations[mainConfigKey]?.buildSettings) {
               const mainSettings = configurations[mainConfigKey].buildSettings;
-              if (mainSettings.DEVELOPMENT_TEAM) {
-                buildSettings.DEVELOPMENT_TEAM = mainSettings.DEVELOPMENT_TEAM;
-              }
               if (mainSettings.MARKETING_VERSION) {
                 buildSettings.MARKETING_VERSION = mainSettings.MARKETING_VERSION;
               }

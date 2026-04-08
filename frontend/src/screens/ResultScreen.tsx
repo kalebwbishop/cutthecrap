@@ -9,20 +9,22 @@ import {
   Modal,
   BackHandler,
   ActivityIndicator,
+  Share,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { isAxiosError } from 'axios';
 import RecipeCard from '@/components/RecipeCard';
 import NotRecipePage from '@/components/NotRecipePage';
-import { ArrowLeftIcon, BookmarkIcon, BookmarkFilledIcon } from '@/components/Icons';
+import { ArrowLeftIcon, BookmarkIcon, BookmarkFilledIcon, ShareIcon } from '@/components/Icons';
 import { useRecipeStore } from '@/store/recipeStore';
 import { useAuthStore } from '@/store/authStore';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { recipeApi } from '@/api/recipeApi';
 import { socialApi } from '@/api/socialApi';
 import { successFeedback, errorFeedback } from '@/utils/haptics';
-import { copyRecipeToClipboard } from '@/utils/clipboard';
+import { copyRecipeToClipboard, formatRecipeAsText } from '@/utils/clipboard';
 import { useThemeColors, fontSizes, spacing, radii } from '@/theme';
 import type { ThemeColors } from '@/theme';
 
@@ -140,6 +142,21 @@ export default function ResultScreen() {
     }
   };
 
+  const handleShare = async () => {
+    if (!recipe) return;
+    const text = formatRecipeAsText(recipe);
+    try {
+      await Share.share(
+        Platform.OS === 'ios'
+          ? { message: text, url: url || undefined }
+          : { message: url ? `${text}\n\n${url}` : text },
+        { subject: recipe.title },
+      );
+    } catch {
+      // User cancelled or share failed — nothing to do
+    }
+  };
+
   const handleSave = async () => {
     const recipe = result?.recipe;
     if (!recipe || saving || saved) return;
@@ -223,6 +240,15 @@ export default function ResultScreen() {
               <Text style={[s.copyButtonText, copied && { color: colors.success }]}>
                 {copied ? '✓ Copied' : '📋 Copy'}
               </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={s.shareButton}
+              onPress={handleShare}
+              activeOpacity={0.7}
+              accessibilityLabel="Share recipe"
+              accessibilityRole="button"
+            >
+              <ShareIcon size={18} color={colors.text} />
             </TouchableOpacity>
             {user ? (
               <TouchableOpacity
@@ -378,6 +404,14 @@ const createStyles = (colors: ThemeColors) =>
     copyButton: {
       height: 34,
       paddingHorizontal: 10,
+      borderRadius: radii.sm,
+      backgroundColor: colors.bgInput,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    shareButton: {
+      width: 34,
+      height: 34,
       borderRadius: radii.sm,
       backgroundColor: colors.bgInput,
       alignItems: 'center',

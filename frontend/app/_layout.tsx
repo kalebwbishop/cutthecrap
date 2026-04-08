@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Stack } from 'expo-router';
-import { Alert, Platform, StyleSheet, View } from 'react-native';
+import { Stack, useRouter } from 'expo-router';
+import { Alert, Image, Platform, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
+import * as Linking from 'expo-linking';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ErrorBoundary from '../src/components/ErrorBoundary';
 import OfflineBanner from '../src/components/OfflineBanner';
@@ -10,7 +11,9 @@ import { ThemeProvider, useThemeColors, useIsDarkMode } from '../src/theme';
 import { billingService } from '../src/services/billing';
 import { useAuthStore } from '../src/store/authStore';
 import { useSubscriptionStore } from '../src/store/subscriptionStore';
+import { useRecipeStore } from '../src/store/recipeStore';
 import { setupAuthInterceptor } from '../src/api/authInterceptor';
+import { checkSharedUrl } from '../src/utils/shareExtension';
 
 // Prevent the splash screen from auto-hiding until we finish restoring the session.
 SplashScreen.preventAutoHideAsync();
@@ -18,6 +21,7 @@ SplashScreen.preventAutoHideAsync();
 function RootLayoutInner() {
     const colors = useThemeColors();
     const isDark = useIsDarkMode();
+    const router = useRouter();
     const user = useAuthStore((s) => s.user);
     const restoreSession = useAuthStore((s) => s.restoreSession);
     const sessionExpiredMessage = useAuthStore((s) => s.sessionExpiredMessage);
@@ -37,6 +41,40 @@ function RootLayoutInner() {
             SplashScreen.hideAsync();
         }
     }, [appReady]);
+
+    // Handle incoming deep links (e.g. cutthecrap://extract?url=...)
+    useEffect(() => {
+        if (!appReady) return;
+
+        const handleIncomingUrl = (urlString: string) => {
+            const parsed = Linking.parse(urlString);
+            if (parsed.hostname === 'extract' && parsed.queryParams?.url) {
+                const recipeUrl = String(parsed.queryParams.url);
+                useRecipeStore.getState().setUrl(recipeUrl);
+                useRecipeStore.getState().submitUrl();
+                router.replace('/loading');
+            }
+        };
+
+        // Check initial URL (cold launch via deep link)
+        Linking.getInitialURL().then((url) => {
+            if (url) handleIncomingUrl(url);
+        });
+
+        // Listen for URLs while the app is open (warm launch)
+        const subscription = Linking.addEventListener('url', (event) => {
+            handleIncomingUrl(event.url);
+        });
+
+        // Check for URL shared via iOS Share Extension (App Group UserDefaults)
+        if (Platform.OS === 'ios') {
+            checkSharedUrl().then((sharedUrl) => {
+                if (sharedUrl) handleIncomingUrl(sharedUrl);
+            });
+        }
+
+        return () => subscription.remove();
+    }, [appReady, router]);
 
     // Show an alert when the session can no longer be refreshed
     useEffect(() => {
@@ -66,6 +104,20 @@ function RootLayoutInner() {
             });
         }
     }, [user?.id]);
+
+    // Don't render anything until the session is restored — the native splash
+    // screen stays visible, so returning null prevents a flash of unstyled content.
+    if (!appReady) {
+        return (
+            <View style={s.splashContainer}>
+                <Image
+                    source={require('../assets/splash.png')}
+                    style={s.splashImage}
+                    resizeMode="contain"
+                />
+            </View>
+        );
+    }
 
     return (
         <View style={s.container}>
@@ -98,5 +150,15 @@ const s = StyleSheet.create({
     container: {
         flex: 1,
         ...(Platform.OS === 'web' ? { minHeight: '100vh' as any } : {}),
+    },
+    splashContainer: {
+        flex: 1,
+        backgroundColor: '#e8a87c',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    splashImage: {
+        width: 200,
+        height: 200,
     },
 });

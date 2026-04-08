@@ -1,6 +1,5 @@
-import { Platform } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import type { Recipe, RecipeStep } from '@/types/recipe';
+import type { Recipe } from '@/types/recipe';
 
 /**
  * Formats a recipe as plain text and copies it to the clipboard.
@@ -16,7 +15,7 @@ export async function copyRecipeToClipboard(recipe: Recipe): Promise<boolean> {
   }
 }
 
-function formatRecipeAsText(recipe: Recipe): string {
+export function formatRecipeAsText(recipe: Recipe): string {
   const lines: string[] = [];
 
   lines.push(recipe.title);

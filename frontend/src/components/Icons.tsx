@@ -274,3 +274,19 @@ export function MoveIcon({ size = 20, color }: IconProps) {
     </Svg>
   );
 }
+
+export function ShareIcon({ size = 20, color }: IconProps) {
+  const colors = useThemeColors();
+  const fill = color ?? colors.text;
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M4 12v7a2 2 0 002 2h12a2 2 0 002-2v-7M16 6l-4-4-4 4M12 2v13"
+        stroke={fill}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}

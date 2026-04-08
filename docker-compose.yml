@@ -21,9 +21,9 @@ services:
     env_file: ./backend/.env
     environment:
       POSTGRES_CONNECTION_STRING: postgresql://postgres:postgres@db:5432/cutthecrap_dev
-      CORS_ORIGIN: http://localhost
-      FRONTEND_URL: http://localhost
-      WORKOS_REDIRECT_URI: http://localhost/api/v1/auth/callback
+      CORS_ORIGIN: https://cutthecrap.deploy-box.com
+      FRONTEND_URL: https://cutthecrap.deploy-box.com
+      WORKOS_REDIRECT_URI: https://cutthecrap.deploy-box.com/api/v1/auth/callback
     depends_on:
       db:
         condition: service_healthy

@@ -134,6 +134,18 @@ class TestAuthCallback:
         location = response.headers["location"]
         assert "&code=abc123" in location
 
+    def test_code_with_special_chars_is_url_encoded(self):
+        client = _get_test_client()
+        response = client.get(
+            "/api/v1/auth/callback?code=abc%2B123%3D%26end",
+            follow_redirects=False,
+        )
+        assert response.status_code == 302
+        location = response.headers["location"]
+        # The code should be re-encoded in the redirect URL so special
+        # characters (+, =, &) don't corrupt the query string.
+        assert "code=abc%2B123%3D%26end" in location
+
     def test_invalid_state_falls_back_to_default(self):
         client = _get_test_client()
         response = client.get(

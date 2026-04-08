@@ -5,6 +5,7 @@ Implements a fallback chain: JSON-LD → Microdata → RDFa.
 When structured data is found, the recipe can be returned directly
 without an OpenAI API call.
 """
+from __future__ import annotations
 
 import json
 import re

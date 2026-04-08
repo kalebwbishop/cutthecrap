@@ -2,6 +2,7 @@
 Recipe extraction service – ports the HTML-parsing and ChatGPT extraction
 logic from the frontend recipeApi.ts into server-side Python.
 """
+from __future__ import annotations
 
 import html
 import ipaddress

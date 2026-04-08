@@ -1,6 +1,7 @@
 """
 Folder service — CRUD operations for recipe folders.
 """
+from __future__ import annotations
 
 from typing import Any
 

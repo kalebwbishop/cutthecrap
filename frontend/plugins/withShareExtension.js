@@ -10,7 +10,7 @@ const EXTENSION_NAME = "ShareExtension";
 const EXTENSION_BUNDLE_ID = "com.cutthecrap.app.ShareExtension";
 const APPLE_TEAM_ID = "RS528XGBD7";
 const EXTENSION_PROFILE_FILENAME =
-  "Cut_The_Crap_Share_Extension_Provisioning_Profile.mobileprovision";
+  "Cut_The_Crap_Share_Extension_Provisioning_Profile-2.mobileprovision";
 
 /**
  * Expo config plugin that adds an iOS Share Extension target.
@@ -168,8 +168,13 @@ const withShareExtension = (config) => {
         buildSettings.IPHONEOS_DEPLOYMENT_TARGET = "16.0";
         buildSettings.CODE_SIGN_ENTITLEMENTS = `"${targetName}/${entitlementsFileName}"`;
         buildSettings.INFOPLIST_FILE = `"${targetName}/Info.plist"`;
-        buildSettings.CODE_SIGN_STYLE = "Automatic";
+        buildSettings.CODE_SIGN_STYLE = "Manual";
         buildSettings.DEVELOPMENT_TEAM = `"${APPLE_TEAM_ID}"`;
+        buildSettings.CODE_SIGN_IDENTITY = `"iPhone Distribution"`;
+        if (profileUUID) {
+          buildSettings.PROVISIONING_PROFILE = `"${profileUUID}"`;
+          buildSettings.PROVISIONING_PROFILE_SPECIFIER = `""`;
+        }
         buildSettings.MARKETING_VERSION = "1.0";
         buildSettings.CURRENT_PROJECT_VERSION = "1";
         buildSettings.GENERATE_INFOPLIST_FILE = "NO";

@@ -91,6 +91,8 @@ export default function GroupsScreen() {
           onPress={handleBack}
           hitSlop={8}
           activeOpacity={0.7}
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
         >
           <ArrowLeftIcon size={18} color={colors.text} />
         </TouchableOpacity>
@@ -99,6 +101,8 @@ export default function GroupsScreen() {
           style={[s.createButton, { backgroundColor: colors.bgButton }]}
           onPress={() => setShowCreate(true)}
           activeOpacity={0.7}
+          accessibilityLabel="Create new group"
+          accessibilityRole="button"
         >
           <Text style={s.createButtonText}>+ New</Text>
         </TouchableOpacity>
@@ -125,6 +129,8 @@ export default function GroupsScreen() {
               style={[s.card, { borderColor: colors.border }]}
               onPress={() => handleOpenGroup(group.id)}
               activeOpacity={0.7}
+              accessibilityLabel={`Open ${group.name}`}
+              accessibilityRole="button"
             >
               <View style={s.cardInfo}>
                 <Text style={[s.cardName, { color: colors.text }]}>{group.name}</Text>
@@ -153,6 +159,7 @@ export default function GroupsScreen() {
               onChangeText={setNewGroupName}
               autoFocus
               editable={!creating}
+              accessibilityLabel="Group name"
             />
             <View style={s.modalActions}>
               <TouchableOpacity
@@ -160,6 +167,8 @@ export default function GroupsScreen() {
                 onPress={() => { setShowCreate(false); setNewGroupName(''); }}
                 disabled={creating}
                 activeOpacity={0.7}
+                accessibilityLabel="Cancel"
+                accessibilityRole="button"
               >
                 <Text style={[s.modalCancelText, { color: colors.text }]}>Cancel</Text>
               </TouchableOpacity>
@@ -168,6 +177,8 @@ export default function GroupsScreen() {
                 onPress={handleCreate}
                 disabled={!newGroupName.trim() || creating}
                 activeOpacity={0.7}
+                accessibilityLabel="Create group"
+                accessibilityRole="button"
               >
                 {creating ? (
                   <ActivityIndicator color="#FFFFFF" size="small" />

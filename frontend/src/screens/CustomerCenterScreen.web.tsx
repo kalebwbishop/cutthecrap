@@ -59,14 +59,14 @@ export default function CustomerCenterScreen() {
   return (
     <SafeAreaView style={[s.container, { backgroundColor: colors.background }]}>
       <View style={s.header}>
-        <TouchableOpacity onPress={() => router.back()} hitSlop={8} activeOpacity={0.7}>
+        <TouchableOpacity onPress={() => router.back()} hitSlop={8} activeOpacity={0.7} accessibilityLabel="Close" accessibilityRole="button">
           <CloseIcon size={22} color={colors.textMuted} />
         </TouchableOpacity>
       </View>
       <View style={s.body}>
         <Text style={[s.title, { color: colors.text }]}>Manage Subscription</Text>
         <Text style={[s.subtitle, { color: colors.textMuted }]}>{error}</Text>
-        <TouchableOpacity style={s.backButton} onPress={() => router.back()} activeOpacity={0.7}>
+        <TouchableOpacity style={s.backButton} onPress={() => router.back()} activeOpacity={0.7} accessibilityLabel="Go back" accessibilityRole="button">
           <Text style={[s.backText, { color: colors.text }]}>Go back</Text>
         </TouchableOpacity>
       </View>

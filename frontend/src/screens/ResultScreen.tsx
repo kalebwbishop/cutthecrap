@@ -162,15 +162,6 @@ export default function ResultScreen() {
     if (!recipe || saving || saved) return;
     setSaving(true);
     try {
-      if (!isPro) {
-        const count = await recipeApi.getSavedRecipeCount();
-        if (count >= FREE_RECIPE_LIMIT) {
-          setShowLimitModal(true);
-          setSaving(false);
-          errorFeedback();
-          return;
-        }
-      }
       await recipeApi.saveRecipe(recipe, url || undefined);
       setSaved(true);
       successFeedback();
@@ -319,45 +310,7 @@ export default function ResultScreen() {
         ) : null}
       </ScrollView>
 
-      {/* Recipe limit modal */}
-      <Modal
-        visible={showLimitModal}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowLimitModal(false)}
-      >
-        <Pressable style={s.modalOverlay} onPress={() => setShowLimitModal(false)} accessibilityLabel="Dismiss" accessibilityRole="button">
-          <Pressable style={s.modalCard} onPress={(e) => e.stopPropagation()}>
-            <Text style={s.modalTitle}>Recipe Limit Reached</Text>
-            <Text style={s.modalBody}>
-              Free accounts can save up to {FREE_RECIPE_LIMIT} recipes. Upgrade to Pro for unlimited saves!
-            </Text>
-            <View style={s.modalActions}>
-              <TouchableOpacity
-                style={s.modalSecondaryBtn}
-                onPress={() => setShowLimitModal(false)}
-                activeOpacity={0.7}
-                accessibilityLabel="Maybe later"
-                accessibilityRole="button"
-              >
-                <Text style={s.modalSecondaryText}>Maybe Later</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={s.modalPrimaryBtn}
-                onPress={() => {
-                  setShowLimitModal(false);
-                  router.push('/upgrade');
-                }}
-                activeOpacity={0.7}
-                accessibilityLabel="Upgrade to Pro"
-                accessibilityRole="button"
-              >
-                <Text style={s.modalPrimaryText}>Upgrade</Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
-        </Pressable>
-      </Modal>
+
     </SafeAreaView>
   );
 }

@@ -120,6 +120,8 @@ export default function FriendsScreen() {
           onPress={handleBack}
           hitSlop={8}
           activeOpacity={0.7}
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
         >
           <ArrowLeftIcon size={18} color={colors.text} />
         </TouchableOpacity>
@@ -148,12 +150,16 @@ export default function FriendsScreen() {
             autoCapitalize="none"
             autoCorrect={false}
             editable={!sending}
+            accessibilityLabel="Friend's email address"
+            accessibilityHint="Enter email to send a friend request"
           />
           <TouchableOpacity
             style={[s.sendButton, { backgroundColor: colors.bgButton }, (!email.trim() || sending) && s.disabled]}
             onPress={handleSendRequest}
             activeOpacity={0.7}
             disabled={!email.trim() || sending}
+            accessibilityLabel="Send friend request"
+            accessibilityRole="button"
           >
             {sending ? (
               <ActivityIndicator color="#FFFFFF" size="small" />
@@ -171,6 +177,9 @@ export default function FriendsScreen() {
             style={[s.toggleButton, activeTab === 'friends' && [s.toggleButtonActive, { backgroundColor: colors.background }]]}
             onPress={() => setActiveTab('friends')}
             activeOpacity={0.7}
+            accessibilityLabel="Friends tab"
+            accessibilityRole="tab"
+            accessibilityState={{ selected: activeTab === 'friends' }}
           >
             <Text style={[s.toggleText, { color: colors.textMuted }, activeTab === 'friends' && { color: colors.text }]}>
               Friends ({friends.length})
@@ -180,6 +189,9 @@ export default function FriendsScreen() {
             style={[s.toggleButton, activeTab === 'requests' && [s.toggleButtonActive, { backgroundColor: colors.background }]]}
             onPress={() => setActiveTab('requests')}
             activeOpacity={0.7}
+            accessibilityLabel="Requests tab"
+            accessibilityRole="tab"
+            accessibilityState={{ selected: activeTab === 'requests' }}
           >
             <Text style={[s.toggleText, { color: colors.textMuted }, activeTab === 'requests' && { color: colors.text }]}>
               Requests ({friendRequests.length})
@@ -203,6 +215,8 @@ export default function FriendsScreen() {
                   style={[s.removeButton, { borderColor: colors.error }]}
                   onPress={() => handleRemove(f.friendshipId, f.user.name)}
                   activeOpacity={0.7}
+                  accessibilityLabel={`Remove ${f.user.name}`}
+                  accessibilityRole="button"
                 >
                   <Text style={[s.removeText, { color: colors.error }]}>Remove</Text>
                 </TouchableOpacity>
@@ -229,6 +243,8 @@ export default function FriendsScreen() {
                         style={[s.acceptButton, { backgroundColor: colors.bgButton }]}
                         onPress={() => handleAccept(r.id)}
                         activeOpacity={0.7}
+                        accessibilityLabel={`Accept request from ${r.user.name}`}
+                        accessibilityRole="button"
                       >
                         <Text style={s.acceptText}>Accept</Text>
                       </TouchableOpacity>
@@ -236,6 +252,8 @@ export default function FriendsScreen() {
                         style={[s.rejectButton, { borderColor: colors.border }]}
                         onPress={() => handleReject(r.id)}
                         activeOpacity={0.7}
+                        accessibilityLabel={`Decline request from ${r.user.name}`}
+                        accessibilityRole="button"
                       >
                         <Text style={[s.rejectText, { color: colors.textMuted }]}>Decline</Text>
                       </TouchableOpacity>

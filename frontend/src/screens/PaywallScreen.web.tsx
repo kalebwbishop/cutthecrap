@@ -141,6 +141,8 @@ export default function PaywallScreen() {
           onPress={() => router.back()}
           hitSlop={8}
           activeOpacity={0.7}
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
         >
           <ArrowLeftIcon size={18} color={colors.textMuted} />
         </TouchableOpacity>
@@ -193,6 +195,8 @@ export default function PaywallScreen() {
                   ]}
                   onPress={() => setSelectedId(pkg.identifier)}
                   activeOpacity={0.7}
+                  accessibilityLabel={`${packageTitle(pkg.packageType)} plan, ${pkg.priceString} ${periodLabel(pkg.packageType)}`}
+                  accessibilityRole="radio"
                 >
                   <View style={s.packageLeft}>
                     <View
@@ -237,6 +241,8 @@ export default function PaywallScreen() {
             onPress={handlePurchase}
             disabled={purchasing || !selectedId}
             activeOpacity={0.8}
+            accessibilityLabel="Continue with purchase"
+            accessibilityRole="button"
           >
             {purchasing ? (
               <ActivityIndicator size="small" color={colors.background} />
@@ -252,17 +258,19 @@ export default function PaywallScreen() {
             onPress={handleRestore}
             disabled={restoring}
             activeOpacity={0.7}
+            accessibilityLabel="Restore purchases"
+            accessibilityRole="button"
           >
             <Text style={[s.footerLinkText, { color: colors.textMuted }]}>
               {restoring ? 'Restoring…' : 'Restore Purchases'}
             </Text>
           </TouchableOpacity>
           <Text style={[s.footerSeparator, { color: colors.textMuted }]}>·</Text>
-          <TouchableOpacity onPress={() => router.push('/terms')} activeOpacity={0.7}>
+          <TouchableOpacity onPress={() => router.push('/terms')} activeOpacity={0.7} accessibilityLabel="Terms of Service" accessibilityRole="link">
             <Text style={[s.footerLinkText, { color: colors.textMuted }]}>Terms</Text>
           </TouchableOpacity>
           <Text style={[s.footerSeparator, { color: colors.textMuted }]}>·</Text>
-          <TouchableOpacity onPress={() => router.push('/privacy')} activeOpacity={0.7}>
+          <TouchableOpacity onPress={() => router.push('/privacy')} activeOpacity={0.7} accessibilityLabel="Privacy Policy" accessibilityRole="link">
             <Text style={[s.footerLinkText, { color: colors.textMuted }]}>Privacy</Text>
           </TouchableOpacity>
         </View>

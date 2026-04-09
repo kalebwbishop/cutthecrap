@@ -222,6 +222,8 @@ export default function GroupDetailScreen() {
             onPress={handleBack}
             hitSlop={8}
             activeOpacity={0.7}
+            accessibilityLabel="Go back"
+            accessibilityRole="button"
           >
             <ArrowLeftIcon size={18} color={colors.text} />
           </TouchableOpacity>
@@ -240,6 +242,8 @@ export default function GroupDetailScreen() {
           onPress={handleBack}
           hitSlop={8}
           activeOpacity={0.7}
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
         >
           <ArrowLeftIcon size={18} color={colors.text} />
         </TouchableOpacity>
@@ -255,6 +259,8 @@ export default function GroupDetailScreen() {
           style={[s.actionButton, { backgroundColor: colors.bgButton }]}
           onPress={handleOpenShareModal}
           activeOpacity={0.7}
+          accessibilityLabel="Share a recipe to this group"
+          accessibilityRole="button"
         >
           <Text style={s.actionButtonText}>Share Recipe</Text>
         </TouchableOpacity>
@@ -263,6 +269,8 @@ export default function GroupDetailScreen() {
             style={[s.actionButton, { backgroundColor: colors.bgSubtle, borderWidth: 1, borderColor: colors.border }]}
             onPress={() => setShowInvite(true)}
             activeOpacity={0.7}
+            accessibilityLabel="Invite a friend to this group"
+            accessibilityRole="button"
           >
             <Text style={[s.actionButtonTextAlt, { color: colors.text }]}>Invite Friend</Text>
           </TouchableOpacity>
@@ -275,6 +283,9 @@ export default function GroupDetailScreen() {
           style={[s.toggleButton, activeTab === 'recipes' && [s.toggleActive, { backgroundColor: colors.background }]]}
           onPress={() => setActiveTab('recipes')}
           activeOpacity={0.7}
+          accessibilityLabel="Recipes tab"
+          accessibilityRole="tab"
+          accessibilityState={{ selected: activeTab === 'recipes' }}
         >
           <Text style={[s.toggleText, { color: colors.textMuted }, activeTab === 'recipes' && { color: colors.text }]}>
             Recipes ({activeGroupRecipes.length})
@@ -284,6 +295,9 @@ export default function GroupDetailScreen() {
           style={[s.toggleButton, activeTab === 'members' && [s.toggleActive, { backgroundColor: colors.background }]]}
           onPress={() => setActiveTab('members')}
           activeOpacity={0.7}
+          accessibilityLabel="Members tab"
+          accessibilityRole="tab"
+          accessibilityState={{ selected: activeTab === 'members' }}
         >
           <Text style={[s.toggleText, { color: colors.textMuted }, activeTab === 'members' && { color: colors.text }]}>
             Members ({activeGroupMembers.length})
@@ -307,6 +321,8 @@ export default function GroupDetailScreen() {
                   style={s.recipeCardInfo}
                   onPress={() => handleViewRecipe(sr.recipe.id)}
                   activeOpacity={0.7}
+                  accessibilityLabel={`View recipe: ${sr.recipe.title}`}
+                  accessibilityRole="button"
                 >
                   <Text style={[s.recipeName, { color: colors.text }]}>{sr.recipe.title}</Text>
                   <Text style={[s.recipeMeta, { color: colors.textMuted }]}>
@@ -318,6 +334,8 @@ export default function GroupDetailScreen() {
                     style={[s.saveButton, { backgroundColor: colors.bgButton }]}
                     onPress={() => handleSaveRecipe(sr.recipe.id)}
                     activeOpacity={0.7}
+                    accessibilityLabel={`Save ${sr.recipe.title}`}
+                    accessibilityRole="button"
                   >
                     <Text style={s.saveButtonText}>Save</Text>
                   </TouchableOpacity>
@@ -326,6 +344,8 @@ export default function GroupDetailScreen() {
                       style={[s.unshareButton, { borderColor: colors.error }]}
                       onPress={() => handleUnshare(sr.shareId)}
                       activeOpacity={0.7}
+                      accessibilityLabel={`Remove ${sr.recipe.title} from group`}
+                      accessibilityRole="button"
                     >
                       <Text style={[s.unshareText, { color: colors.error }]}>Remove</Text>
                     </TouchableOpacity>
@@ -349,6 +369,8 @@ export default function GroupDetailScreen() {
                     style={[s.removeMemberButton, { borderColor: colors.border }]}
                     onPress={() => handleRemoveMember(m.id, m.name)}
                     activeOpacity={0.7}
+                    accessibilityLabel={m.id === currentUser?.id ? 'Leave group' : `Remove ${m.name} from group`}
+                    accessibilityRole="button"
                   >
                     <Text style={[s.removeMemberText, { color: m.id === currentUser?.id ? colors.error : colors.textMuted }]}>
                       {m.id === currentUser?.id ? 'Leave' : 'Remove'}
@@ -378,6 +400,8 @@ export default function GroupDetailScreen() {
                     style={[s.inviteCard, { borderColor: colors.border }]}
                     onPress={() => handleInvite(f.user.id)}
                     activeOpacity={0.7}
+                    accessibilityLabel={`Invite ${f.user.name}`}
+                    accessibilityRole="button"
                   >
                     <View style={s.inviteInfo}>
                       <Text style={[s.inviteName, { color: colors.text }]}>{f.user.name}</Text>
@@ -392,6 +416,8 @@ export default function GroupDetailScreen() {
               style={[s.modalCloseButton, { borderColor: colors.border }]}
               onPress={() => setShowInvite(false)}
               activeOpacity={0.7}
+              accessibilityLabel="Close"
+              accessibilityRole="button"
             >
               <Text style={[s.modalCloseText, { color: colors.text }]}>Close</Text>
             </TouchableOpacity>
@@ -418,6 +444,8 @@ export default function GroupDetailScreen() {
                     style={[s.shareCard, { borderColor: colors.border }]}
                     onPress={() => handleShare(r.id)}
                     activeOpacity={0.7}
+                    accessibilityLabel={`Share ${r.title}`}
+                    accessibilityRole="button"
                   >
                     <Text style={[s.shareName, { color: colors.text }]}>{r.title}</Text>
                   </TouchableOpacity>
@@ -428,6 +456,8 @@ export default function GroupDetailScreen() {
               style={[s.modalCloseButton, { borderColor: colors.border }]}
               onPress={() => setShowShare(false)}
               activeOpacity={0.7}
+              accessibilityLabel="Cancel"
+              accessibilityRole="button"
             >
               <Text style={[s.modalCloseText, { color: colors.text }]}>Cancel</Text>
             </TouchableOpacity>

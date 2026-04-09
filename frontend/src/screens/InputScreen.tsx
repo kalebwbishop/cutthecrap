@@ -114,11 +114,13 @@ export default function InputScreen() {
               style={s.menuButton}
               onPress={() => setSidebarOpen(true)}
               activeOpacity={0.7}
+              accessibilityLabel="Open menu"
+              accessibilityRole="button"
             >
               <MenuIcon size={24} color={colors.text} />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={s.loginButton} onPress={login} activeOpacity={0.7}>
+            <TouchableOpacity style={s.loginButton} onPress={login} activeOpacity={0.7} accessibilityLabel="Log in" accessibilityRole="button">
               <Text style={s.loginButtonText}>Log in</Text>
             </TouchableOpacity>
           )}
@@ -152,12 +154,16 @@ export default function InputScreen() {
                 autoCapitalize="none"
                 autoCorrect={false}
                 keyboardType="url"
+                accessibilityLabel="Recipe URL"
+                accessibilityHint="Paste a recipe URL to extract"
               />
               <TouchableOpacity
                 style={[s.sendButton, !canSubmit && s.sendButtonDisabled]}
                 onPress={handleSubmit}
                 disabled={!canSubmit}
                 activeOpacity={0.7}
+                accessibilityLabel="Extract recipe"
+                accessibilityRole="button"
               >
                 <ArrowUpIcon
                   size={24}

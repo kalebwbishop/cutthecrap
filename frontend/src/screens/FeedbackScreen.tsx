@@ -59,6 +59,8 @@ export default function FeedbackScreen() {
           onPress={handleBack}
           hitSlop={8}
           activeOpacity={0.7}
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
         >
           <ArrowLeftIcon size={18} color={colors.text} />
         </TouchableOpacity>
@@ -86,6 +88,8 @@ export default function FeedbackScreen() {
                 style={[s.submitButton, { backgroundColor: colors.bgButton }]}
                 onPress={handleBack}
                 activeOpacity={0.7}
+                accessibilityLabel="Go back"
+                accessibilityRole="button"
               >
                 <Text style={s.submitText}>Go Back</Text>
               </TouchableOpacity>
@@ -114,6 +118,8 @@ export default function FeedbackScreen() {
                 onChangeText={setMessage}
                 textAlignVertical="top"
                 editable={!sending}
+                accessibilityLabel="Feedback message"
+                accessibilityHint="Type your feedback here"
               />
 
               <Text style={[s.charCount, { color: colors.textMuted }]}>
@@ -131,6 +137,8 @@ export default function FeedbackScreen() {
                 onPress={handleSubmit}
                 activeOpacity={0.7}
                 disabled={!message.trim() || sending}
+                accessibilityLabel="Send feedback"
+                accessibilityRole="button"
               >
                 {sending ? (
                   <ActivityIndicator color="#FFFFFF" size="small" />

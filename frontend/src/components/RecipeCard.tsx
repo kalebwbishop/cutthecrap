@@ -62,6 +62,8 @@ export default function RecipeCard({ recipe, url }: RecipeCardProps) {
             style={s.originalUrl}
             numberOfLines={1}
             onPress={() => Linking.openURL(url)}
+            accessibilityLabel="Open original recipe URL"
+            accessibilityRole="link"
           >
             {url}
           </Text>
@@ -130,6 +132,8 @@ export default function RecipeCard({ recipe, url }: RecipeCardProps) {
                 onValueChange={setShowStepIngredients}
                 trackColor={{ false: colors.bgInput, true: colors.success }}
                 thumbColor={colors.white}
+                accessibilityLabel="Show step ingredients"
+                accessibilityRole="switch"
               />
             </View>
           </View>

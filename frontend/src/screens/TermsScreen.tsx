@@ -72,6 +72,8 @@ export default function TermsScreen() {
           onPress={handleBack}
           hitSlop={8}
           activeOpacity={0.7}
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
         >
           <ArrowLeftIcon size={18} color={colors.text} />
         </TouchableOpacity>

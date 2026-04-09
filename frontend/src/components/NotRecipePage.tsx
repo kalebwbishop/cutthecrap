@@ -25,7 +25,7 @@ export default function NotRecipePage({ title, onBack }: NotRecipePageProps) {
         We checked <Text style={s.bold}>{title}</Text> and it doesn't look like
         a recipe page. Try pasting a link to an actual recipe.
       </Text>
-      <TouchableOpacity style={s.button} onPress={onBack} activeOpacity={0.7}>
+      <TouchableOpacity style={s.button} onPress={onBack} activeOpacity={0.7} accessibilityLabel="Try another URL" accessibilityRole="button">
         <ArrowLeftIcon size={20} color={colors.text} />
         <Text style={s.buttonText}>Try another URL</Text>
       </TouchableOpacity>

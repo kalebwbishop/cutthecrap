@@ -293,6 +293,8 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
       onPress={() => handleOpenRecipe(recipe.id)}
       onHoverIn={() => setHoveredRecipeId(recipe.id)}
       onHoverOut={() => setHoveredRecipeId(null)}
+      accessibilityLabel={recipe.title}
+      accessibilityRole="button"
     >
       <View style={s.recipeItemRow}>
         <View style={s.recipeItemText}>
@@ -311,6 +313,8 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
                 hitSlop={8}
                 activeOpacity={0.7}
                 style={s.trashButton}
+                accessibilityLabel="Move recipe to folder"
+                accessibilityRole="button"
               >
                 <MoveIcon size={14} color={colors.textMuted} />
               </TouchableOpacity>
@@ -320,6 +324,8 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
               hitSlop={8}
               activeOpacity={0.7}
               style={s.trashButton}
+              accessibilityLabel="Delete recipe"
+              accessibilityRole="button"
             >
               <TrashIcon size={16} color={colors.error} />
             </TouchableOpacity>
@@ -336,7 +342,7 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
     <View style={[s.root, !visible && s.rootHidden]} pointerEvents={visible ? 'auto' : 'none'}>
       {/* Overlay */}
       <Animated.View style={[s.overlay, { opacity: fadeAnim }]}>
-        <TouchableOpacity style={s.overlayTouch} onPress={onClose} activeOpacity={1} />
+        <TouchableOpacity style={s.overlayTouch} onPress={onClose} activeOpacity={1} accessibilityLabel="Close sidebar" accessibilityRole="button" />
       </Animated.View>
 
       {/* Drawer panel */}
@@ -347,7 +353,7 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
             <Text style={s.userName} numberOfLines={1}>{user.name || user.email}</Text>
             <Text style={s.userEmail} numberOfLines={1}>{user.email}</Text>
           </View>
-          <TouchableOpacity onPress={onClose} hitSlop={8} activeOpacity={0.7}>
+          <TouchableOpacity onPress={onClose} hitSlop={8} activeOpacity={0.7} accessibilityLabel="Close sidebar" accessibilityRole="button">
             <CloseIcon size={22} color={colors.textMuted} />
           </TouchableOpacity>
         </View>
@@ -360,6 +366,9 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
             style={[s.toggleButton, activeTab === 'saved' && s.toggleButtonActive]}
             onPress={() => setActiveTab('saved')}
             activeOpacity={0.7}
+            accessibilityLabel="Saved recipes tab"
+            accessibilityRole="tab"
+            accessibilityState={{ selected: activeTab === 'saved' }}
           >
             <Text style={[s.toggleText, activeTab === 'saved' && s.toggleTextActive]}>Saved</Text>
           </TouchableOpacity>
@@ -367,6 +376,9 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
             style={[s.toggleButton, activeTab === 'history' && s.toggleButtonActive]}
             onPress={() => setActiveTab('history')}
             activeOpacity={0.7}
+            accessibilityLabel="History tab"
+            accessibilityRole="tab"
+            accessibilityState={{ selected: activeTab === 'history' }}
           >
             <Text style={[s.toggleText, activeTab === 'history' && s.toggleTextActive]}>History</Text>
           </TouchableOpacity>
@@ -383,80 +395,10 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
             ) : (
               historyRecipes.map((recipe) => renderRecipeItem(recipe))
             )
-          ) : savedRecipes.length === 0 && folders.length === 0 ? (
+          ) : savedRecipes.length === 0 ? (
             <Text style={s.emptyText}>No saved recipes yet.</Text>
           ) : (
-            <>
-              {/* Folders */}
-              {folders.map((folder) => {
-                const isExpanded = expandedFolders.has(folder.id);
-                const folderRecipes = recipesByFolder.get(folder.id) || [];
-                return (
-                  <View key={folder.id}>
-                    <Pressable
-                      style={s.folderHeader}
-                      onPress={() => toggleFolder(folder.id)}
-                    >
-                      <View style={s.folderHeaderLeft}>
-                        {isExpanded
-                          ? <ChevronDownIcon size={16} color={colors.textMuted} />
-                          : <ChevronRightIcon size={16} color={colors.textMuted} />}
-                        <FolderIcon size={16} color={colors.textMuted} />
-                        <Text style={s.folderName} numberOfLines={1}>{folder.name}</Text>
-                        <Text style={s.folderCount}>({folderRecipes.length})</Text>
-                      </View>
-                      <View style={s.folderActions}>
-                        <TouchableOpacity
-                          onPress={() => openRenameFolderModal(folder)}
-                          hitSlop={6}
-                          activeOpacity={0.7}
-                        >
-                          <EditIcon size={14} color={colors.textMuted} />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => handleDeleteFolder(folder.id)}
-                          hitSlop={6}
-                          activeOpacity={0.7}
-                        >
-                          <TrashIcon size={14} color={colors.error} />
-                        </TouchableOpacity>
-                      </View>
-                    </Pressable>
-                    {isExpanded && (
-                      <View style={s.folderContent}>
-                        {folderRecipes.length === 0 ? (
-                          <Text style={[s.emptyText, { paddingVertical: spacing.sm }]}>No recipes in this folder.</Text>
-                        ) : (
-                          folderRecipes.map((recipe) => renderRecipeItem(recipe, true))
-                        )}
-                      </View>
-                    )}
-                  </View>
-                );
-              })}
-
-              {/* Uncategorized recipes */}
-              {uncategorizedRecipes.length > 0 && (
-                <>
-                  {folders.length > 0 && (
-                    <Text style={s.uncategorizedLabel}>Uncategorized</Text>
-                  )}
-                  {uncategorizedRecipes.map((recipe) => renderRecipeItem(recipe, true))}
-                </>
-              )}
-            </>
-          )}
-
-          {/* Create folder button — always visible inside scroll on Saved tab */}
-          {activeTab === 'saved' && (
-            <TouchableOpacity
-              style={s.createFolderButton}
-              onPress={openCreateFolderModal}
-              activeOpacity={0.7}
-            >
-              <PlusIcon size={16} color={colors.textMuted} />
-              <Text style={s.createFolderText}>New Folder</Text>
-            </TouchableOpacity>
+            savedRecipes.map((recipe) => renderRecipeItem(recipe))
           )}
         </ScrollView>
 
@@ -464,32 +406,11 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
         <View style={s.footer}>
           <View style={s.divider} />
 
-          {/* Social navigation */}
-          <TouchableOpacity
-            style={s.navButton}
-            onPress={() => { onClose(); router.push('/friends' as any); }}
-            activeOpacity={0.7}
-          >
-            <Text style={s.navText}>👥  Friends</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={s.navButton}
-            onPress={() => { onClose(); router.push('/groups' as any); }}
-            activeOpacity={0.7}
-          >
-            <Text style={s.navText}>📋  Groups</Text>
-          </TouchableOpacity>
 
-          <View style={[s.divider, { marginTop: spacing.sm }]} />
-          <TouchableOpacity style={isPro ? s.manageButton : s.upgradeButton} onPress={handleUpgrade} activeOpacity={0.7}>
-            <Text style={isPro ? s.manageText : s.upgradeText}>
-              {isPro ? 'Manage Subscription' : 'Upgrade'}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={s.logoutButton} onPress={handleLogout} activeOpacity={0.7}>
+          <TouchableOpacity style={s.logoutButton} onPress={handleLogout} activeOpacity={0.7} accessibilityLabel="Log out" accessibilityRole="button">
             <Text style={s.logoutText}>Log out</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={s.deleteAccountButton} onPress={() => setShowDeleteModal(true)} activeOpacity={0.7}>
+          <TouchableOpacity style={s.deleteAccountButton} onPress={() => setShowDeleteModal(true)} activeOpacity={0.7} accessibilityLabel="Delete account" accessibilityRole="button">
             <TrashIcon size={16} color={colors.error} />
             <Text style={s.deleteAccountText}>Delete Account</Text>
           </TouchableOpacity>
@@ -497,16 +418,18 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
             style={s.feedbackButton}
             onPress={() => { onClose(); router.push('/feedback'); }}
             activeOpacity={0.7}
+            accessibilityLabel="Send feedback"
+            accessibilityRole="button"
           >
             <MailIcon size={16} color={colors.textMuted} />
             <Text style={s.feedbackText}>Send Feedback</Text>
           </TouchableOpacity>
           <View style={s.legalRow}>
-            <TouchableOpacity onPress={() => { onClose(); router.push('/terms'); }} activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => { onClose(); router.push('/terms'); }} activeOpacity={0.7} accessibilityLabel="Terms of Service" accessibilityRole="link">
               <Text style={s.legalText}>Terms</Text>
             </TouchableOpacity>
             <Text style={s.legalSeparator}>·</Text>
-            <TouchableOpacity onPress={() => { onClose(); router.push('/privacy'); }} activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => { onClose(); router.push('/privacy'); }} activeOpacity={0.7} accessibilityLabel="Privacy Policy" accessibilityRole="link">
               <Text style={s.legalText}>Privacy</Text>
             </TouchableOpacity>
           </View>
@@ -527,6 +450,8 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
                 onPress={() => setShowDeleteModal(false)}
                 disabled={isDeleting}
                 activeOpacity={0.7}
+                accessibilityLabel="Cancel"
+                accessibilityRole="button"
               >
                 <Text style={s.modalCancelText}>Cancel</Text>
               </TouchableOpacity>
@@ -535,6 +460,8 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
                 onPress={handleDeleteAccount}
                 disabled={isDeleting}
                 activeOpacity={0.7}
+                accessibilityLabel="Confirm delete account"
+                accessibilityRole="button"
               >
                 <Text style={s.modalDeleteText}>{isDeleting ? 'Deleting…' : 'Delete'}</Text>
               </TouchableOpacity>
@@ -543,83 +470,6 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
         </View>
       </Modal>
 
-      {/* Create / Rename folder modal */}
-      <Modal visible={showFolderModal} transparent animationType="fade" onRequestClose={() => setShowFolderModal(false)}>
-        <View style={s.modalOverlay}>
-          <View style={s.modalContent}>
-            <Text style={s.modalTitle}>
-              {folderModalMode === 'create' ? 'New Folder' : 'Rename Folder'}
-            </Text>
-            <TextInput
-              style={s.folderInput}
-              value={folderModalName}
-              onChangeText={(t) => { setFolderModalName(t); setFolderModalError(''); }}
-              placeholder="Folder name"
-              placeholderTextColor={colors.textMuted}
-              autoFocus
-              maxLength={255}
-              onSubmitEditing={handleFolderModalSubmit}
-            />
-            {folderModalError ? (
-              <Text style={s.folderInputError}>{folderModalError}</Text>
-            ) : null}
-            <View style={s.modalActions}>
-              <TouchableOpacity
-                style={s.modalCancelButton}
-                onPress={() => setShowFolderModal(false)}
-                activeOpacity={0.7}
-              >
-                <Text style={s.modalCancelText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={s.folderSubmitButton}
-                onPress={handleFolderModalSubmit}
-                activeOpacity={0.7}
-              >
-                <Text style={s.folderSubmitText}>
-                  {folderModalMode === 'create' ? 'Create' : 'Rename'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Move to folder modal */}
-      <Modal visible={showMoveModal} transparent animationType="fade" onRequestClose={() => setShowMoveModal(false)}>
-        <View style={s.modalOverlay}>
-          <View style={s.modalContent}>
-            <Text style={s.modalTitle}>Move to Folder</Text>
-            <ScrollView style={s.moveList}>
-              <TouchableOpacity
-                style={s.moveOption}
-                onPress={() => handleMoveRecipe(null)}
-                activeOpacity={0.7}
-              >
-                <Text style={s.moveOptionText}>Uncategorized</Text>
-              </TouchableOpacity>
-              {folders.map((folder) => (
-                <TouchableOpacity
-                  key={folder.id}
-                  style={s.moveOption}
-                  onPress={() => handleMoveRecipe(folder.id)}
-                  activeOpacity={0.7}
-                >
-                  <FolderIcon size={16} color={colors.textMuted} />
-                  <Text style={s.moveOptionText}>{folder.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            <TouchableOpacity
-              style={[s.modalCancelButton, { marginTop: spacing.sm }]}
-              onPress={() => setShowMoveModal(false)}
-              activeOpacity={0.7}
-            >
-              <Text style={s.modalCancelText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 }

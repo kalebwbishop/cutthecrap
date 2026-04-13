@@ -34,7 +34,7 @@ Mobile deep-link scheme: `cutthecrap://`
 
 ### Monetization
 
-RevenueCat in-app purchases (iOS/Android/Web). Entitlement: `"Cut The Crap Pro"`. Free tier: 5 saved recipes.
+Custom cross-platform billing: Stripe (web), Apple StoreKit via react-native-iap (iOS), Google Play Billing via react-native-iap (Android). Backend entitlement tables are the source of truth. Entitlement key: `"pro"`. Free tier: 5 saved recipes.
 
 ## Frontend (`frontend/`)
 
@@ -57,7 +57,7 @@ npm test                # Jest (configured but no tests exist yet)
 - **Path alias:** `@/*` maps to `./src/*` (configured in tsconfig.json)
 - **Theme system:** `createStyles(colors: ThemeColors)` factory pattern called with `useMemo()` in every screen/component. System-aware light/dark mode via `useColorScheme()`.
 - **Custom SVG icons** in `src/components/Icons.tsx` — not an icon library.
-- **Cross-platform handling:** screens check `Platform.OS === 'web'` explicitly for RevenueCat, auth redirects, shadows, etc.
+- **Cross-platform handling:** screens check `Platform.OS === 'web'` explicitly for billing flows, auth redirects, shadows, etc.
 - **Max content width:** 768px on web for readability.
 - **API client** (`src/api/client.ts`): 60s timeout, auto-detects dev server URL from Expo constants on native.
 
@@ -95,6 +95,7 @@ uvicorn app.main:app --reload --port 8000
 - `/auth/*` — WorkOS OAuth (login, callback, exchange, refresh, me, logout)
 - `/chatgpt/*` — Recipe extraction (parse raw text, parse URL)
 - `/recipes/*` — Saved recipe CRUD (auth required)
+- `/billing/*` — Billing and entitlements (Stripe, Apple, Google webhooks + sync)
 - `/api/health` — DB connectivity check
 
 ### Environment variables
@@ -115,9 +116,13 @@ npm run seed      # runs all seeds/*.sql files
 
 ### Schema
 
-PostgreSQL with `uuid-ossp` extension. Two tables:
+PostgreSQL with `uuid-ossp` extension. Tables:
 
 - **`users`** — `id` (UUID), `workos_user_id`, `email`, `name`, `avatar_url`, timestamps
 - **`saved_recipes`** — `id` (UUID), `user_id` (FK CASCADE), `title`, `description`, `source_url`, 7 time fields, `servings`, `ingredients` (TEXT[]), `steps` (JSONB array of `{instruction, ingredients[]}`), `notes` (TEXT[]), timestamps
+- **`billing_products`** — Maps platform-specific product IDs to entitlement keys
+- **`billing_transactions`** — Immutable audit log of all purchase events
+- **`user_entitlements`** — Current entitlement state per user/source
+- **`billing_webhook_events`** — Idempotency tracking for webhook processing
 
 Both tables have `updated_at` auto-update triggers. Connection string is read from `backend/.env`.

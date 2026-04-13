@@ -27,7 +27,7 @@ const SECTIONS = [
   },
   {
     title: '5. Third-Party Services',
-    body: 'The App uses the following third-party services that may collect information: WorkOS (authentication), RevenueCat (subscription management), OpenAI (recipe extraction processing), and Stripe (payment processing for web subscriptions). Each service is governed by its own privacy policy.',
+    body: 'The App uses the following third-party services that may collect information: WorkOS (authentication), OpenAI (recipe extraction processing), Stripe (payment processing for web subscriptions), and Apple/Google (in-app purchase processing on mobile). Each service is governed by its own privacy policy.',
   },
   {
     title: '6. Cookies & Analytics',

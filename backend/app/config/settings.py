@@ -27,8 +27,23 @@ class Settings(BaseSettings):
     deploy_box_client_id: str = ""
     deploy_box_client_secret: str = ""
 
-    # RevenueCat (server-side entitlement verification)
-    revenuecat_api_key: str = ""
+    # Stripe billing
+    stripe_secret_key: str = ""
+    stripe_webhook_secret: str = ""
+    stripe_price_pro_monthly: str = ""
+    stripe_price_pro_yearly: str = ""
+    stripe_price_pro_lifetime: str = ""
+
+    # Apple App Store billing
+    apple_bundle_id: str = ""
+    apple_shared_secret: str = ""
+    apple_issuer_id: str = ""
+    apple_key_id: str = ""
+    apple_private_key: str = ""
+
+    # Google Play billing
+    google_play_package_name: str = ""
+    google_service_account_json: str = ""
 
     # CORS
     cors_origin: str = "http://localhost:19006,http://localhost:19000,http://localhost:8081"

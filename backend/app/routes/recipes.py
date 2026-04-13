@@ -16,7 +16,7 @@ from pydantic import BaseModel
 
 from app.middleware.auth import CurrentUser, get_current_user
 from app.services import recipe_service as svc
-from app.services.subscription_service import FREE_RECIPE_LIMIT, is_pro
+from app.services.entitlement_service import FREE_RECIPE_LIMIT, is_entitled
 from app.utils.logger import logger
 
 router = APIRouter(prefix="/recipes", tags=["recipes"])
@@ -134,7 +134,7 @@ async def save_recipe(
 ):
     """Save a new recipe for the authenticated user."""
     try:
-        if not await is_pro(user.id):
+        if not await is_entitled(user.id, "pro"):
             count = await svc.count_saved_recipes(user.id)
             if count >= FREE_RECIPE_LIMIT:
                 return JSONResponse(

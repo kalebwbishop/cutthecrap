@@ -16,6 +16,7 @@ from app.middleware.error_handler import (
     generic_error_handler,
 )
 from app.routes.auth import router as auth_router
+from app.routes.billing import router as billing_router
 from app.routes.chatgpt import router as chatgpt_router
 from app.routes.feedback import router as feedback_router
 from app.routes.folders import router as folders_router
@@ -132,6 +133,7 @@ async def status():
 
 API_PREFIX = "/api/v1"
 app.include_router(auth_router, prefix=API_PREFIX)
+app.include_router(billing_router, prefix=API_PREFIX)
 app.include_router(chatgpt_router, prefix=API_PREFIX)
 app.include_router(feedback_router, prefix=API_PREFIX)
 app.include_router(folders_router, prefix=API_PREFIX)

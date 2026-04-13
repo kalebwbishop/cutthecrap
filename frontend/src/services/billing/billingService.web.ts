@@ -1,113 +1,140 @@
-import { Purchases as PurchasesWeb, LogLevel } from '@revenuecat/purchases-js';
-import type { Package as RCPackage } from '@revenuecat/purchases-js';
+import apiClient from '@/api/client';
 import type { BillingService, BillingCustomerInfo, BillingOffering } from './types';
-import { API_KEYS, PRO_ENTITLEMENT } from './constants';
+import { PRO_ENTITLEMENT } from './constants';
 
-function getInstance(): InstanceType<typeof PurchasesWeb> {
-  return PurchasesWeb.getSharedInstance();
-}
+let _configured = false;
+let _userId: string | null = null;
 
-function mapCustomerInfo(
-  info: Awaited<ReturnType<InstanceType<typeof PurchasesWeb>['getCustomerInfo']>>,
-): BillingCustomerInfo {
-  return {
-    isPro: typeof info.entitlements.active[PRO_ENTITLEMENT] !== 'undefined',
-    managementURL: info.managementURL ?? null,
-  };
-}
-
-/** Cache of RC Package objects keyed by identifier, for use in purchaseWebPackage. */
-let packageCache = new Map<string, RCPackage>();
-
+/**
+ * Web billing service — uses our backend to create Stripe Checkout sessions.
+ *
+ * Product/price info comes from env vars on the backend; checkout
+ * sessions are created server-side and the user is redirected to
+ * Stripe-hosted checkout.  Entitlement state is queried from the
+ * backend entitlements API.
+ */
 export const billingService: BillingService = {
   async configure(appUserId?: string) {
-    if (PurchasesWeb.isConfigured()) return;
-    if (__DEV__) PurchasesWeb.setLogLevel(LogLevel.Debug);
-    const userId =
-      appUserId || PurchasesWeb.generateRevenueCatAnonymousAppUserId();
-    PurchasesWeb.configure({ apiKey: API_KEYS.web, appUserId: userId });
+    _userId = appUserId ?? null;
+    _configured = true;
   },
 
   isConfigured() {
-    return PurchasesWeb.isConfigured();
+    return _configured;
   },
 
   async logIn(appUserId: string): Promise<BillingCustomerInfo> {
-    if (!PurchasesWeb.isConfigured()) return { isPro: false, managementURL: null };
-    // identifyUser aliases the anonymous user to the identified user,
-    // transferring any entitlements (unlike changeUser which is a hard switch).
-    const { customerInfo } = await getInstance().identifyUser(appUserId);
-    return mapCustomerInfo(customerInfo);
+    _userId = appUserId;
+    return this.getCustomerInfo();
   },
 
   async logOut(): Promise<void> {
-    if (!PurchasesWeb.isConfigured()) return;
-    const anonId = PurchasesWeb.generateRevenueCatAnonymousAppUserId();
-    await getInstance().changeUser(anonId);
+    _userId = null;
   },
 
   async getCustomerInfo(): Promise<BillingCustomerInfo> {
-    if (!PurchasesWeb.isConfigured()) return { isPro: false, managementURL: null };
-    const info = await getInstance().getCustomerInfo();
-    return mapCustomerInfo(info);
+    try {
+      const token = (await import('@/store/authStore')).useAuthStore.getState().accessToken;
+      if (!token) return { isPro: false, managementURL: null };
+
+      const resp = await apiClient.get('/api/v1/me/entitlements', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const entitlements = resp.data?.entitlements ?? {};
+      const pro = entitlements[PRO_ENTITLEMENT];
+      return {
+        isPro: pro?.status === 'active',
+        managementURL: null,
+      };
+    } catch {
+      return { isPro: false, managementURL: null };
+    }
   },
 
   async getOfferings(): Promise<BillingOffering | null> {
-    if (!PurchasesWeb.isConfigured()) return null;
-    const offerings = await getInstance().getOfferings();
-    const current = offerings.current;
-    if (!current) return null;
-
-    packageCache = new Map();
-    for (const pkg of current.availablePackages) {
-      packageCache.set(pkg.identifier, pkg);
-    }
-
+    // Web pricing is handled via Stripe price IDs configured on the backend.
+    // We return static plan metadata here; actual prices come from Stripe Checkout.
     return {
-      identifier: current.identifier,
-      packages: current.availablePackages.map((pkg) => ({
-        identifier: pkg.identifier,
-        productId: pkg.webBillingProduct.identifier,
-        priceString: pkg.webBillingProduct.price.formattedPrice,
-        packageType: pkg.packageType,
-      })),
+      identifier: 'default',
+      packages: [
+        {
+          identifier: 'monthly',
+          productId: 'web.pro_monthly',
+          priceString: '$2.99',
+          packageType: 'monthly',
+        },
+        {
+          identifier: 'yearly',
+          productId: 'web.pro_yearly',
+          priceString: '$19.99',
+          packageType: 'annual',
+        },
+        {
+          identifier: 'lifetime',
+          productId: 'web.pro_lifetime',
+          priceString: '$39.99',
+          packageType: 'lifetime',
+        },
+      ],
     };
   },
 
   async restorePurchases(): Promise<BillingCustomerInfo> {
-    if (!PurchasesWeb.isConfigured()) return { isPro: false, managementURL: null };
-    const info = await getInstance().getCustomerInfo();
-    return mapCustomerInfo(info);
+    // Web purchases are tracked server-side; just re-fetch entitlements.
+    return this.getCustomerInfo();
   },
 
   async getManagementURL(): Promise<string | null> {
-    if (!PurchasesWeb.isConfigured()) return null;
-    const info = await getInstance().getCustomerInfo();
-    return info.managementURL ?? null;
+    try {
+      const token = (await import('@/store/authStore')).useAuthStore.getState().accessToken;
+      if (!token) return null;
+
+      const resp = await apiClient.post(
+        '/api/v1/billing/web/create-portal-session',
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      return resp.data?.url ?? null;
+    } catch {
+      return null;
+    }
   },
 };
 
-/** Purchase a specific package by identifier. Web-only. */
+/**
+ * Create a Stripe Checkout session and redirect the user.
+ */
 export async function purchaseWebPackage(
-  packageId: string,
-  options?: { customerEmail?: string },
+  priceId: string,
+  _options?: { customerEmail?: string },
 ): Promise<BillingCustomerInfo> {
-  const rcPackage = packageCache.get(packageId);
-  if (!rcPackage) throw new Error(`Package "${packageId}" not found. Fetch offerings first.`);
-  const result = await getInstance().purchase({
-    rcPackage,
-    customerEmail: options?.customerEmail,
-  });
-  return mapCustomerInfo(result.customerInfo);
+  const token = (await import('@/store/authStore')).useAuthStore.getState().accessToken;
+  if (!token) throw new Error('Authentication required');
+
+  const resp = await apiClient.post(
+    '/api/v1/billing/web/create-checkout-session',
+    {
+      priceId,
+      successUrl: `${window.location.origin}/?checkout=success`,
+      cancelUrl: `${window.location.origin}/upgrade`,
+    },
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+
+  const { url } = resp.data;
+  if (url) {
+    window.location.href = url;
+  }
+
+  // The user is redirected to Stripe; this return won't be reached in practice.
+  return { isPro: false, managementURL: null };
 }
 
-/** Launch the RevenueCat web paywall modal. Web-only. */
-export async function presentWebPaywall(options: {
+/** Stub — web paywall is now a custom React component, no SDK modal needed. */
+export async function presentWebPaywall(_options: {
   htmlTarget?: HTMLElement;
   onBack?: (close: () => void) => void;
 }): Promise<void> {
-  await getInstance().presentPaywall({
-    htmlTarget: options.htmlTarget,
-    onBack: options.onBack,
-  });
+  // No-op: web paywall is rendered as a React component, not a modal SDK.
 }
+

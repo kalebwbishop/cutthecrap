@@ -463,24 +463,6 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
         {/* Footer actions */}
         <View style={s.footer}>
           <View style={s.divider} />
-
-          {/* Social navigation */}
-          <TouchableOpacity
-            style={s.navButton}
-            onPress={() => { onClose(); router.push('/friends' as any); }}
-            activeOpacity={0.7}
-          >
-            <Text style={s.navText}>👥  Friends</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={s.navButton}
-            onPress={() => { onClose(); router.push('/groups' as any); }}
-            activeOpacity={0.7}
-          >
-            <Text style={s.navText}>📋  Groups</Text>
-          </TouchableOpacity>
-
-          <View style={[s.divider, { marginTop: spacing.sm }]} />
           <TouchableOpacity style={isPro ? s.manageButton : s.upgradeButton} onPress={handleUpgrade} activeOpacity={0.7}>
             <Text style={isPro ? s.manageText : s.upgradeText}>
               {isPro ? 'Manage Subscription' : 'Upgrade'}

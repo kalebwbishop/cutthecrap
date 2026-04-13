@@ -1465,3 +1465,35 @@ Traceback (most recent call last):
   File "C:\Users\kaleb\repos\cutthecrap\backend\venv\Lib\site-packages\workos\utils\_base_http_client.py", line 114, in _maybe_raise_error_by_status_code
     raise BadRequestException(response, response_json)
 workos.exceptions.BadRequestException: (message=No message, request_id=469704e9-cf4b-4a52-b7aa-ee6083798602, error=invalid_grant, error_description=The code '01KMJJ0444DFENQ6XFPK15J2QV' has already been exchanged.)
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}

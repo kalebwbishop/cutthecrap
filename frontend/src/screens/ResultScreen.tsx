@@ -9,22 +9,18 @@ import {
   Modal,
   BackHandler,
   ActivityIndicator,
-  Share,
-  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { isAxiosError } from 'axios';
 import RecipeCard from '@/components/RecipeCard';
 import NotRecipePage from '@/components/NotRecipePage';
-import { ArrowLeftIcon, BookmarkIcon, BookmarkFilledIcon, ShareIcon } from '@/components/Icons';
+import { ArrowLeftIcon, BookmarkIcon, BookmarkFilledIcon } from '@/components/Icons';
 import { useRecipeStore } from '@/store/recipeStore';
 import { useAuthStore } from '@/store/authStore';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { recipeApi } from '@/api/recipeApi';
-import { socialApi } from '@/api/socialApi';
 import { successFeedback, errorFeedback } from '@/utils/haptics';
-import { copyRecipeToClipboard, formatRecipeAsText } from '@/utils/clipboard';
 import { useThemeColors, fontSizes, spacing, radii } from '@/theme';
 import type { ThemeColors } from '@/theme';
 
@@ -32,8 +28,8 @@ import type { ThemeColors } from '@/theme';
  * Displays the recipe result, "not a recipe" page, or an error fallback.
  * Back button resets the store and returns to input.
  *
- * On web, URL query params (savedRecipeId, historyRecipeId, url,
- * groupId+sharedRecipeId) allow the recipe to survive a page refresh.
+ * On web, URL query params (savedRecipeId, historyRecipeId, url)
+ * allow the recipe to survive a page refresh.
  */
 export default function ResultScreen() {
   const router = useRouter();
@@ -41,8 +37,6 @@ export default function ResultScreen() {
     savedRecipeId?: string;
     historyRecipeId?: string;
     url?: string;
-    groupId?: string;
-    sharedRecipeId?: string;
   }>();
   const colors = useThemeColors();
   const s = useMemo(() => createStyles(colors), [colors]);
@@ -54,7 +48,6 @@ export default function ResultScreen() {
   const [saved, setSaved] = useState(!!savedRecipeId);
   const [saving, setSaving] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [isRehydrating, setIsRehydrating] = useState(false);
   const rehydrationAttempted = useRef(false);
 
@@ -68,7 +61,7 @@ export default function ResultScreen() {
     const storeHasData = result || error;
     if (storeHasData) return;
 
-    const { savedRecipeId: paramSavedId, historyRecipeId: paramHistoryId, url: paramUrl, groupId: paramGroupId, sharedRecipeId: paramSharedId } = params;
+    const { savedRecipeId: paramSavedId, historyRecipeId: paramHistoryId, url: paramUrl } = params;
 
     if (paramSavedId) {
       setIsRehydrating(true);
@@ -76,39 +69,6 @@ export default function ResultScreen() {
     } else if (paramHistoryId) {
       setIsRehydrating(true);
       openHistoryRecipe(paramHistoryId).finally(() => setIsRehydrating(false));
-    } else if (paramGroupId && paramSharedId) {
-      setIsRehydrating(true);
-      socialApi
-        .getSharedRecipeDetail(paramGroupId, paramSharedId)
-        .then((detail) => {
-          const recipe = {
-            title: detail.title,
-            description: detail.description,
-            prep_time: detail.prepTime,
-            cook_time: detail.cookTime,
-            cool_time: detail.coolTime,
-            chill_time: detail.chillTime,
-            rest_time: detail.restTime,
-            marinate_time: detail.marinateTime,
-            soak_time: detail.soakTime,
-            total_time: detail.totalTime,
-            servings: detail.servings,
-            ingredients: detail.ingredients,
-            steps: detail.steps,
-            notes: detail.notes,
-          };
-          useRecipeStore.setState({
-            result: { is_recipe: true, title: detail.title, recipe },
-            url: detail.sourceUrl ?? '',
-            error: null,
-            isLoading: false,
-            savedRecipeId: null,
-          });
-        })
-        .catch(() => {
-          useRecipeStore.setState({ error: 'Failed to load shared recipe.', result: null });
-        })
-        .finally(() => setIsRehydrating(false));
     } else if (paramUrl) {
       setIsRehydrating(true);
       recipeApi
@@ -131,31 +91,6 @@ export default function ResultScreen() {
       router.replace('/');
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleCopy = async () => {
-    if (!recipe || copied) return;
-    const ok = await copyRecipeToClipboard(recipe);
-    if (ok) {
-      setCopied(true);
-      successFeedback();
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
-  const handleShare = async () => {
-    if (!recipe) return;
-    const text = formatRecipeAsText(recipe);
-    try {
-      await Share.share(
-        Platform.OS === 'ios'
-          ? { message: text, url: url || undefined }
-          : { message: url ? `${text}\n\n${url}` : text },
-        { subject: recipe.title },
-      );
-    } catch {
-      // User cancelled or share failed — nothing to do
-    }
-  };
 
   const handleSave = async () => {
     const recipe = result?.recipe;
@@ -229,27 +164,6 @@ export default function ResultScreen() {
         </View>
         {recipe ? (
           <View style={s.headerActions}>
-            <TouchableOpacity
-              style={s.copyButton}
-              onPress={handleCopy}
-              disabled={copied}
-              activeOpacity={0.7}
-              accessibilityLabel={copied ? "Recipe copied" : "Copy recipe to clipboard"}
-              accessibilityRole="button"
-            >
-              <Text style={[s.copyButtonText, copied && { color: colors.success }]}>
-                {copied ? '✓ Copied' : '📋 Copy'}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={s.shareButton}
-              onPress={handleShare}
-              activeOpacity={0.7}
-              accessibilityLabel="Share recipe"
-              accessibilityRole="button"
-            >
-              <ShareIcon size={18} color={colors.text} />
-            </TouchableOpacity>
             {user ? (
               <TouchableOpacity
                 style={s.saveButton}
@@ -400,27 +314,6 @@ const createStyles = (colors: ThemeColors) =>
       alignItems: 'center',
       gap: 6,
       flexShrink: 0,
-    },
-    copyButton: {
-      height: 34,
-      paddingHorizontal: 10,
-      borderRadius: radii.sm,
-      backgroundColor: colors.bgInput,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    shareButton: {
-      width: 34,
-      height: 34,
-      borderRadius: radii.sm,
-      backgroundColor: colors.bgInput,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    copyButtonText: {
-      fontSize: fontSizes.sm,
-      fontWeight: '600',
-      color: colors.text,
     },
     saveButtonText: {
       fontSize: fontSizes.sm,

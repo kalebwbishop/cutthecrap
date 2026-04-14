@@ -27,6 +27,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      default:
+      proxy-net:
+        aliases:
+          - ctc-backend
 
   frontend:
     image: ${ACR_REGISTRY:-}cutthecrap-frontend:${IMAGE_TAG:-latest}
@@ -37,20 +42,16 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
-
-  nginx:
-    image: nginx:alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certs:/etc/nginx/certs:ro
-      - ./frontend/assets/privacy-policy.html:/usr/share/nginx/html/privacy-policy.html:ro
-    depends_on:
-      - frontend
-      - backend
+    networks:
+      default:
+      proxy-net:
+        aliases:
+          - ctc-frontend
 
 volumes:
   pgdata:
+
+networks:
+  proxy-net:
+    external: true
+

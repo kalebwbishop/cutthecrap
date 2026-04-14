@@ -191,17 +191,21 @@ jobs:
           git pull origin $BRANCH
           DEPLOY
 
-          # Upload .env and TLS certs after repo exists on VM
+          # Upload .env file
           scp /tmp/backend.env azureuser@$VM_HOSTNAME:/opt/cutthecrap/repo/backend/.env
           rm -f /tmp/backend.env
 
-          ssh azureuser@$VM_HOSTNAME "mkdir -p /opt/cutthecrap/repo/certs"
-          echo "$TLS_FULLCHAIN" | ssh azureuser@$VM_HOSTNAME "cat > /opt/cutthecrap/repo/certs/fullchain.pem"
-          echo "$TLS_PRIVKEY"   | ssh azureuser@$VM_HOSTNAME "cat > /opt/cutthecrap/repo/certs/privkey.pem"
+          # Upload TLS certs to shared location and copy static files
+          echo "$TLS_FULLCHAIN" | ssh azureuser@$VM_HOSTNAME "mkdir -p /opt/certs/cutthecrap && cat > /opt/certs/cutthecrap/fullchain.pem"
+          echo "$TLS_PRIVKEY"   | ssh azureuser@$VM_HOSTNAME "cat > /opt/certs/cutthecrap/privkey.pem"
 
           ssh azureuser@$VM_HOSTNAME << DEPLOY2
           set -euo pipefail
           cd /opt/cutthecrap/repo
+
+          # Copy static files for shared nginx
+          mkdir -p /opt/static/cutthecrap
+          cp frontend/assets/privacy-policy.html /opt/static/cutthecrap/privacy-policy.html
 
           # Stop only this app's containers (safe for shared VM)
           sg docker -c "docker compose -p cutthecrap down" </dev/null 2>/dev/null || true
@@ -211,6 +215,9 @@ jobs:
 
           # Pull and start containers using pre-built ACR images
           sg docker -c "ACR_REGISTRY=${ACR_LOGIN_SERVER}/ IMAGE_TAG=${IMAGE_TAG} docker compose -p cutthecrap up -d --pull always --no-build" </dev/null
+
+          # Reload shared nginx to pick up real TLS certs
+          sg docker -c "docker exec proxy-nginx nginx -s reload" </dev/null 2>/dev/null || true
 
           echo "✅ Application deployed successfully"
           DEPLOY2

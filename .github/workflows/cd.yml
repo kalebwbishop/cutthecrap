@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 env:
-  KEY_VAULT: "deploy-box-kv-prod"
+  KEY_VAULT: "kv-kalebwbishop-apps"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Required GitHub configuration (per environment: dev / prod)
@@ -18,7 +18,7 @@ env:
 #   AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
 #     — OIDC service principal for Azure Login (needed before KV access)
 #
-# All other secrets are fetched from Azure Key Vault (deploy-box-kv-prod).
+# All other secrets are fetched from Azure Key Vault (kv-kalebwbishop-apps).
 # App secrets use the "ctc-" prefix. Shared VM secrets use the "core-" prefix.
 #
 # Infrastructure (VM, networking, DNS) is managed by kalebwbishop-apps-core.

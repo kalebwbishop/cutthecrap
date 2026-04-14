@@ -44,3 +44,17 @@ npx expo start --web    # opens in browser
 ```
 
 Scan the QR code with the **Expo Go** app on your phone to run it on a real device.
+
+## Legal & Compliance
+
+Cut The Crap operates in a defensible legal position. A full analysis is available in [`LEGAL_FINDINGS.md`](./LEGAL_FINDINGS.md). Key points:
+
+- **Recipe facts are not copyrightable.** Ingredient lists and basic cooking instructions are factual/functional data excluded from copyright protection under U.S. law (17 U.S.C. § 102(b)).
+- **AI rewriting creates transformative output.** The system prompt instructs OpenAI to rephrase all text — no verbatim copying from source pages.
+- **robots.txt compliance.** The scraper checks and respects `robots.txt` disallow directives before fetching any page, with a 1-hour cache per domain.
+- **Honest User-Agent.** Requests identify as `CutTheCrap/1.0 (Recipe Extraction)` — no browser spoofing.
+- **Source attribution.** Every saved recipe stores and displays the original `source_url` as a tappable link.
+- **OpenAI API compliance.** Sending publicly available, primarily uncopyrightable recipe content for transformation aligns with OpenAI's current Terms of Use and Usage Policies. See [`LEGAL_FINDINGS.md` § 4](./LEGAL_FINDINGS.md#4-terms-of-service-violations) for the full analysis.
+- **DMCA process.** Content owners can request recipe removal via the contact information in the app's Terms of Service.
+
+This is not legal advice. Consult a qualified attorney for formal guidance.

@@ -405,9 +405,12 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
         {/* Footer actions */}
         <View style={s.footer}>
           <View style={s.divider} />
-
-
-          <TouchableOpacity style={s.logoutButton} onPress={handleLogout} activeOpacity={0.7} accessibilityLabel="Log out" accessibilityRole="button">
+          <TouchableOpacity style={isPro ? s.manageButton : s.upgradeButton} onPress={handleUpgrade} activeOpacity={0.7}>
+            <Text style={isPro ? s.manageText : s.upgradeText}>
+              {isPro ? 'Manage Subscription' : 'Upgrade'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={s.logoutButton} onPress={handleLogout} activeOpacity={0.7}>
             <Text style={s.logoutText}>Log out</Text>
           </TouchableOpacity>
           <TouchableOpacity style={s.deleteAccountButton} onPress={() => setShowDeleteModal(true)} activeOpacity={0.7} accessibilityLabel="Delete account" accessibilityRole="button">

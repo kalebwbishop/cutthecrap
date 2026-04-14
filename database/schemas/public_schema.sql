@@ -17,10 +17,6 @@ $$ LANGUAGE plpgsql;
 -- ── Drop existing tables (clean slate) ──────────────────────────────
 
 DROP TABLE IF EXISTS saved_recipes CASCADE;
-DROP TABLE IF EXISTS group_shared_recipes CASCADE;
-DROP TABLE IF EXISTS group_members CASCADE;
-DROP TABLE IF EXISTS groups CASCADE;
-DROP TABLE IF EXISTS friendships CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 -- ── Users ───────────────────────────────────────────────────────────
@@ -142,75 +138,112 @@ CREATE TRIGGER update_recipe_history_updated_at
 
 COMMENT ON TABLE recipe_history IS 'Most recent 3 parsed recipes per user (auto-saved, FIFO eviction)';
 
--- ── Friendships ──────────────────────────────────────────────────────
+-- ── Billing Products ────────────────────────────────────────────────
 
-CREATE TABLE friendships (
+CREATE TABLE billing_products (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    requester_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    addressee_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
+    platform VARCHAR(20) NOT NULL,
+    external_product_id VARCHAR(255) NOT NULL,
+    entitlement_key VARCHAR(100) NOT NULL,
+    billing_type VARCHAR(50) NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT unique_friendship UNIQUE (requester_id, addressee_id),
-    CONSTRAINT no_self_friendship CHECK (requester_id != addressee_id)
+    CONSTRAINT unique_platform_product UNIQUE (platform, external_product_id)
 );
 
-CREATE INDEX idx_friendships_requester ON friendships(requester_id);
-CREATE INDEX idx_friendships_addressee ON friendships(addressee_id);
-CREATE INDEX idx_friendships_status ON friendships(status);
+CREATE INDEX idx_billing_products_entitlement ON billing_products(entitlement_key);
 
-CREATE TRIGGER update_friendships_updated_at
-    BEFORE UPDATE ON friendships
+CREATE TRIGGER update_billing_products_updated_at
+    BEFORE UPDATE ON billing_products
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
-COMMENT ON TABLE friendships IS 'Bidirectional friend requests between users';
+COMMENT ON TABLE billing_products IS 'Maps platform-specific product/SKU IDs to internal entitlement keys';
 
--- ── Groups ───────────────────────────────────────────────────────────
+-- ── Billing Transactions ────────────────────────────────────────────
 
-CREATE TABLE groups (
+CREATE TABLE billing_transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(255) NOT NULL,
-    created_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_groups_created_by ON groups(created_by);
-
-CREATE TRIGGER update_groups_updated_at
-    BEFORE UPDATE ON groups
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
-
-COMMENT ON TABLE groups IS 'Recipe sharing groups created by users';
-
--- ── Group Members ────────────────────────────────────────────────────
-
-CREATE TABLE group_members (
-    group_id UUID NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    role VARCHAR(20) NOT NULL DEFAULT 'member' CHECK (role IN ('admin', 'member')),
-    joined_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (group_id, user_id)
+    source VARCHAR(20) NOT NULL,
+    external_transaction_id VARCHAR(500) NOT NULL,
+    external_original_id VARCHAR(500),
+    external_product_id VARCHAR(255) NOT NULL,
+    raw_payload JSONB,
+    environment VARCHAR(20) NOT NULL DEFAULT 'production',
+    purchased_at TIMESTAMPTZ NOT NULL,
+    expires_at TIMESTAMPTZ,
+    revoked_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_source_transaction UNIQUE (source, external_transaction_id)
 );
 
-CREATE INDEX idx_group_members_user ON group_members(user_id);
+CREATE INDEX idx_billing_transactions_user ON billing_transactions(user_id);
+CREATE INDEX idx_billing_transactions_source ON billing_transactions(source);
+CREATE INDEX idx_billing_transactions_external_original ON billing_transactions(external_original_id);
 
-COMMENT ON TABLE group_members IS 'Membership in recipe sharing groups';
+CREATE TRIGGER update_billing_transactions_updated_at
+    BEFORE UPDATE ON billing_transactions
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
 
--- ── Group Shared Recipes ─────────────────────────────────────────────
+COMMENT ON TABLE billing_transactions IS 'Verified purchase/subscription transactions from all billing platforms';
 
-CREATE TABLE group_shared_recipes (
+-- ── User Entitlements ───────────────────────────────────────────────
+
+CREATE TABLE user_entitlements (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    group_id UUID NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
-    shared_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    recipe_id UUID NOT NULL REFERENCES saved_recipes(id) ON DELETE CASCADE,
-    shared_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT unique_group_recipe UNIQUE (group_id, recipe_id)
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    entitlement_key VARCHAR(100) NOT NULL,
+    source VARCHAR(20) NOT NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'active',
+    external_ref VARCHAR(500),
+    expires_at TIMESTAMPTZ,
+    metadata JSONB,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_user_entitlement_source UNIQUE (user_id, entitlement_key, source)
 );
 
-CREATE INDEX idx_group_shared_recipes_group ON group_shared_recipes(group_id);
-CREATE INDEX idx_group_shared_recipes_recipe ON group_shared_recipes(recipe_id);
+CREATE INDEX idx_user_entitlements_user ON user_entitlements(user_id);
+CREATE INDEX idx_user_entitlements_key_status ON user_entitlements(entitlement_key, status);
+CREATE INDEX idx_user_entitlements_expires ON user_entitlements(expires_at) WHERE expires_at IS NOT NULL;
 
-COMMENT ON TABLE group_shared_recipes IS 'Recipes shared by members into groups';
+CREATE TRIGGER update_user_entitlements_updated_at
+    BEFORE UPDATE ON user_entitlements
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+COMMENT ON TABLE user_entitlements IS 'Authoritative source of user feature access, projected from billing transactions';
+COMMENT ON COLUMN user_entitlements.status IS 'active, expired, revoked, grace_period, billing_retry, paused';
+
+-- ── Billing Webhook Events ──────────────────────────────────────────
+
+CREATE TABLE billing_webhook_events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    provider VARCHAR(20) NOT NULL,
+    event_id VARCHAR(500) NOT NULL,
+    event_type VARCHAR(100) NOT NULL,
+    processed_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_provider_event UNIQUE (provider, event_id)
+);
+
+CREATE INDEX idx_billing_webhook_events_provider ON billing_webhook_events(provider);
+
+COMMENT ON TABLE billing_webhook_events IS 'Tracks processed webhook events for idempotency';
+
+-- ── Seed billing products ───────────────────────────────────────────
+
+INSERT INTO billing_products (platform, external_product_id, entitlement_key, billing_type) VALUES
+    ('ios', 'ios.pro_monthly', 'pro', 'subscription'),
+    ('ios', 'ios.pro_yearly', 'pro', 'subscription'),
+    ('ios', 'ios.pro_lifetime', 'pro', 'non_consumable'),
+    ('android', 'android.pro_monthly', 'pro', 'subscription'),
+    ('android', 'android.pro_yearly', 'pro', 'subscription'),
+    ('android', 'android.pro_lifetime', 'pro', 'non_consumable'),
+    ('web', 'web.pro_monthly', 'pro', 'subscription'),
+    ('web', 'web.pro_yearly', 'pro', 'subscription'),
+    ('web', 'web.pro_lifetime', 'pro', 'non_consumable');
+

@@ -24,7 +24,7 @@ STRUCTURAL_TAGS = ["header", "footer", "nav", "aside", "form"]
 FETCH_HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15",
+    "User-Agent": "CutTheCrap/1.0 (Recipe Extraction; +https://cutthecrap.app/bot)",
 }
 
 FETCH_TIMEOUT = 15.0  # seconds
@@ -338,6 +338,17 @@ async def fetch_and_extract(url: str) -> dict[str, Any]:
         return {"ok": False, "error": url_error, "status_code": 400}
 
     settings = get_settings()
+
+    # robots.txt compliance — respect site owner directives
+    from app.services.robots_service import is_allowed as robots_allowed
+
+    if not await robots_allowed(url, verify_ssl=not settings.is_dev):
+        return {
+            "ok": False,
+            "error": "This URL is blocked by the site's robots.txt policy.",
+            "status_code": 403,
+        }
+
     try:
         async with httpx.AsyncClient(
             timeout=FETCH_TIMEOUT,

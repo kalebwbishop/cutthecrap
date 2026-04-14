@@ -3119,3 +3119,53 @@ workos.exceptions.BadRequestException: (message=No message, request_id=469704e9-
 {"time": "2026-03-25 11:04:52", "level": "INFO", "message": "chatgpt/parse-url – url=https://www.allrecipes.com/recipe/24002/easy-lasagna-ii/, model=gpt-4o-mini"}
 {"time": "2026-03-25 11:04:52", "level": "INFO", "message": "POST /api/v1/chatgpt/parse-url — 402 (77ms)"}
 {"time": "2026-03-25 11:05:48", "level": "INFO", "message": "GET /api/health — 200 (1ms)"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "JWT verification failed"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\middleware\auth.py", line 47, in get_current_user
+    signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+Exception: Invalid JWT
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01ABC"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 2291, in _execute_mock_call
+    raise effect
+Exception: DB down
+{"time": "2026-04-13 09:43:25", "level": "WARNING", "message": "Authenticated token for unknown user: user_01ABC"}
+{"time": "2026-04-13 09:43:25", "level": "INFO", "message": "New user created: test@example.com"}
+{"time": "2026-04-13 09:43:25", "level": "INFO", "message": "New user created: test@example.com"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Error: Resource not found | GET /api/test | status=404"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Error: Server failure | POST /api/data | status=500"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Unhandled error: unexpected | GET /api/explode"}
+NoneType: None
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Unhandled error: secret DB password in traceback | GET /api/secret"}
+NoneType: None
+{"time": "2026-04-13 09:43:25", "level": "INFO", "message": "Azure Function response: {"success": true}"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Azure Function timed out: https://api.test/api/v1/chatgpt"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Azure Function request error: connection refused"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
+{"time": "2026-04-13 09:43:25", "level": "INFO", "message": "Azure Function response: {}"}
+{"time": "2026-04-13 09:43:25", "level": "WARNING", "message": "Could not fetch robots.txt from https://slow.example.com/robots.txt: timeout — allowing all"}
+{"time": "2026-04-13 09:43:25", "level": "WARNING", "message": "Could not fetch robots.txt from https://nonexistent.example.com/robots.txt: DNS failure — allowing all"}
+{"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via microdata"}
+{"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via rdfa"}
+{"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}

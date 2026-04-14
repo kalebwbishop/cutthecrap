@@ -27,17 +27,11 @@ const FEATURES = [
 
 function periodLabel(packageType: string): string {
   switch (packageType) {
-    case '$rc_monthly':
+    case 'monthly':
       return '/ month';
-    case '$rc_annual':
+    case 'annual':
       return '/ year';
-    case '$rc_six_month':
-      return '/ 6 months';
-    case '$rc_three_month':
-      return '/ 3 months';
-    case '$rc_weekly':
-      return '/ week';
-    case '$rc_lifetime':
+    case 'lifetime':
       return 'one-time';
     default:
       return '';
@@ -46,17 +40,11 @@ function periodLabel(packageType: string): string {
 
 function packageTitle(packageType: string): string {
   switch (packageType) {
-    case '$rc_monthly':
+    case 'monthly':
       return 'Monthly';
-    case '$rc_annual':
+    case 'annual':
       return 'Yearly';
-    case '$rc_six_month':
-      return '6 Months';
-    case '$rc_three_month':
-      return '3 Months';
-    case '$rc_weekly':
-      return 'Weekly';
-    case '$rc_lifetime':
+    case 'lifetime':
       return 'Lifetime';
     default:
       return 'Plan';
@@ -100,15 +88,23 @@ export default function PaywallScreen() {
     setPurchasing(true);
     setError(null);
     try {
-      await purchaseWebPackage(selectedId);
+      // Map package identifier to the Stripe price ID env var name
+      const priceEnvMap: Record<string, string> = {
+        monthly: process.env.EXPO_PUBLIC_STRIPE_PRICE_MONTHLY ?? '',
+        yearly: process.env.EXPO_PUBLIC_STRIPE_PRICE_YEARLY ?? '',
+        lifetime: process.env.EXPO_PUBLIC_STRIPE_PRICE_LIFETIME ?? '',
+      };
+      const priceId = priceEnvMap[selectedId];
+      if (!priceId) {
+        setError('Plan not available. Please try again later.');
+        return;
+      }
+      await purchaseWebPackage(priceId);
+      // User is redirected to Stripe Checkout; if they return:
       await refreshCustomerInfo();
       router.back();
     } catch (e: any) {
-      if (e?.errorCode === 'UserCancelledError' || e?.errorCode === 1) {
-        // User cancelled — do nothing
-      } else {
-        setError(e?.message ?? 'Purchase failed. Please try again.');
-      }
+      setError(e?.message ?? 'Purchase failed. Please try again.');
     } finally {
       setPurchasing(false);
     }

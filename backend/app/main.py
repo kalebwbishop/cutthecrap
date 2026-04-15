@@ -20,6 +20,7 @@ from app.routes.billing import router as billing_router
 from app.routes.chatgpt import router as chatgpt_router
 from app.routes.feedback import router as feedback_router
 from app.routes.folders import router as folders_router
+from app.routes.meal_plan import router as meal_plan_router
 from app.routes.recipes import router as recipes_router
 from app.utils.logger import logger
 
@@ -137,6 +138,7 @@ app.include_router(billing_router, prefix=API_PREFIX)
 app.include_router(chatgpt_router, prefix=API_PREFIX)
 app.include_router(feedback_router, prefix=API_PREFIX)
 app.include_router(folders_router, prefix=API_PREFIX)
+app.include_router(meal_plan_router, prefix=API_PREFIX)
 app.include_router(recipes_router, prefix=API_PREFIX)
 
 

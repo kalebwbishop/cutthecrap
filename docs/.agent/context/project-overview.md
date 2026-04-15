@@ -37,7 +37,7 @@ Mobile deep-link scheme: `cutthecrap://`
 
 ### Monetization
 
-RevenueCat in-app purchases (iOS / Android / Web). Entitlement: `"Cut The Crap Pro"`. Free tier: 5 saved recipes.
+react-native-iap (StoreKit / Google Play Billing) + Stripe (web). Entitlement key: `"pro"` stored in `user_entitlements` table. Free tier: 5 saved recipes.
 
 ---
 
@@ -52,7 +52,7 @@ RevenueCat in-app purchases (iOS / Android / Web). Entitlement: `"Cut The Crap P
 | UI | React Native 0.81.5 + React 19.1 + react-native-web |
 | State | Zustand 4.4 (3 stores) |
 | HTTP | Axios 1.9 (60 s timeout) |
-| IAP | RevenueCat — `react-native-purchases` (native) + `@revenuecat/purchases-js` (web) |
+| IAP | react-native-iap v15 (native) + Stripe Checkout (web) |
 | Auth | WorkOS (OAuth via backend proxy) |
 | Styling | StyleSheet + theme context (system-aware light/dark) |
 
@@ -75,7 +75,7 @@ npm run clean          # rm -rf node_modules .expo
 ```
 frontend/
 ├── app/                            # Expo Router file-based routes (thin wrappers)
-│   ├── _layout.tsx                 # Root layout — ThemeProvider, SafeArea, RevenueCat init
+│   ├── _layout.tsx                 # Root layout — ThemeProvider, SafeArea, billing service init
 │   ├── index.tsx                   # → InputScreen (home)
 │   ├── auth.tsx                    # OAuth callback handler
 │   ├── loading.tsx                 # → LoadingScreen
@@ -95,7 +95,7 @@ frontend/
 │   │   ├── InputScreen.tsx        # Home — hero, URL input, API health status dot
 │   │   ├── LoadingScreen.tsx      # Animated loading with cycling humorous messages
 │   │   ├── ResultScreen.tsx       # Parsed recipe, not-recipe fallback, or error; save button
-│   │   ├── PaywallScreen.tsx      # RevenueCat paywall (native component + web presentPaywall)
+│   │   ├── PaywallScreen.tsx      # Custom paywall (native) + Stripe Checkout (web)
 │   │   └── CustomerCenterScreen.tsx
 │   ├── components/
 │   │   ├── RecipeCard.tsx         # Full recipe display (meta badges, ingredients, steps, notes)
@@ -111,7 +111,7 @@ frontend/
 │   ├── types/
 │   │   └── recipe.ts             # Recipe, RecipeStep, SummarizeResponse interfaces
 │   └── config/
-│       └── revenuecat.ts         # RevenueCat per-platform API keys + entitlement config
+│       └── constants.ts          # Billing product IDs + entitlement config
 ├── assets/                        # Icon, splash, favicon images
 ├── app.json                       # Expo config (scheme: cutthecrap, web output: single)
 ├── tsconfig.json                  # Path alias: @/* → ./src/*
@@ -127,7 +127,7 @@ frontend/
 - **Path alias:** `@/*` maps to `./src/*`.
 - **Theme system:** `createStyles(colors)` factory pattern, memoized with `useMemo`. System-aware light/dark via `useColorScheme()`.
 - **Custom SVG icons** in `Icons.tsx` — no icon library.
-- **Platform branching:** Screens check `Platform.OS === 'web'` for RevenueCat, auth redirects, shadows, etc.
+- **Platform branching:** Screens check `Platform.OS === 'web'` for billing flows, auth redirects, shadows, etc.
 - **Max content width:** 768 px on web for readability.
 - **API client auto-detection:** Reads `EXPO_PUBLIC_API_BASE` → falls back to Expo debugger host → `localhost:8000` (web) or `10.0.2.2:8000` (Android emulator).
 - **Humorous UX copy** throughout loading messages and error states.
@@ -141,7 +141,7 @@ frontend/
 | `/auth` | Auth callback | Receives `?code=` from WorkOS, exchanges for tokens |
 | `/loading` | `LoadingScreen` | Animated loading while scraping |
 | `/result` | `ResultScreen` | Display parsed recipe or error; save button |
-| `/paywall` | `PaywallScreen` | RevenueCat subscription paywall |
+| `/paywall` | `PaywallScreen` | Subscription paywall |
 | `/customer-center` | `CustomerCenterScreen` | Manage existing subscription |
 
 **Navigation flow:** `/` → `/loading` → `/result`. Paywall is pushed when saving exceeds the free limit.

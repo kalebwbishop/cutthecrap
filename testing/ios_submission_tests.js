@@ -198,7 +198,7 @@ const CAT_DEBUG = 'Debug Code';
   }
 
   // Test / sandbox API keys
-  const testKeyHits = grepFiles(srcDir, /['"](?:test_|rcb_sb_|sk_test_|pk_test_)[A-Za-z0-9]+['"]/, tsFilter);
+  const testKeyHits = grepFiles(srcDir, /['"](?:test_|sk_test_|pk_test_)[A-Za-z0-9]+['"]/, tsFilter);
   if (testKeyHits.length === 0) {
     pass(CAT_DEBUG, 'No test/sandbox API keys in frontend src', 'Clean');
   } else {
@@ -384,23 +384,19 @@ const CAT_PAYMENTS = 'Payments & Subscriptions';
 (() => {
   const srcDir = path.join(FRONTEND, 'src');
 
-  // RevenueCat production keys
+  // Billing service configuration
   const constantsFile = readFile('frontend/src/services/billing/constants.ts');
   if (constantsFile) {
     const hasTestKeys = /['"]test_[A-Za-z0-9]+['"]/.test(constantsFile);
-    const hasSandboxKeys = /['"]rcb_sb_[A-Za-z0-9]+['"]/.test(constantsFile);
 
-    if (hasTestKeys || hasSandboxKeys) {
-      const issues = [];
-      if (hasTestKeys) issues.push('test_ prefixed key(s)');
-      if (hasSandboxKeys) issues.push('rcb_sb_ sandbox key(s)');
-      fail(CAT_PAYMENTS, 'RevenueCat production API keys',
-        `Still using ${issues.join(' and ')} in constants.ts — must swap to production keys before release`);
+    if (hasTestKeys) {
+      fail(CAT_PAYMENTS, 'Billing service configuration',
+        `Still using test_ prefixed key(s) in constants.ts — must swap to production keys before release`);
     } else {
-      pass(CAT_PAYMENTS, 'RevenueCat production API keys', 'No test/sandbox keys detected');
+      pass(CAT_PAYMENTS, 'Billing service configuration', 'No test/sandbox keys detected');
     }
   } else {
-    fail(CAT_PAYMENTS, 'RevenueCat billing constants exist', 'frontend/src/services/billing/constants.ts not found');
+    fail(CAT_PAYMENTS, 'Billing constants exist', 'frontend/src/services/billing/constants.ts not found');
   }
 
   // Restore purchases — native
@@ -486,12 +482,12 @@ const CAT_POLICY = 'Policy Review';
       `Found potentially misleading content:\n${detail}`);
   }
 
-  // In-app purchases use StoreKit/RevenueCat on native
-  const revenuecatHits = grepFiles(srcDir, /react-native-purchases|RevenueCat|Purchases\./i, tsFilter);
-  if (revenuecatHits.length > 0) {
-    pass(CAT_POLICY, 'IAP uses RevenueCat/StoreKit', `Found in ${revenuecatHits.length} file(s)`);
+  // In-app purchases use react-native-iap (StoreKit) on native
+  const iapHits = grepFiles(srcDir, /react-native-iap|requestPurchase|getProducts|billingService/i, tsFilter);
+  if (iapHits.length > 0) {
+    pass(CAT_POLICY, 'IAP uses react-native-iap/StoreKit', `Found in ${iapHits.length} file(s)`);
   } else {
-    fail(CAT_POLICY, 'IAP uses RevenueCat/StoreKit', 'No RevenueCat integration found');
+    fail(CAT_POLICY, 'IAP uses react-native-iap/StoreKit', 'No react-native-iap integration found');
   }
 })();
 
@@ -603,7 +599,7 @@ const CAT_RELEASE = 'Release Readiness';
 
 manual(CAT_RELEASE, 'App Privacy details completed', 'Must declare in App Store Connect: email, name, purchase history, user content, device identifiers');
 manual(CAT_RELEASE, 'Data collection disclosures match', 'Verify disclosures match actual app behavior');
-manual(CAT_RELEASE, 'Third-party SDK data included', 'RevenueCat collects: App User ID, purchase history, IDFV');
+manual(CAT_RELEASE, 'Third-party SDK data included', 'react-native-iap uses StoreKit — purchase history handled by App Store; backend stores user entitlements');
 manual(CAT_RELEASE, 'IAP products created in ASC', 'Verify monthly/yearly/lifetime products in App Store Connect');
 manual(CAT_RELEASE, 'Correct build uploaded to ASC', 'Upload via EAS Submit or Transporter');
 manual(CAT_RELEASE, 'Build processing complete', 'Wait for App Store Connect to finish processing');
@@ -627,7 +623,7 @@ manual(CAT_SMOKE, 'Restore flow works', 'Test restore purchases on device');
 manual(CAT_SMOKE, 'Background/foreground transitions', 'Test app switching, minimize, resume');
 manual(CAT_SMOKE, 'No UI bugs on supported sizes', 'Test on iPhone SE, iPhone 15, iPad if supported');
 manual(CAT_SMOKE, 'Content matches screenshots', 'Compare live app with uploaded App Store screenshots');
-manual(CAT_SMOKE, 'Paywall renders correctly on iOS', 'Verify RevenueCatUI native paywall on device');
+manual(CAT_SMOKE, 'Paywall renders correctly on iOS', 'Verify custom paywall screen on device (StoreKit via react-native-iap)');
 manual(CAT_SMOKE, 'Works on latest iOS version', 'Test on latest supported iOS');
 
 // =====================================================================

@@ -31,9 +31,9 @@ Launch the Family plan tier at $79.99/year, offering a shared household experien
 - **Includes:** All Pro features + shared library + shared meal planner + collaborative grocery lists.
 - Available as an upgrade from Pro Annual or as a direct purchase.
 
-### 2. Subscription management via RevenueCat
+### 2. Subscription management
 
-- Configure the Family plan as a new offering in RevenueCat.
+- Configure the Family plan as separate products in App Store Connect, Google Play Console, and Stripe, with a corresponding `"family"` entitlement key in the backend.
 - Ensure it is separate from Pro Monthly and Pro Annual.
 - Support upgrade path: Pro Annual → Family (prorated credit for remaining Pro time).
 - Support downgrade path: Family → Pro Annual (retain personal data, lose shared features).
@@ -70,6 +70,6 @@ Launch the Family plan tier at $79.99/year, offering a shared household experien
 - [ ] Only the admin is billed; members join without a separate payment.
 - [ ] Admin can add/remove members from account settings.
 - [ ] Plan expiration reverts all members to Free and the admin to their fallback plan.
-- [ ] Family plan is configured as a separate offering in RevenueCat.
+- [ ] Family plan is configured as separate products in App Store Connect, Google Play Console, and Stripe with a dedicated entitlement key.
 - [ ] Feature is labeled as "Beta" in the UI.
 - [ ] Feature works on iOS, Android, and web.

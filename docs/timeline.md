@@ -12,7 +12,7 @@ The product already has the bones of a shippable v1:
 - URL-to-recipe parsing
 - Save recipe flow behind auth
 - Free tier with save limit
-- RevenueCat entitlement for Pro
+- Custom entitlement service for Pro (react-native-iap + Stripe + Python backend)
 - Cross-platform app foundation for iOS, Android, and web
 
 The biggest business opportunity is to move from "cool utility" to "daily kitchen tool." The roadmap prioritizes:

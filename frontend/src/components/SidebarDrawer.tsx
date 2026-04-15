@@ -405,6 +405,15 @@ export default function SidebarDrawer({ visible, onClose }: SidebarDrawerProps) 
         {/* Footer actions */}
         <View style={s.footer}>
           <View style={s.divider} />
+          <TouchableOpacity
+            style={s.feedbackButton}
+            onPress={() => { onClose(); router.push('/meal-plan'); }}
+            activeOpacity={0.7}
+            accessibilityLabel="AI Meal Planning"
+            accessibilityRole="button"
+          >
+            <Text style={s.feedbackText}>🍽️ Meal Plan</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={isPro ? s.manageButton : s.upgradeButton} onPress={handleUpgrade} activeOpacity={0.7}>
             <Text style={isPro ? s.manageText : s.upgradeText}>
               {isPro ? 'Manage Subscription' : 'Upgrade'}

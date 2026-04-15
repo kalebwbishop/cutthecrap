@@ -38,9 +38,9 @@
 - [x] App preview video is uploaded, if applicable <!-- N/A — optional -->
 
 ## Privacy and Permissions
-- [ ] App Privacy details are completed in App Store Connect <!-- Must declare: email, name, purchase history (RevenueCat), user content (recipes), device identifiers (IDFV via RevenueCat). All "linked to identity", none "used for tracking". Privacy manifest added to app.json with UserDefaults, SystemBootTime, FileTimestamp API declarations -->
+- [ ] App Privacy details are completed in App Store Connect <!-- Must declare: email, name, purchase history (StoreKit via react-native-iap), user content (recipes). All "linked to identity", none "used for tracking". Privacy manifest added to app.json with UserDefaults, SystemBootTime, FileTimestamp API declarations -->
 - [ ] Data collection disclosures match actual app behavior <!-- Verify in App Store Connect -->
-- [ ] Third-party SDK data usage is included <!-- RevenueCat collects: App User ID, purchase history, IDFV. Disclose in App Store Connect -->
+- [ ] Third-party SDK data usage is included <!-- react-native-iap uses StoreKit directly; no third-party billing SDK collects data. Disclose WorkOS (auth) in App Store Connect -->
 - [x] Permission prompts are only shown when needed <!-- App requests zero device permissions -->
 - [x] Camera usage description is present, if applicable <!-- N/A — camera not used -->
 - [x] Photo library usage description is present, if applicable <!-- N/A — photo library not used -->
@@ -58,11 +58,11 @@
 
 ## Payments and Subscriptions
 - [ ] In-App Purchases are created in App Store Connect, if applicable <!-- Verify monthly/yearly/lifetime products in ASC -->
-- [ ] Subscription products are configured correctly, if applicable <!-- Apple production key set in .env (appl_gJKH...). Create products in App Store Connect and RevenueCat dashboard -->
+- [ ] Subscription products are configured correctly, if applicable <!-- Create products in App Store Connect (pro_monthly, pro_yearly, pro_lifetime). Ensure product IDs match billing_products table entries -->
 - [ ] Purchases complete successfully <!-- Needs testing with production keys -->
-- [x] Restore Purchases works <!-- Implemented: native paywall uses RevenueCatUI built-in restore; web paywall has explicit "Restore Purchases" button in footer -->
-- [x] Subscription terms/pricing are shown correctly <!-- Dynamic pricing from RevenueCat offerings; Terms of Service screen covers auto-renewal in Section 4 -->
-- [ ] Paywall copy is accurate and compliant <!-- Native iOS paywall uses RevenueCatUI (auto-includes Apple disclaimers ✅). Web paywall (PaywallScreen.web.tsx) lacks auto-renewal disclaimer on surface — not an iOS App Store concern but fix for web. Verify native paywall renders correctly on device. -->
+- [x] Restore Purchases works <!-- Implemented: native paywall uses react-native-iap getAvailablePurchases() + backend sync; web paywall has explicit "Restore Purchases" button in footer -->
+- [x] Subscription terms/pricing are shown correctly <!-- Dynamic pricing from StoreKit via react-native-iap getSubscriptions(); Terms of Service screen covers auto-renewal in Section 4 -->
+- [ ] Paywall copy is accurate and compliant <!-- Native iOS paywall is a custom React Native screen (PaywallScreen.tsx) — verify Apple auto-renewal disclaimers are present. Web paywall (PaywallScreen.web.tsx) lacks auto-renewal disclaimer on surface — not an iOS App Store concern but fix for web. Verify native paywall renders correctly on device. -->
 
 ## Policy Review
 - [ ] App follows [App Store Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) <!-- Account deletion ✅ implemented. Review remaining guidelines before submission -->
@@ -72,7 +72,7 @@
 - [x] Reporting/blocking/moderation features exist, if applicable <!-- N/A — no user-to-user interaction -->
 - [x] Account deletion is available in-app, if required <!-- "Delete Account" button in sidebar with confirmation modal → DELETE /api/v1/auth/account → cascades to all user data -->
 - [x] App does not require unnecessary permissions <!-- Zero device permissions requested; appropriate for a recipe extraction app -->
-- [x] App complies with payments rules for digital goods <!-- iOS uses RevenueCat/StoreKit for IAP. Web uses Stripe (allowed). No external payment links on iOS. Platform-specific .web.ts files ensure separation -->
+- [x] App complies with payments rules for digital goods <!-- iOS uses StoreKit via react-native-iap for IAP. Web uses Stripe (allowed). No external payment links on iOS. Platform-specific .web.ts files ensure separation -->
 
 ## Release Readiness
 - [ ] Correct build is uploaded to App Store Connect

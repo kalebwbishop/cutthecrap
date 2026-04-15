@@ -208,7 +208,7 @@ const CAT_DEBUG = 'Debug Code';
   }
 
   // Test / sandbox API keys
-  const testKeyHits = grepFiles(srcDir, /['"](?:test_|rcb_sb_|sk_test_|pk_test_)[A-Za-z0-9]+['"]/, tsFilter);
+  const testKeyHits = grepFiles(srcDir, /['"](?:test_|sk_test_|pk_test_)[A-Za-z0-9]+['"]/, tsFilter);
   if (testKeyHits.length === 0) {
     pass(CAT_DEBUG, 'No test/sandbox API keys in frontend src', 'Clean');
   } else {
@@ -395,23 +395,19 @@ const CAT_PAYMENTS = 'Payments & Subscriptions';
 (() => {
   const srcDir = path.join(FRONTEND, 'src');
 
-  // RevenueCat production keys
+  // Billing service configuration
   const constantsFile = readFile('frontend/src/services/billing/constants.ts');
   if (constantsFile) {
     const hasTestKeys = /['"]test_[A-Za-z0-9]+['"]/.test(constantsFile);
-    const hasSandboxKeys = /['"]rcb_sb_[A-Za-z0-9]+['"]/.test(constantsFile);
 
-    if (hasTestKeys || hasSandboxKeys) {
-      const issues = [];
-      if (hasTestKeys) issues.push('test_ prefixed key(s)');
-      if (hasSandboxKeys) issues.push('rcb_sb_ sandbox key(s)');
-      fail(CAT_PAYMENTS, 'RevenueCat production API keys',
-        `Still using ${issues.join(' and ')} in constants.ts — must swap to production keys before release`);
+    if (hasTestKeys) {
+      fail(CAT_PAYMENTS, 'Billing service configuration',
+        `Still using test_ prefixed key(s) in constants.ts — must swap to production keys before release`);
     } else {
-      pass(CAT_PAYMENTS, 'RevenueCat production API keys', 'No test/sandbox keys detected');
+      pass(CAT_PAYMENTS, 'Billing service configuration', 'No test/sandbox keys detected');
     }
   } else {
-    fail(CAT_PAYMENTS, 'RevenueCat billing constants exist', 'frontend/src/services/billing/constants.ts not found');
+    fail(CAT_PAYMENTS, 'Billing constants exist', 'frontend/src/services/billing/constants.ts not found');
   }
 
   // Restore purchases
@@ -496,12 +492,12 @@ const CAT_POLICY = 'Policy Review';
       `Found potentially misleading content:\n${detail}`);
   }
 
-  // In-app purchases use RevenueCat/Google Play Billing
-  const revenuecatHits = grepFiles(srcDir, /react-native-purchases|RevenueCat|Purchases\./i, tsFilter);
-  if (revenuecatHits.length > 0) {
-    pass(CAT_POLICY, 'IAP uses RevenueCat/Google Play Billing', `Found in ${revenuecatHits.length} file(s)`);
+  // In-app purchases use react-native-iap (Google Play Billing) on native
+  const iapHits = grepFiles(srcDir, /react-native-iap|requestPurchase|getProducts|billingService/i, tsFilter);
+  if (iapHits.length > 0) {
+    pass(CAT_POLICY, 'IAP uses react-native-iap/Google Play Billing', `Found in ${iapHits.length} file(s)`);
   } else {
-    fail(CAT_POLICY, 'IAP uses RevenueCat/Google Play Billing', 'No RevenueCat integration found');
+    fail(CAT_POLICY, 'IAP uses react-native-iap/Google Play Billing', 'No react-native-iap integration found');
   }
 })();
 
@@ -612,7 +608,7 @@ const CAT_RELEASE = 'Release Readiness';
 
 manual(CAT_RELEASE, 'Data Safety section completed', 'Must declare in Google Play Console: data collected, shared, security practices');
 manual(CAT_RELEASE, 'Data collection disclosures match', 'Verify Data Safety declarations match actual app behavior');
-manual(CAT_RELEASE, 'Third-party SDK data included', 'RevenueCat collects: App User ID, purchase history, Android Advertising ID');
+manual(CAT_RELEASE, 'Third-party SDK data included', 'react-native-iap uses Google Play Billing — purchase history handled by Play Store; backend stores user entitlements');
 manual(CAT_RELEASE, 'IAP products created in Google Play Console', 'Verify monthly/yearly/lifetime subscription products');
 manual(CAT_RELEASE, 'App signing key configured', 'Enroll in Google Play App Signing (recommended) or manage your own keystore');
 manual(CAT_RELEASE, 'AAB uploaded to Google Play Console', 'Upload via EAS Submit or manual upload (.aab format)');
@@ -639,7 +635,7 @@ manual(CAT_SMOKE, 'Background/foreground transitions', 'Test app switching, mini
 manual(CAT_SMOKE, 'Back button behavior correct', 'Android hardware/gesture back should navigate properly — no unexpected exits');
 manual(CAT_SMOKE, 'No UI bugs on supported sizes', 'Test on small phone, large phone, tablet if supported');
 manual(CAT_SMOKE, 'Content matches screenshots', 'Compare live app with uploaded Google Play screenshots');
-manual(CAT_SMOKE, 'Paywall renders correctly on Android', 'Verify RevenueCat paywall on Android device');
+manual(CAT_SMOKE, 'Paywall renders correctly on Android', 'Verify custom paywall screen on Android device (Google Play Billing via react-native-iap)');
 manual(CAT_SMOKE, 'Works on recent Android versions', 'Test on Android 12+ (API 31+)');
 manual(CAT_SMOKE, 'Deep linking works', 'Test cutthecrap:// scheme opens correct screen');
 

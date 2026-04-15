@@ -49,10 +49,10 @@ Allow users to purchase a Pro Annual subscription as a gift for someone else. Gi
 - Create themed gift cards / emails for holidays (Christmas, Mother's Day, Father's Day, Thanksgiving).
 - Optional: physical gift card design (PDF printable) for in-person gifting.
 
-### 5. RevenueCat integration
+### 5. Billing integration
 
-- Gift subscriptions should be tracked as a separate offering in RevenueCat.
-- Ensure gift entitlements are correctly reflected in the backend and sync across platforms.
+- Gift subscriptions should be configured as separate products in App Store Connect, Google Play Console, and Stripe.
+- Ensure gift entitlements are correctly reflected in the `user_entitlements` table via the custom FastAPI backend and sync across platforms.
 
 ---
 
@@ -66,6 +66,6 @@ Allow users to purchase a Pro Annual subscription as a gift for someone else. Gi
 - [ ] Buyer can view sent gifts and their redemption status.
 - [ ] Buyer can resend the gift email.
 - [ ] Unredeemed gift codes expire after 6 months.
-- [ ] Gift subscriptions are tracked as a separate offering in RevenueCat.
+- [ ] Gift subscriptions are configured as separate products in App Store Connect, Google Play Console, and Stripe.
 - [ ] Gift entitlements sync across iOS, Android, and web.
 - [ ] Feature works on iOS, Android, and web.

@@ -17,7 +17,7 @@
 
 - Pro entitlements are activated within 5 seconds of a successful purchase.
 - Monthly and annual purchase flows complete successfully on iOS, Android, and web.
-- RevenueCat SDK is initialized and functional on all three platforms.
+- react-native-iap is initialized and functional on iOS and Android; Stripe Checkout is configured for web.
 
 ---
 
@@ -47,7 +47,7 @@
 
 ### Acceptance Criteria
 
-- The backend verifies entitlements server-side via RevenueCat's API or webhooks on every protected endpoint.
+- The backend verifies entitlements server-side via the `user_entitlements` table (managed by `entitlement_service.py`) and platform webhooks on every protected endpoint.
 - Entitlement status is cached with a short TTL for performance while keeping activation responsive.
 - No client-only entitlement checks are used for access control.
 
@@ -66,7 +66,7 @@
 - Subscription expiration or cancellation downgrades the user to Free without data loss.
 - Pro features are restricted but saved data is preserved.
 - App store grace periods for failed renewals are handled correctly.
-- Refund webhook events from RevenueCat revoke entitlements correctly.
+- Refund webhook events from Apple, Google, and Stripe revoke entitlements correctly.
 
 ---
 
@@ -82,4 +82,4 @@
 
 - An in-app subscription management screen shows current plan, renewal date, and manage/cancel links.
 - Links direct to the appropriate app store or web management page.
-- All subscription flows are tested end-to-end in RevenueCat sandbox on each platform.
+- All subscription flows are tested end-to-end in App Store sandbox, Google Play test tracks, and Stripe test mode on each platform.

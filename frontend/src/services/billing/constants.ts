@@ -5,5 +5,4 @@ export const PRO_ENTITLEMENT = 'pro';
 export const PRODUCT_IDS = {
   monthly: 'monthly',
   yearly: 'yearly',
-  lifetime: 'lifetime',
 } as const;

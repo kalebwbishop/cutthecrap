@@ -7,8 +7,8 @@ import { PRO_ENTITLEMENT } from './constants';
 let configured = false;
 let _accessToken: string | null = null;
 
-const IOS_PRODUCT_IDS = ['ios.pro_monthly', 'ios.pro_yearly', 'ios.pro_lifetime'];
-const ANDROID_PRODUCT_IDS = ['android.pro_monthly', 'android.pro_yearly', 'android.pro_lifetime'];
+const IOS_PRODUCT_IDS = ['ios.pro_monthly', 'ios.pro_yearly'];
+const ANDROID_PRODUCT_IDS = ['android.pro_monthly', 'android.pro_yearly'];
 
 async function getAccessToken(): Promise<string | null> {
   if (_accessToken) return _accessToken;
@@ -76,28 +76,15 @@ export const billingService: BillingService = {
 
     try {
       const productIds = Platform.OS === 'ios' ? IOS_PRODUCT_IDS : ANDROID_PRODUCT_IDS;
-      const subscriptionIds = productIds.filter((id) => !id.includes('lifetime'));
-      const productOnlyIds = productIds.filter((id) => id.includes('lifetime'));
 
-      const subscriptions = await RNIap.getSubscriptions({ skus: subscriptionIds });
-      const products = productOnlyIds.length > 0
-        ? await RNIap.getProducts({ skus: productOnlyIds })
-        : [];
+      const subscriptions = await RNIap.getSubscriptions({ skus: productIds });
 
-      const packages = [
-        ...subscriptions.map((sub) => ({
-          identifier: sub.productId,
-          productId: sub.productId,
-          priceString: sub.localizedPrice ?? sub.price,
-          packageType: sub.productId.includes('yearly') ? 'annual' : 'monthly',
-        })),
-        ...products.map((prod) => ({
-          identifier: prod.productId,
-          productId: prod.productId,
-          priceString: prod.localizedPrice ?? prod.price,
-          packageType: 'lifetime',
-        })),
-      ];
+      const packages = subscriptions.map((sub) => ({
+        identifier: sub.productId,
+        productId: sub.productId,
+        priceString: sub.localizedPrice ?? sub.price,
+        packageType: sub.productId.includes('yearly') ? 'annual' : 'monthly',
+      }));
 
       return { identifier: 'default', packages };
     } catch (err) {
@@ -156,14 +143,7 @@ export async function purchaseProduct(productId: string): Promise<BillingCustome
   const token = await getAccessToken();
   if (!token) throw new Error('Authentication required');
 
-  const isSubscription = !productId.includes('lifetime');
-
-  let purchase;
-  if (isSubscription) {
-    purchase = await RNIap.requestSubscription({ sku: productId });
-  } else {
-    purchase = await RNIap.requestPurchase({ sku: productId });
-  }
+  const purchase = await RNIap.requestSubscription({ sku: productId });
 
   // Sync the purchase to our backend
   await apiClient.post(

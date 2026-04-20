@@ -66,14 +66,8 @@ export const billingService: BillingService = {
         {
           identifier: 'yearly',
           productId: 'web.pro_yearly',
-          priceString: '$19.99',
+          priceString: '$29.99',
           packageType: 'annual',
-        },
-        {
-          identifier: 'lifetime',
-          productId: 'web.pro_lifetime',
-          priceString: '$39.99',
-          packageType: 'lifetime',
         },
       ],
     };

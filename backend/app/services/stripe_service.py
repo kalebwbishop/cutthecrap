@@ -36,8 +36,6 @@ def _get_price_map() -> dict[str, str]:
             _price_map[s.stripe_price_pro_monthly] = "web.pro_monthly"
         if s.stripe_price_pro_yearly:
             _price_map[s.stripe_price_pro_yearly] = "web.pro_yearly"
-        if s.stripe_price_pro_lifetime:
-            _price_map[s.stripe_price_pro_lifetime] = "web.pro_lifetime"
     return _price_map
 
 
@@ -60,12 +58,8 @@ async def create_checkout_session(
     if not product_id:
         raise ValueError(f"Unknown Stripe price ID: {price_id}")
 
-    # Determine mode based on product type
-    is_subscription = "lifetime" not in product_id
-    mode = "subscription" if is_subscription else "payment"
-
     session = stripe.checkout.Session.create(
-        mode=mode,
+        mode="subscription",
         line_items=[{"price": price_id, "quantity": 1}],
         success_url=success_url,
         cancel_url=cancel_url,

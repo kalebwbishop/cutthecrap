@@ -31,8 +31,6 @@ function periodLabel(packageType: string): string {
       return '/ month';
     case 'annual':
       return '/ year';
-    case 'lifetime':
-      return 'one-time';
     default:
       return '';
   }
@@ -44,8 +42,6 @@ function packageTitle(packageType: string): string {
       return 'Monthly';
     case 'annual':
       return 'Yearly';
-    case 'lifetime':
-      return 'Lifetime';
     default:
       return 'Plan';
   }
@@ -92,7 +88,6 @@ export default function PaywallScreen() {
       const priceEnvMap: Record<string, string> = {
         monthly: process.env.EXPO_PUBLIC_STRIPE_PRICE_MONTHLY ?? '',
         yearly: process.env.EXPO_PUBLIC_STRIPE_PRICE_YEARLY ?? '',
-        lifetime: process.env.EXPO_PUBLIC_STRIPE_PRICE_LIFETIME ?? '',
       };
       const priceId = priceEnvMap[selectedId];
       if (!priceId) {

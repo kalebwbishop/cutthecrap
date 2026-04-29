@@ -97,6 +97,37 @@ function RootLayoutInner() {
         }
     }, [user?.id]);
 
+    // Handle Stripe Checkout redirect back to the app (?checkout=success).
+    // The webhook is the source of truth for entitlements, but it's async —
+    // poll a few times so the UI reflects the new Pro status promptly.
+    useEffect(() => {
+        if (Platform.OS !== 'web' || !appReady) return;
+        if (typeof window === 'undefined') return;
+
+        const params = new URLSearchParams(window.location.search);
+        const status = params.get('checkout');
+        if (status !== 'success') return;
+
+        let cancelled = false;
+        const poll = async () => {
+            for (let i = 0; i < 5 && !cancelled; i++) {
+                await refreshCustomerInfo();
+                if (useSubscriptionStore.getState().isPro) break;
+                await new Promise((r) => setTimeout(r, 1500));
+            }
+        };
+        poll();
+
+        // Strip the query param so refresh/back navigation don't re-trigger.
+        params.delete('checkout');
+        const cleaned = window.location.pathname + (params.toString() ? `?${params.toString()}` : '');
+        window.history.replaceState({}, '', cleaned);
+
+        return () => {
+            cancelled = true;
+        };
+    }, [appReady, refreshCustomerInfo]);
+
     // Don't render anything until the session is restored — the native splash
     // screen stays visible, so returning null prevents a flash of unstyled content.
     if (!appReady) {

@@ -289,7 +289,7 @@ The following recommendations from the original analysis have been implemented:
 [^3]: `backend/app/services/recipe_service.py:62-63` — "IMPORTANT: Rewrite all text in your own words. Do not copy verbatim from the source."
 [^4]: `backend/app/routes/chatgpt.py:93-107` — Both structured data (serialized as JSON) and raw text are sent through `call_openai_chat()` with the same `RECIPE_SYSTEM_PROMPT`.
 [^5]: [Stanford Copyright & Fair Use — Measuring Fair Use: The Four Factors](https://fairuse.stanford.edu/overview/fair-use/four-factors/)
-[^6]: The app uses RevenueCat for in-app purchases with a "Cut The Crap Pro" entitlement, as documented in the project's custom instructions.
+[^6]: The app uses react-native-iap (StoreKit / Google Play Billing) and Stripe for in-app purchases with a "pro" entitlement key, managed by a custom Python backend entitlement service.
 [^7]: [Transformative Fair Use Explained — Lawyer Monthly](https://www.lawyer-monthly.com/2025/08/transformative-fair-use-us-copyright-law/); *Campbell v. Acuff-Rose Music, Inc.*, 510 U.S. 569 (1994).
 [^8]: [BYU Copyright — The Meaning of the Four Fair Use Factors](https://copyright.byu.edu/the-meaning-of-the-four-fair-use-factors)
 [^9]: [Copyright Protection in Recipes — CopyrightLaws.com](https://www.copyrightlaws.com/copyright-protection-recipes/)

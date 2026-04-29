@@ -34,7 +34,7 @@ Prepare and submit the app to the Apple App Store and Google Play Store so it is
   - App icon (1024×1024).
   - Privacy policy URL.
   - App category: Food & Drink.
-- Configure in-app purchases in App Store Connect for Pro Monthly and Pro Annual via RevenueCat.
+- Configure in-app purchases in App Store Connect for Pro Monthly and Pro Annual using StoreKit (handled client-side via react-native-iap).
 - Complete the App Privacy section (data collection disclosure).
 - Submit for review with at least 2 weeks buffer before launch.
 
@@ -47,7 +47,7 @@ Prepare and submit the app to the Apple App Store and Google Play Store so it is
   - App icon (512×512).
   - Privacy policy URL.
   - App category: Food & Drink.
-- Configure in-app purchases via Google Play Billing / RevenueCat.
+- Configure in-app purchases via Google Play Billing (handled client-side via react-native-iap).
 - Complete the Data Safety section.
 - Complete the content rating questionnaire.
 - Submit for review with at least 2 weeks buffer before launch.
@@ -60,7 +60,7 @@ Prepare and submit the app to the Apple App Store and Google Play Store so it is
 
 ### 4. Compliance checklist
 
-- Privacy policy covers data collection, analytics, and third-party services (WorkOS, RevenueCat, OpenAI).
+- Privacy policy covers data collection, analytics, and third-party services (WorkOS, Stripe, OpenAI).
 - Terms of service are in place.
 - COPPA, GDPR, and CCPA considerations are addressed if applicable.
 - Export compliance is completed (iOS).

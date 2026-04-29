@@ -14,7 +14,7 @@ These must be resolved before going live.
 - [ ] **Add SSRF protection on parse-url** — `parse-url` accepts any URL including `file://`, `javascript:`, and internal IPs. Validate URL scheme (http/https only) and block private IP ranges in `recipe_service.py`.
 - [ ] **Add persistent auth token storage** — Tokens only live in Zustand in-memory state. Users must re-login on every app restart. Add `expo-secure-store` for native and secure storage for web.
 - [ ] **Create EAS build configuration** — No `eas.json` exists. `app.json` projectId is an empty string. Create `eas.json` with development/preview/production profiles and set the EAS projectId.
-- [ ] **Replace RevenueCat test keys** — `frontend/src/services/billing/constants.ts` has hardcoded test/sandbox keys. Replace with production keys and move to env vars.
+- [ ] **Verify billing service configuration** — `frontend/src/services/billing/constants.ts` — Ensure product IDs match App Store Connect. Move any environment-specific config to env vars.
 
 ---
 
@@ -38,7 +38,7 @@ These must be resolved before going live.
 - [ ] **Enable JWT audience validation** — `backend/app/middleware/auth.py` has `verify_aud: False`. A valid WorkOS JWT from a different app could be accepted. Enable audience verification.
 - [ ] **Tighten API input validation** — `ParseUrlPayload.url` has no format validation. `max_tokens` has no upper bound. `model` field allows any value including expensive models. Add Pydantic validators.
 - [ ] **Switch container probes to HTTP** — `containerapp-update.yaml` uses TCP socket probes. Switch to HTTP probes hitting `/api/health` so probes fail when DB is down.
-- [ ] **Add `react-native-purchases` to app.json plugins** — RevenueCat native SDK plugin is not in `app.json` plugins array. Required for EAS builds on iOS/Android. *(Depends on: EAS build config)*
+- [ ] **Verify react-native-iap in app.json plugins** — `react-native-iap` may need to be added to the `app.json` plugins array for EAS builds on iOS/Android. *(Depends on: EAS build config)*
 - [ ] **Create database backup strategy** — No backup/restore scripts exist. Add `pg_dump`-based backup automation and document restore procedure.
 - [ ] **Fix CORS credentials + wildcard conflict** — In dev mode, `allow_credentials=True` + `allow_origins=["*"]` is invalid per CORS spec. Fix the dev CORS config.
 

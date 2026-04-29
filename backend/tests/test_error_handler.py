@@ -1,7 +1,9 @@
 """Tests for app.middleware.error_handler – AppError and handler functions."""
 
+import asyncio
+
 import pytest
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.middleware.error_handler import AppError, app_error_handler, generic_error_handler
 
@@ -73,4 +75,36 @@ class TestGenericErrorHandler:
         response = await generic_error_handler(request, exc)
 
         assert b"secret DB password" not in response.body
+        assert b"Internal Server Error" in response.body
+
+    @pytest.mark.asyncio
+    async def test_schedules_error_email(self):
+        request = MagicMock()
+        request.method = "POST"
+        request.url.path = "/api/boom"
+        exc = RuntimeError("kaboom")
+
+        mock_send = AsyncMock(return_value={"success": True})
+        with patch("app.services.feedback_service.send_error_email", mock_send):
+            response = await generic_error_handler(request, exc)
+
+            # Let the background task run
+            await asyncio.sleep(0.1)
+
+        assert response.status_code == 500
+        mock_send.assert_awaited_once_with(exc=exc, method="POST", path="/api/boom")
+
+    @pytest.mark.asyncio
+    async def test_error_email_failure_does_not_affect_response(self):
+        request = MagicMock()
+        request.method = "GET"
+        request.url.path = "/api/fail"
+        exc = RuntimeError("something bad")
+
+        mock_send = AsyncMock(side_effect=Exception("email service down"))
+        with patch("app.services.feedback_service.send_error_email", mock_send):
+            response = await generic_error_handler(request, exc)
+            await asyncio.sleep(0.1)
+
+        assert response.status_code == 500
         assert b"Internal Server Error" in response.body

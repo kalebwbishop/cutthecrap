@@ -239,11 +239,8 @@ COMMENT ON TABLE billing_webhook_events IS 'Tracks processed webhook events for 
 INSERT INTO billing_products (platform, external_product_id, entitlement_key, billing_type) VALUES
     ('ios', 'ios.pro_monthly', 'pro', 'subscription'),
     ('ios', 'ios.pro_yearly', 'pro', 'subscription'),
-    ('ios', 'ios.pro_lifetime', 'pro', 'non_consumable'),
     ('android', 'android.pro_monthly', 'pro', 'subscription'),
     ('android', 'android.pro_yearly', 'pro', 'subscription'),
-    ('android', 'android.pro_lifetime', 'pro', 'non_consumable'),
     ('web', 'web.pro_monthly', 'pro', 'subscription'),
-    ('web', 'web.pro_yearly', 'pro', 'subscription'),
-    ('web', 'web.pro_lifetime', 'pro', 'non_consumable');
+    ('web', 'web.pro_yearly', 'pro', 'subscription');
 

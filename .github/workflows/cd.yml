@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: ['dev', 'main']
+    branches: ['dev', 'test', 'main']
 
 permissions:
   id-token: write
@@ -12,7 +12,7 @@ env:
   KEY_VAULT: "kv-kalebwbishop-apps"
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Required GitHub configuration (per environment: dev / prod)
+# Required GitHub configuration (per environment: dev / test / main)
 #
 # Variables (vars.*):
 #   AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
@@ -22,6 +22,11 @@ env:
 # App secrets use the "ctc-" prefix. Shared VM secrets use the "core-" prefix.
 #
 # Infrastructure (VM, networking, DNS) is managed by kalebwbishop-apps-core.
+#
+# Environment mapping:
+#   dev  → ctc-dev.deploy-box.com          (compose: cutthecrap-dev)
+#   test → ctc-test.deploy-box.com         (compose: cutthecrap-test)
+#   main → cutthecrap.deploy-box.com       (compose: cutthecrap)
 # ─────────────────────────────────────────────────────────────────────────────
 
 jobs:
@@ -36,6 +41,36 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Compute environment config
+        id: env
+        run: |
+          case "${{ github.ref_name }}" in
+            dev)
+              echo "COMPOSE_PROJECT=cutthecrap-dev"      >> $GITHUB_OUTPUT
+              echo "BACKEND_ALIAS=ctc-dev-backend"       >> $GITHUB_OUTPUT
+              echo "FRONTEND_ALIAS=ctc-dev-frontend"     >> $GITHUB_OUTPUT
+              echo "LATEST_TAG=dev-latest"               >> $GITHUB_OUTPUT
+              echo "FULL_DOMAIN=ctc-dev.deploy-box.com"  >> $GITHUB_OUTPUT
+              echo "DB_NAME=cutthecrap_dev"              >> $GITHUB_OUTPUT
+              ;;
+            test)
+              echo "COMPOSE_PROJECT=cutthecrap-test"     >> $GITHUB_OUTPUT
+              echo "BACKEND_ALIAS=ctc-test-backend"      >> $GITHUB_OUTPUT
+              echo "FRONTEND_ALIAS=ctc-test-frontend"    >> $GITHUB_OUTPUT
+              echo "LATEST_TAG=test-latest"              >> $GITHUB_OUTPUT
+              echo "FULL_DOMAIN=ctc-test.deploy-box.com" >> $GITHUB_OUTPUT
+              echo "DB_NAME=cutthecrap_test"             >> $GITHUB_OUTPUT
+              ;;
+            main)
+              echo "COMPOSE_PROJECT=cutthecrap"          >> $GITHUB_OUTPUT
+              echo "BACKEND_ALIAS=ctc-backend"           >> $GITHUB_OUTPUT
+              echo "FRONTEND_ALIAS=ctc-frontend"         >> $GITHUB_OUTPUT
+              echo "LATEST_TAG=latest"                   >> $GITHUB_OUTPUT
+              echo "FULL_DOMAIN=cutthecrap.deploy-box.com" >> $GITHUB_OUTPUT
+              echo "DB_NAME=cutthecrap_prod"             >> $GITHUB_OUTPUT
+              ;;
+          esac
 
       - name: Azure Login with OIDC
         uses: azure/login@v2
@@ -67,19 +102,19 @@ jobs:
       - name: Build and push backend
         run: |
           docker build -t ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-backend:${{ github.sha }} \
-                        -t ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-backend:latest \
+                        -t ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-backend:${{ steps.env.outputs.LATEST_TAG }} \
                         ./backend
           docker push ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-backend:${{ github.sha }}
-          docker push ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-backend:latest
+          docker push ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-backend:${{ steps.env.outputs.LATEST_TAG }}
 
       - name: Build and push frontend
         run: |
           docker build -t ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-frontend:${{ github.sha }} \
-                        -t ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-frontend:latest \
-                        --build-arg EXPO_PUBLIC_API_BASE="https://${{ steps.kv.outputs.DOMAIN_NAME }}" \
+                        -t ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-frontend:${{ steps.env.outputs.LATEST_TAG }} \
+                        --build-arg EXPO_PUBLIC_API_BASE="https://${{ steps.env.outputs.FULL_DOMAIN }}" \
                         ./frontend
           docker push ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-frontend:${{ github.sha }}
-          docker push ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-frontend:latest
+          docker push ${{ steps.kv.outputs.ACR_LOGIN_SERVER }}/cutthecrap-frontend:${{ steps.env.outputs.LATEST_TAG }}
 
   # ── Step 2: Deploy application code to the VM ─────────────────────────
   deploy-application:
@@ -94,6 +129,36 @@ jobs:
       contents: read
 
     steps:
+      - name: Compute environment config
+        id: env
+        run: |
+          case "${{ github.ref_name }}" in
+            dev)
+              echo "COMPOSE_PROJECT=cutthecrap-dev"      >> $GITHUB_OUTPUT
+              echo "BACKEND_ALIAS=ctc-dev-backend"       >> $GITHUB_OUTPUT
+              echo "FRONTEND_ALIAS=ctc-dev-frontend"     >> $GITHUB_OUTPUT
+              echo "FULL_DOMAIN=ctc-dev.deploy-box.com"  >> $GITHUB_OUTPUT
+              echo "DB_NAME=cutthecrap_dev"              >> $GITHUB_OUTPUT
+              echo "DEPLOY_PATH=/opt/cutthecrap-dev"     >> $GITHUB_OUTPUT
+              ;;
+            test)
+              echo "COMPOSE_PROJECT=cutthecrap-test"     >> $GITHUB_OUTPUT
+              echo "BACKEND_ALIAS=ctc-test-backend"      >> $GITHUB_OUTPUT
+              echo "FRONTEND_ALIAS=ctc-test-frontend"    >> $GITHUB_OUTPUT
+              echo "FULL_DOMAIN=ctc-test.deploy-box.com" >> $GITHUB_OUTPUT
+              echo "DB_NAME=cutthecrap_test"             >> $GITHUB_OUTPUT
+              echo "DEPLOY_PATH=/opt/cutthecrap-test"    >> $GITHUB_OUTPUT
+              ;;
+            main)
+              echo "COMPOSE_PROJECT=cutthecrap"          >> $GITHUB_OUTPUT
+              echo "BACKEND_ALIAS=ctc-backend"           >> $GITHUB_OUTPUT
+              echo "FRONTEND_ALIAS=ctc-frontend"         >> $GITHUB_OUTPUT
+              echo "FULL_DOMAIN=cutthecrap.deploy-box.com" >> $GITHUB_OUTPUT
+              echo "DB_NAME=cutthecrap_prod"             >> $GITHUB_OUTPUT
+              echo "DEPLOY_PATH=/opt/cutthecrap"         >> $GITHUB_OUTPUT
+              ;;
+          esac
+
       - name: Azure Login with OIDC
         uses: azure/login@v2
         with:
@@ -104,8 +169,8 @@ jobs:
       - name: Fetch secrets from Key Vault
         id: kv
         run: |
+          NO_MASK="core-vm-hostname ctc-acr-login-server ctc-domain-name"
           BASE64_SECRETS="core-vm-ssh-private-key ctc-tls-fullchain ctc-tls-privkey"
-          NO_MASK="ctc-acr-login-server ctc-domain-name core-vm-hostname"
 
           for secret in core-vm-hostname core-vm-ssh-private-key \
                          ctc-tls-fullchain ctc-tls-privkey \
@@ -148,16 +213,17 @@ jobs:
 
       - name: Write backend environment file
         run: |
+          FULL_DOMAIN="${{ steps.env.outputs.FULL_DOMAIN }}"
           cat > /tmp/backend.env << ENVEOF
-          POSTGRES_CONNECTION_STRING=postgresql://postgres:postgres@db:5432/cutthecrap_dev
+          POSTGRES_CONNECTION_STRING=postgresql://postgres:postgres@db:5432/${{ steps.env.outputs.DB_NAME }}
           WORKOS_API_KEY=${{ steps.kv.outputs.WORKOS_API_KEY }}
           WORKOS_CLIENT_ID=${{ steps.kv.outputs.WORKOS_CLIENT_ID }}
-          WORKOS_REDIRECT_URI=https://${{ steps.kv.outputs.DOMAIN_NAME }}/api/v1/auth/callback
+          WORKOS_REDIRECT_URI=https://${FULL_DOMAIN}/api/v1/auth/callback
           DEPLOY_BOX_CLIENT_ID=${{ steps.kv.outputs.DEPLOY_BOX_CLIENT_ID }}
           DEPLOY_BOX_CLIENT_SECRET=${{ steps.kv.outputs.DEPLOY_BOX_CLIENT_SECRET }}
           CHATGPT_API_BASE=${{ steps.kv.outputs.CHATGPT_API_BASE }}
-          CORS_ORIGIN=https://${{ steps.kv.outputs.DOMAIN_NAME }}
-          FRONTEND_URL=https://${{ steps.kv.outputs.DOMAIN_NAME }}
+          CORS_ORIGIN=https://${FULL_DOMAIN}
+          FRONTEND_URL=https://${FULL_DOMAIN}
           ENVEOF
 
       - name: Pull images and start containers
@@ -170,29 +236,35 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           TLS_FULLCHAIN: ${{ steps.kv.outputs.TLS_FULLCHAIN }}
           TLS_PRIVKEY: ${{ steps.kv.outputs.TLS_PRIVKEY }}
+          DEPLOY_PATH: ${{ steps.env.outputs.DEPLOY_PATH }}
+          COMPOSE_PROJECT: ${{ steps.env.outputs.COMPOSE_PROJECT }}
+          BACKEND_ALIAS: ${{ steps.env.outputs.BACKEND_ALIAS }}
+          FRONTEND_ALIAS: ${{ steps.env.outputs.FRONTEND_ALIAS }}
+          DB_NAME: ${{ steps.env.outputs.DB_NAME }}
+          FULL_DOMAIN: ${{ steps.env.outputs.FULL_DOMAIN }}
         run: |
           ssh azureuser@$VM_HOSTNAME << DEPLOY
           set -euo pipefail
 
           # ── Ensure app directory exists ──────────────────────────────
-          sudo mkdir -p /opt/cutthecrap
-          sudo chown -R azureuser:azureuser /opt/cutthecrap
+          sudo mkdir -p $DEPLOY_PATH
+          sudo chown -R azureuser:azureuser $DEPLOY_PATH
 
           # ── Clone or update repository ───────────────────────────────
-          if [ ! -d /opt/cutthecrap/repo/.git ]; then
+          if [ ! -d $DEPLOY_PATH/repo/.git ]; then
             echo "Cloning repository..."
-            rm -rf /opt/cutthecrap/repo
-            git clone https://github.com/kalebwbishop/cutthecrap.git /opt/cutthecrap/repo
+            rm -rf $DEPLOY_PATH/repo
+            git clone https://github.com/kalebwbishop/cutthecrap.git $DEPLOY_PATH/repo
           fi
 
-          cd /opt/cutthecrap/repo
+          cd $DEPLOY_PATH/repo
           git fetch origin
           git checkout $BRANCH
           git reset --hard origin/$BRANCH
           DEPLOY
 
           # Upload .env file
-          scp /tmp/backend.env azureuser@$VM_HOSTNAME:/opt/cutthecrap/repo/backend/.env
+          scp /tmp/backend.env azureuser@$VM_HOSTNAME:$DEPLOY_PATH/repo/backend/.env
           rm -f /tmp/backend.env
 
           # Upload TLS certs to shared location and copy static files
@@ -201,25 +273,28 @@ jobs:
 
           ssh azureuser@$VM_HOSTNAME << DEPLOY2
           set -euo pipefail
-          cd /opt/cutthecrap/repo
+          cd $DEPLOY_PATH/repo
 
           # Copy static files for shared nginx
           mkdir -p /opt/static/cutthecrap
           cp frontend/assets/privacy-policy.html /opt/static/cutthecrap/privacy-policy.html
 
-          # Stop only this app's containers (safe for shared VM)
-          sg docker -c "docker compose -p cutthecrap down" </dev/null 2>/dev/null || true
+          # Stop only this environment's containers (safe for shared VM)
+          sg docker -c "docker compose -p $COMPOSE_PROJECT down" </dev/null 2>/dev/null || true
 
           # Log in to ACR to pull pre-built images
           sg docker -c "echo '$ACR_PASSWORD' | docker login $ACR_LOGIN_SERVER -u $ACR_USERNAME --password-stdin" </dev/null
 
           # Pull and start containers using pre-built ACR images
-          sg docker -c "ACR_REGISTRY=${ACR_LOGIN_SERVER}/ IMAGE_TAG=${IMAGE_TAG} docker compose -p cutthecrap up -d --pull always --no-build" </dev/null
+          sg docker -c "ACR_REGISTRY=${ACR_LOGIN_SERVER}/ IMAGE_TAG=${IMAGE_TAG} \
+            CTC_BACKEND_ALIAS=$BACKEND_ALIAS CTC_FRONTEND_ALIAS=$FRONTEND_ALIAS \
+            CTC_DB_NAME=$DB_NAME CTC_DOMAIN=$FULL_DOMAIN \
+            docker compose -p $COMPOSE_PROJECT up -d --pull always --no-build" </dev/null
 
-          # Reload shared nginx to pick up real TLS certs
+          # Reload shared nginx to pick up any config changes
           sg docker -c "docker exec proxy-nginx nginx -s reload" </dev/null 2>/dev/null || true
 
-          echo "✅ Application deployed successfully"
+          echo "✅ Application deployed successfully ($COMPOSE_PROJECT)"
           DEPLOY2
 
   # ── Step 3: Run database migrations ────────────────────────────────────
@@ -235,6 +310,24 @@ jobs:
       contents: read
 
     steps:
+      - name: Compute environment config
+        id: env
+        run: |
+          case "${{ github.ref_name }}" in
+            dev)
+              echo "COMPOSE_PROJECT=cutthecrap-dev"  >> $GITHUB_OUTPUT
+              echo "DEPLOY_PATH=/opt/cutthecrap-dev" >> $GITHUB_OUTPUT
+              ;;
+            test)
+              echo "COMPOSE_PROJECT=cutthecrap-test"  >> $GITHUB_OUTPUT
+              echo "DEPLOY_PATH=/opt/cutthecrap-test" >> $GITHUB_OUTPUT
+              ;;
+            main)
+              echo "COMPOSE_PROJECT=cutthecrap"  >> $GITHUB_OUTPUT
+              echo "DEPLOY_PATH=/opt/cutthecrap" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
       - name: Azure Login with OIDC
         uses: azure/login@v2
         with:
@@ -275,14 +368,16 @@ jobs:
       - name: Run database migrations
         env:
           VM_HOSTNAME: ${{ steps.kv.outputs.VM_HOSTNAME }}
+          COMPOSE_PROJECT: ${{ steps.env.outputs.COMPOSE_PROJECT }}
+          DEPLOY_PATH: ${{ steps.env.outputs.DEPLOY_PATH }}
         run: |
-          ssh azureuser@$VM_HOSTNAME << 'MIGRATE'
+          ssh azureuser@$VM_HOSTNAME << MIGRATE
           set -euo pipefail
-          cd /opt/cutthecrap/repo
+          cd $DEPLOY_PATH/repo
 
           echo "Waiting for database to be ready..."
-          for i in $(seq 1 30); do
-            if sg docker -c "docker compose -p cutthecrap exec -T db pg_isready -U postgres" </dev/null > /dev/null 2>&1; then
+          for i in \$(seq 1 30); do
+            if sg docker -c "docker compose -p $COMPOSE_PROJECT exec -T db pg_isready -U postgres" </dev/null > /dev/null 2>&1; then
               echo "Database is ready."
               break
             fi
@@ -295,9 +390,9 @@ jobs:
           # Run incremental migrations via node-pg-migrate in a temporary Node container
           # connected to the compose network so it can reach the 'db' service
           sg docker -c "docker run --rm \
-            --network cutthecrap_default \
-            -v $(pwd)/database:/app/database \
-            -v $(pwd)/backend/.env:/app/backend/.env \
+            --network ${COMPOSE_PROJECT}_default \
+            -v \$(pwd)/database:/app/database \
+            -v \$(pwd)/backend/.env:/app/backend/.env \
             -w /app/database \
             node:20-alpine sh -c 'npm ci --omit=dev 2>/dev/null && npm run migrate'" </dev/null
 

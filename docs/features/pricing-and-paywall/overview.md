@@ -41,7 +41,7 @@ Implement the in-app paywall experience and run initial pricing experiments duri
 
 ### 3. Run pricing experiments during beta
 
-- Use RevenueCat's experiment/offering infrastructure to A/B test:
+- Use custom backend feature flags and analytics to A/B test:
   - Different price points (e.g., $3.99 vs $4.99 vs $5.99 monthly).
   - Different annual discounts.
   - Different paywall copy and feature emphasis.
@@ -66,7 +66,7 @@ Implement the in-app paywall experience and run initial pricing experiments duri
 - [ ] Annual plan is highlighted as "Best value."
 - [ ] "Restore purchases" link is present and functional.
 - [ ] Paywall triggers on save limit (6th recipe), Pro feature gate, soft prompt (after 3 parses), and settings.
-- [ ] RevenueCat offerings/experiments are configured for at least one A/B test during beta.
+- [ ] Backend feature flags and analytics are configured for at least one A/B pricing test during beta.
 - [ ] Paywall analytics track: view rate, tap-through rate, purchase completion rate, plan selection.
 - [ ] Successful purchase immediately unlocks Pro features without requiring an app restart.
 - [ ] Post-purchase confirmation is shown in-app.

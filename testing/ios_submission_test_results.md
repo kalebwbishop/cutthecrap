@@ -1,7 +1,16 @@
 # iOS Submission Checklist — Test Results
 
-**Run date:** 2026-03-27T20:46:43.409Z
-**Summary:** 43 passed, 0 failed, 1 warnings, 33 manual
+**Run date:** 2026-04-15T18:30:47.695Z
+**Summary:** 42 passed, 1 failed, 1 warnings, 33 manual
+
+## ❌ Failures
+
+These must be fixed before submitting to the App Store.
+
+### Debug Code — No console.log/error/warn in frontend src
+
+Found 1 console statement(s):
+  frontend/src/store/authStore.ts:101 → console.error('Token exchange failed:', detail);
 
 ## ⚠️ Warnings
 
@@ -21,37 +30,36 @@ Wildcard "*" appended only in development mode — ensure ENVIRONMENT!=developme
 - **App Build** — App icon exists: frontend/assets/icon.png found
 - **App Build** — Splash screen exists: frontend/assets/splash.png found
 - **App Build** — Deep link scheme configured: scheme = "cutthecrap"
-- **Debug Code** — No console.log/error/warn in frontend src: Clean — no unguarded console statements found
 - **Debug Code** — No localhost references in frontend src: Clean
 - **Debug Code** — No test/sandbox API keys in frontend src: Clean
 - **Debug Code** — No placeholder/coming-soon content: Clean
 - **Debug Code** — No TODO comments in frontend src: Clean
-- **Functional Completeness** — Account deletion (frontend): Found in 15 file(s)
+- **Functional Completeness** — Account deletion (frontend): Found in 16 file(s)
 - **Functional Completeness** — Account deletion (backend): Found in 8 file(s)
-- **Functional Completeness** — Logout implemented (frontend): Found in 12 file(s)
+- **Functional Completeness** — Logout implemented (frontend): Found in 11 file(s)
 - **Functional Completeness** — Logout implemented (backend): Found in 8 file(s)
-- **Functional Completeness** — Login/auth flow (frontend): Found in 20 file(s)
-- **Functional Completeness** — Error states handled: Error handling found in 16 file(s)
+- **Functional Completeness** — Login/auth flow (frontend): Found in 19 file(s)
+- **Functional Completeness** — Error states handled: Error handling found in 15 file(s)
 - **Functional Completeness** — Session expiry handling: Found in 13 file(s)
-- **Functional Completeness** — Offline/network detection: Found in 10 file(s)
+- **Functional Completeness** — Offline/network detection: Found in 14 file(s)
 - **Functional Completeness** — Health check integration: Found in 9 file(s)
-- **Functional Completeness** — Health endpoint (backend): Found in 15 file(s)
+- **Functional Completeness** — Health endpoint (backend): Found in 6 file(s)
 - **Privacy & Permissions** — No unnecessary permission plugins: Only expo-font and expo-web-browser found — appropriate
 - **Privacy & Permissions** — No unnecessary permission descriptions: No NSUsageDescription keys in infoPlist
 - **Privacy & Permissions** — Privacy policy screen exists: frontend/src/screens/PrivacyScreen.tsx
 - **Privacy & Permissions** — Terms of service screen exists: frontend/src/screens/TermsScreen.tsx
 - **Privacy & Permissions** — No tracking SDKs/IDFA usage: Clean — no tracking code found
-- **Payments & Subscriptions** — RevenueCat production API keys: No test/sandbox keys detected
-- **Payments & Subscriptions** — Restore Purchases implemented: Found in 14 file(s)
+- **Payments & Subscriptions** — Billing service configuration: No test/sandbox keys detected
+- **Payments & Subscriptions** — Restore Purchases implemented: Found in 16 file(s)
 - **Payments & Subscriptions** — Paywall screen exists (native): PaywallScreen.tsx found
 - **Payments & Subscriptions** — Paywall screen exists (web): PaywallScreen.web.tsx found
 - **Payments & Subscriptions** — Pro entitlement constant defined: PRO_ENTITLEMENT found in constants.ts
 - **Payments & Subscriptions** — Product IDs defined: monthly/yearly/lifetime found in constants.ts
 - **Payments & Subscriptions** — No Stripe SDK imports on iOS: Stripe SDK only imported in .web.tsx files (correct)
 - **Payments & Subscriptions** — Customer center screen exists: CustomerCenterScreen.tsx found
-- **Policy Review** — Account deletion available in-app: Found in 14 file(s)
+- **Policy Review** — Account deletion available in-app: Found in 15 file(s)
 - **Policy Review** — No misleading/placeholder content: Clean
-- **Policy Review** — IAP uses RevenueCat/StoreKit: Found in 20 file(s)
+- **Policy Review** — IAP uses react-native-iap/StoreKit: Found in 26 file(s)
 - **Backend Production Readiness** — No print() debug statements: Clean — all logging uses logger
 - **Backend Production Readiness** — No hardcoded secrets in settings: Secrets use env vars with empty defaults
 - **Backend Production Readiness** — All auth routes present: login, callback, exchange, refresh, logout, delete — all found
@@ -74,7 +82,7 @@ These items cannot be verified automatically and must be checked manually.
 - [ ] **Accounts & Review Access** — Special setup steps documented: Document any special steps for App Review
 - [ ] **Release Readiness** — App Privacy details completed: Must declare in App Store Connect: email, name, purchase history, user content, device identifiers
 - [ ] **Release Readiness** — Data collection disclosures match: Verify disclosures match actual app behavior
-- [ ] **Release Readiness** — Third-party SDK data included: RevenueCat collects: App User ID, purchase history, IDFV
+- [ ] **Release Readiness** — Third-party SDK data included: react-native-iap uses StoreKit — purchase history handled by App Store; backend stores user entitlements
 - [ ] **Release Readiness** — IAP products created in ASC: Verify monthly/yearly/lifetime products in App Store Connect
 - [ ] **Release Readiness** — Correct build uploaded to ASC: Upload via EAS Submit or Transporter
 - [ ] **Release Readiness** — Build processing complete: Wait for App Store Connect to finish processing
@@ -92,5 +100,5 @@ These items cannot be verified automatically and must be checked manually.
 - [ ] **Final Smoke Test** — Background/foreground transitions: Test app switching, minimize, resume
 - [ ] **Final Smoke Test** — No UI bugs on supported sizes: Test on iPhone SE, iPhone 15, iPad if supported
 - [ ] **Final Smoke Test** — Content matches screenshots: Compare live app with uploaded App Store screenshots
-- [ ] **Final Smoke Test** — Paywall renders correctly on iOS: Verify RevenueCatUI native paywall on device
+- [ ] **Final Smoke Test** — Paywall renders correctly on iOS: Verify custom paywall screen on device (StoreKit via react-native-iap)
 - [ ] **Final Smoke Test** — Works on latest iOS version: Test on latest supported iOS

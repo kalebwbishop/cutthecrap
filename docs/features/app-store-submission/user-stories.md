@@ -18,7 +18,7 @@
 - App Store Connect listing is complete with name, subtitle, description, keywords, screenshots (iPhone and iPad), icon (1024×1024), and privacy policy URL.
 - App category is set to Food & Drink.
 - App Privacy section (data collection disclosure) is completed accurately.
-- In-app purchases (Pro Monthly and Pro Annual) are configured via RevenueCat.
+- In-app purchases (Pro Monthly and Pro Annual) are configured in App Store Connect using StoreKit (handled client-side via react-native-iap).
 
 ---
 
@@ -36,7 +36,7 @@
 - App category is set to Food & Drink.
 - Data Safety section is completed accurately.
 - Content rating questionnaire is completed.
-- In-app purchases are configured via Google Play Billing / RevenueCat.
+- In-app purchases are configured via Google Play Billing (handled client-side via react-native-iap).
 
 ---
 
@@ -66,7 +66,7 @@
 
 ### Acceptance Criteria
 
-- Privacy policy covers data collection, analytics, and third-party services (WorkOS, RevenueCat, OpenAI).
+- Privacy policy covers data collection, analytics, and third-party services (WorkOS, Stripe, OpenAI).
 - Terms of service are in place and publicly accessible.
 - COPPA, GDPR, and CCPA considerations are addressed where applicable.
 - Export compliance is completed (iOS).

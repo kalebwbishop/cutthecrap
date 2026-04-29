@@ -3169,3 +3169,73 @@ NoneType: None
 {"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
 {"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
 {"time": "2026-04-13 09:43:28", "level": "INFO", "message": "Structured data extraction succeeded via json-ld"}
+{"time": "2026-04-20 10:11:34", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-04-20 10:11:34", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-04-20 10:12:01", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-04-20 10:12:01", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-04-20 10:14:27", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-04-20 10:14:27", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-04-20 10:14:27", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-04-20 10:14:49", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (815ms)"}
+{"time": "2026-04-20 10:16:47", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-04-20 10:16:47", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-04-20 11:03:33", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-04-20 11:03:33", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-04-20 11:04:18", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-04-20 11:04:18", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-04-20 11:07:40", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-04-20 11:07:40", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-04-20 16:11:12", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-04-20 16:11:12", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-04-20 16:16:08", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-04-20 16:16:08", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-04-20 16:16:12", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-04-20 16:17:37", "level": "INFO", "message": "PostgreSQL connection pool closed"}
+{"time": "2026-04-20 16:17:37", "level": "INFO", "message": "Server shut down"}
+{"time": "2026-04-20 16:17:42", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-04-20 16:17:42", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-04-20 16:17:44", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-04-20 16:17:50", "level": "INFO", "message": "🚀 Server starting on port 8000"}
+{"time": "2026-04-20 16:17:50", "level": "INFO", "message": "📝 Environment: development"}
+{"time": "2026-04-20 16:17:52", "level": "INFO", "message": "✅ Connected to PostgreSQL database"}
+{"time": "2026-04-20 16:25:04", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (992ms)"}
+{"time": "2026-04-20 16:25:29", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (0ms)"}
+{"time": "2026-04-20 16:27:00", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (2ms)"}
+{"time": "2026-04-20 16:27:01", "level": "INFO", "message": "GET /api/health — 200 (1454ms)"}
+{"time": "2026-04-20 16:32:24", "level": "INFO", "message": "GET /api/health — 200 (908ms)"}
+{"time": "2026-04-20 16:32:29", "level": "INFO", "message": "GET /api/v1/auth/login — 200 (1ms)"}
+{"time": "2026-04-20 16:32:45", "level": "INFO", "message": "OAuth callback received (state=present)"}
+{"time": "2026-04-20 16:32:45", "level": "INFO", "message": "Decoded redirect_uri from state: http://localhost:8081/auth"}
+{"time": "2026-04-20 16:32:45", "level": "INFO", "message": "Callback redirecting (302) to: http://localhost:8081/auth?code=01KPP9GWE2BRQA17RQSQDNVFFH"}
+{"time": "2026-04-20 16:32:45", "level": "INFO", "message": "GET /api/v1/auth/callback — 302 (3ms)"}
+{"time": "2026-04-20 16:32:46", "level": "INFO", "message": "OPTIONS /api/v1/auth/exchange — 200 (0ms)"}
+{"time": "2026-04-20 16:32:47", "level": "ERROR", "message": "Database query failed: relation "users" does not exist"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\routes\auth.py", line 144, in exchange
+    db_user = await auth_service.find_user_by_workos_id(user.id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\services\auth_service.py", line 14, in find_user_by_workos_id
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 628, in fetchrow
+    return await con.fetchrow(
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 748, in fetchrow
+    data = await self._execute(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 1864, in _execute
+    result, _ = await self.__execute(
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 1961, in __execute
+    result, stmt = await self._do_execute(
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 2012, in _do_execute
+    stmt = await self._get_statement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 432, in _get_statement
+    statement = await self._protocol.prepare(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg\\protocol\\protocol.pyx", line 165, in prepare
+asyncpg.exceptions.UndefinedTableError: relation "users" does not exist
+{"time": "2026-04-20 16:32:47", "level": "INFO", "message": "POST /api/v1/auth/exchange — 500 (689ms)"}
+{"time": "2026-04-20 16:32:47", "level": "INFO", "message": "GET /api/health — 200 (114ms)"}

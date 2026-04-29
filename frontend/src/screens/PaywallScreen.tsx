@@ -30,8 +30,6 @@ function periodLabel(packageType: string): string {
       return '/ month';
     case 'annual':
       return '/ year';
-    case 'lifetime':
-      return 'one-time';
     default:
       return '';
   }
@@ -43,8 +41,6 @@ function packageTitle(packageType: string): string {
       return 'Monthly';
     case 'annual':
       return 'Yearly';
-    case 'lifetime':
-      return 'Lifetime';
     default:
       return 'Plan';
   }

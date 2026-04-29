@@ -176,7 +176,8 @@ jobs:
                          ctc-tls-fullchain ctc-tls-privkey \
                          ctc-acr-login-server ctc-acr-username ctc-acr-password \
                          ctc-domain-name ctc-workos-api-key ctc-workos-client-id \
-                         ctc-deploy-box-client-id ctc-deploy-box-client-secret ctc-chatgpt-api-base; do
+                         ctc-deploy-box-client-id ctc-deploy-box-client-secret ctc-chatgpt-api-base \
+                         ctc-postgres-host ctc-postgres-user ctc-postgres-password; do
             key=$(echo "$secret" | sed 's/^core-//' | sed 's/^ctc-//' | tr '-' '_' | tr '[:lower:]' '[:upper:]')
             raw=$(az keyvault secret show --vault-name ${{ env.KEY_VAULT }} --name "$secret" --query value -o tsv)
 
@@ -214,8 +215,12 @@ jobs:
       - name: Write backend environment file
         run: |
           FULL_DOMAIN="${{ steps.env.outputs.FULL_DOMAIN }}"
+          DB_NAME="${{ steps.env.outputs.DB_NAME }}"
+          PG_HOST="${{ steps.kv.outputs.POSTGRES_HOST }}"
+          PG_USER="${{ steps.kv.outputs.POSTGRES_USER }}"
+          PG_PASS="${{ steps.kv.outputs.POSTGRES_PASSWORD }}"
           cat > /tmp/backend.env << ENVEOF
-          POSTGRES_CONNECTION_STRING=postgresql://postgres:postgres@db:5432/${{ steps.env.outputs.DB_NAME }}
+          POSTGRES_CONNECTION_STRING=postgresql://${PG_USER}:${PG_PASS}@${PG_HOST}:5432/${DB_NAME}?sslmode=require
           WORKOS_API_KEY=${{ steps.kv.outputs.WORKOS_API_KEY }}
           WORKOS_CLIENT_ID=${{ steps.kv.outputs.WORKOS_CLIENT_ID }}
           WORKOS_REDIRECT_URI=https://${FULL_DOMAIN}/api/v1/auth/callback
@@ -240,6 +245,9 @@ jobs:
           COMPOSE_PROJECT: ${{ steps.env.outputs.COMPOSE_PROJECT }}
           BACKEND_ALIAS: ${{ steps.env.outputs.BACKEND_ALIAS }}
           FRONTEND_ALIAS: ${{ steps.env.outputs.FRONTEND_ALIAS }}
+          POSTGRES_HOST: ${{ steps.kv.outputs.POSTGRES_HOST }}
+          POSTGRES_USER: ${{ steps.kv.outputs.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ steps.kv.outputs.POSTGRES_PASSWORD }}
           DB_NAME: ${{ steps.env.outputs.DB_NAME }}
           FULL_DOMAIN: ${{ steps.env.outputs.FULL_DOMAIN }}
         run: |
@@ -285,11 +293,12 @@ jobs:
           # Log in to ACR to pull pre-built images
           sg docker -c "echo '$ACR_PASSWORD' | docker login $ACR_LOGIN_SERVER -u $ACR_USERNAME --password-stdin" </dev/null
 
-          # Pull and start containers using pre-built ACR images
+          # Pull and start containers using pre-built ACR images (no local db — using Azure PostgreSQL)
           sg docker -c "ACR_REGISTRY=${ACR_LOGIN_SERVER}/ IMAGE_TAG=${IMAGE_TAG} \
             CTC_BACKEND_ALIAS=$BACKEND_ALIAS CTC_FRONTEND_ALIAS=$FRONTEND_ALIAS \
-            CTC_DB_NAME=$DB_NAME CTC_DOMAIN=$FULL_DOMAIN \
-            docker compose -p $COMPOSE_PROJECT up -d --pull always --no-build" </dev/null
+            CTC_DOMAIN=$FULL_DOMAIN \
+            POSTGRES_CONNECTION_STRING='postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${DB_NAME}?sslmode=require' \
+            docker compose -p $COMPOSE_PROJECT up -d --pull always --no-build --no-deps backend frontend" </dev/null
 
           # Reload shared nginx to pick up any config changes
           sg docker -c "docker exec proxy-nginx nginx -s reload" </dev/null 2>/dev/null || true
@@ -368,29 +377,18 @@ jobs:
       - name: Run database migrations
         env:
           VM_HOSTNAME: ${{ steps.kv.outputs.VM_HOSTNAME }}
-          COMPOSE_PROJECT: ${{ steps.env.outputs.COMPOSE_PROJECT }}
           DEPLOY_PATH: ${{ steps.env.outputs.DEPLOY_PATH }}
         run: |
           ssh azureuser@$VM_HOSTNAME << MIGRATE
           set -euo pipefail
           cd $DEPLOY_PATH/repo
 
-          echo "Waiting for database to be ready..."
-          for i in \$(seq 1 30); do
-            if sg docker -c "docker compose -p $COMPOSE_PROJECT exec -T db pg_isready -U postgres" </dev/null > /dev/null 2>&1; then
-              echo "Database is ready."
-              break
-            fi
-            sleep 2
-          done
-
           # Ensure migrations directory exists for node-pg-migrate
           mkdir -p database/migrations
 
           # Run incremental migrations via node-pg-migrate in a temporary Node container
-          # connected to the compose network so it can reach the 'db' service
+          # Connection string in backend/.env points to Azure PostgreSQL
           sg docker -c "docker run --rm \
-            --network ${COMPOSE_PROJECT}_default \
             -v \$(pwd)/database:/app/database \
             -v \$(pwd)/backend/.env:/app/backend/.env \
             -w /app/database \

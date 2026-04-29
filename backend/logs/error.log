@@ -1497,3 +1497,443 @@ NoneType: None
 {"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Azure Function request error: connection refused"}
 {"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "Azure Function error 429: Rate limited"}
 {"time": "2026-04-13 09:43:25", "level": "ERROR", "message": "HTTP fetch error for https://nonexistent.example.com: DNS failure"}
+{"time": "2026-04-20 16:32:47", "level": "ERROR", "message": "Database query failed: relation "users" does not exist"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\routes\auth.py", line 144, in exchange
+    db_user = await auth_service.find_user_by_workos_id(user.id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\services\auth_service.py", line 14, in find_user_by_workos_id
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 628, in fetchrow
+    return await con.fetchrow(
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 748, in fetchrow
+    data = await self._execute(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 1864, in _execute
+    result, _ = await self.__execute(
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 1961, in __execute
+    result, stmt = await self._do_execute(
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 2012, in _do_execute
+    stmt = await self._get_statement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 432, in _get_statement
+    statement = await self._protocol.prepare(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg\\protocol\\protocol.pyx", line 165, in prepare
+asyncpg.exceptions.UndefinedTableError: relation "users" does not exist
+{"time": "2026-04-20 16:39:58", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01KM118VA3Y66MX88EQTHGNA87"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 627, in fetchrow
+    async with self.acquire() as con:
+               ^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 1024, in __aenter__
+    self.connection = await self.pool._acquire(self.timeout)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 864, in _acquire
+    return await _acquire_impl()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 849, in _acquire_impl
+    proxy = await ch.acquire()  # type: PoolConnectionProxy
+            ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 140, in acquire
+    await self.connect()
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 132, in connect
+    self._con = await self._pool._get_new_connection()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 517, in _get_new_connection
+    con = await self._connect(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 2421, in connect
+    return await connect_utils._connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 1075, in _connect
+    raise last_error or exceptions.TargetServerAttributeNotMatched(
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 1049, in _connect
+    conn = await _connect_addr(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 882, in _connect_addr
+    return await __connect_addr(params, False, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 931, in __connect_addr
+    tr, pr = await connector
+             ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 802, in _create_ssl_connection
+    tr, pr = await loop.create_connection(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1132, in create_connection
+    raise exceptions[0]
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1107, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1010, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\selector_events.py", line 651, in sock_connect
+    return await fut
+           ^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\selector_events.py", line 691, in _sock_connect_cb
+    raise OSError(err, f'Connect call failed {address}')
+ConnectionAbortedError: [Errno 10053] Connect call failed ('104.209.169.61', 5432)
+{"time": "2026-04-20 16:39:58", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01KM118VA3Y66MX88EQTHGNA87"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\selector_events.py", line 988, in _read_ready__get_buffer
+    nbytes = self._sock.recv_into(buf)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 628, in fetchrow
+    return await con.fetchrow(
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 748, in fetchrow
+    data = await self._execute(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 1864, in _execute
+    result, _ = await self.__execute(
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 1961, in __execute
+    result, stmt = await self._do_execute(
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 2027, in _do_execute
+    result = await executor(stmt, timeout)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg\\protocol\\protocol.pyx", line 206, in bind_execute
+asyncpg.exceptions.ConnectionDoesNotExistError: connection was closed in the middle of operation
+{"time": "2026-04-20 16:39:58", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01KM118VA3Y66MX88EQTHGNA87"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 627, in fetchrow
+    async with self.acquire() as con:
+               ^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 1024, in __aenter__
+    self.connection = await self.pool._acquire(self.timeout)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 864, in _acquire
+    return await _acquire_impl()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 849, in _acquire_impl
+    proxy = await ch.acquire()  # type: PoolConnectionProxy
+            ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 140, in acquire
+    await self.connect()
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 132, in connect
+    self._con = await self._pool._get_new_connection()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 517, in _get_new_connection
+    con = await self._connect(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 2421, in connect
+    return await connect_utils._connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 1075, in _connect
+    raise last_error or exceptions.TargetServerAttributeNotMatched(
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 1049, in _connect
+    conn = await _connect_addr(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 882, in _connect_addr
+    return await __connect_addr(params, False, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 931, in __connect_addr
+    tr, pr = await connector
+             ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 802, in _create_ssl_connection
+    tr, pr = await loop.create_connection(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1132, in create_connection
+    raise exceptions[0]
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1107, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1010, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\selector_events.py", line 651, in sock_connect
+    return await fut
+           ^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\selector_events.py", line 691, in _sock_connect_cb
+    raise OSError(err, f'Connect call failed {address}')
+OSError: [Errno 10013] Connect call failed ('104.209.169.61', 5432)
+{"time": "2026-04-20 16:40:06", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01KM118VA3Y66MX88EQTHGNA87"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 627, in fetchrow
+    async with self.acquire() as con:
+               ^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 1024, in __aenter__
+    self.connection = await self.pool._acquire(self.timeout)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 864, in _acquire
+    return await _acquire_impl()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 849, in _acquire_impl
+    proxy = await ch.acquire()  # type: PoolConnectionProxy
+            ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 140, in acquire
+    await self.connect()
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 132, in connect
+    self._con = await self._pool._get_new_connection()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 517, in _get_new_connection
+    con = await self._connect(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 2421, in connect
+    return await connect_utils._connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 1075, in _connect
+    raise last_error or exceptions.TargetServerAttributeNotMatched(
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 1049, in _connect
+    conn = await _connect_addr(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 882, in _connect_addr
+    return await __connect_addr(params, False, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 931, in __connect_addr
+    tr, pr = await connector
+             ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 802, in _create_ssl_connection
+    tr, pr = await loop.create_connection(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1132, in create_connection
+    raise exceptions[0]
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1107, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1010, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\selector_events.py", line 651, in sock_connect
+    return await fut
+           ^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\selector_events.py", line 691, in _sock_connect_cb
+    raise OSError(err, f'Connect call failed {address}')
+OSError: [Errno 10013] Connect call failed ('104.209.169.61', 5432)
+{"time": "2026-04-20 16:40:06", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01KM118VA3Y66MX88EQTHGNA87"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 627, in fetchrow
+    async with self.acquire() as con:
+               ^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 1024, in __aenter__
+    self.connection = await self.pool._acquire(self.timeout)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 864, in _acquire
+    return await _acquire_impl()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 849, in _acquire_impl
+    proxy = await ch.acquire()  # type: PoolConnectionProxy
+            ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 140, in acquire
+    await self.connect()
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 132, in connect
+    self._con = await self._pool._get_new_connection()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 517, in _get_new_connection
+    con = await self._connect(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 2421, in connect
+    return await connect_utils._connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 1075, in _connect
+    raise last_error or exceptions.TargetServerAttributeNotMatched(
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 1049, in _connect
+    conn = await _connect_addr(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 882, in _connect_addr
+    return await __connect_addr(params, False, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 931, in __connect_addr
+    tr, pr = await connector
+             ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 802, in _create_ssl_connection
+    tr, pr = await loop.create_connection(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1132, in create_connection
+    raise exceptions[0]
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1107, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1010, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\selector_events.py", line 651, in sock_connect
+    return await fut
+           ^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\selector_events.py", line 691, in _sock_connect_cb
+    raise OSError(err, f'Connect call failed {address}')
+OSError: [Errno 10013] Connect call failed ('104.209.169.61', 5432)
+{"time": "2026-04-20 16:40:10", "level": "ERROR", "message": "Database lookup failed for workos_user_id=user_01KM118VA3Y66MX88EQTHGNA87"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\middleware\auth.py", line 75, in get_current_user
+    row = await pool.fetchrow(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 627, in fetchrow
+    async with self.acquire() as con:
+               ^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 1024, in __aenter__
+    self.connection = await self.pool._acquire(self.timeout)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 864, in _acquire
+    return await _acquire_impl()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 849, in _acquire_impl
+    proxy = await ch.acquire()  # type: PoolConnectionProxy
+            ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 140, in acquire
+    await self.connect()
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 132, in connect
+    self._con = await self._pool._get_new_connection()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\pool.py", line 517, in _get_new_connection
+    con = await self._connect(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connection.py", line 2421, in connect
+    return await connect_utils._connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 1075, in _connect
+    raise last_error or exceptions.TargetServerAttributeNotMatched(
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 1049, in _connect
+    conn = await _connect_addr(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 882, in _connect_addr
+    return await __connect_addr(params, False, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 931, in __connect_addr
+    tr, pr = await connector
+             ^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\asyncpg\connect_utils.py", line 802, in _create_ssl_connection
+    tr, pr = await loop.create_connection(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1132, in create_connection
+    raise exceptions[0]
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1107, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1010, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\selector_events.py", line 651, in sock_connect
+    return await fut
+           ^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\asyncio\selector_events.py", line 691, in _sock_connect_cb
+    raise OSError(err, f'Connect call failed {address}')
+OSError: [Errno 10013] Connect call failed ('104.209.169.61', 5432)
+{"time": "2026-04-20 16:41:12", "level": "ERROR", "message": "Failed to create checkout session"}
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\urllib3\connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\urllib3\connection.py", line 796, in connect
+    sock_and_verified = _ssl_wrap_socket_and_match_hostname(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\urllib3\connection.py", line 975, in _ssl_wrap_socket_and_match_hostname
+    ssl_sock = ssl_wrap_socket(
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\urllib3\util\ssl_.py", line 483, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\urllib3\util\ssl_.py", line 527, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\ssl.py", line 1041, in _create
+    self.do_handshake()
+  File "C:\Users\KBishop\AppData\Local\Programs\Python\Python312\Lib\ssl.py", line 1319, in do_handshake
+    self._sslobj.do_handshake()
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+urllib3.exceptions.SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\requests\adapters.py", line 645, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.stripe.com', port=443): Max retries exceeded with url: /v1/checkout/sessions (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\stripe\_http_client.py", line 685, in _request_internal
+    result = cast(
+             ^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\requests\sessions.py", line 592, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\requests\sessions.py", line 706, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\requests\adapters.py", line 676, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='api.stripe.com', port=443): Max retries exceeded with url: /v1/checkout/sessions (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)')))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\routes\billing.py", line 55, in create_checkout_session
+    result = await stripe_service.create_checkout_session(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\app\services\stripe_service.py", line 61, in create_checkout_session
+    session = stripe.checkout.Session.create(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\stripe\checkout\_session.py", line 4932, in create
+    cls._static_request(
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\stripe\_api_resource.py", line 172, in _static_request
+    return _APIRequestor._global_instance().request(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\stripe\_api_requestor.py", line 187, in request
+    rbody, rcode, rheaders = requestor.request_raw(
+                             ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\stripe\_api_requestor.py", line 719, in request_raw
+    ) = self._get_http_client().request_with_retries(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\stripe\_http_client.py", line 309, in request_with_retries
+    return self._request_with_retries_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\stripe\_http_client.py", line 396, in _request_with_retries_internal
+    raise connection_error
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\stripe\_http_client.py", line 363, in _request_with_retries_internal
+    response = self.request(method, url, headers, post_data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\stripe\_http_client.py", line 623, in request
+    return self._request_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\stripe\_http_client.py", line 717, in _request_internal
+    self._handle_request_error(e)
+  File "C:\Users\KBishop\code\apps\cutthecrap\backend\venv\Lib\site-packages\stripe\_http_client.py", line 772, in _handle_request_error
+    raise APIConnectionError(msg, should_retry=should_retry) from e
+stripe._error.APIConnectionError: Could not verify Stripe's SSL certificate.  Please make sure that your
+network is not intercepting certificates.  If this problem persists,
+let us know at support@stripe.com.
+
+(Network error: SSLError: HTTPSConnectionPool(host='api.stripe.com', port=443): Max retries exceeded with url: /v1/checkout/sessions (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)'))))

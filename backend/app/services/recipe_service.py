@@ -188,7 +188,7 @@ async def call_openai_chat(
     *,
     text: str,
     system_prompt: str,
-    model: str = "gpt-5.4-mini",
+    model: str = "gpt-5.4-nano",
     response_format: Optional[dict[str, Any]] = None,
     temperature: float = 0.2,
     max_tokens: int = 2000,

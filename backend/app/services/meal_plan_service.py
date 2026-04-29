@@ -194,7 +194,7 @@ async def generate_meal_plan(
     result = await call_openai_chat(
         text=prompt_text,
         system_prompt=MEAL_PLAN_SYSTEM_PROMPT,
-        model="gpt-5.4-mini",
+        model="gpt-5.4-nano",
         response_format=MEAL_PLAN_RESPONSE_FORMAT,
         temperature=0.3,
         max_tokens=4000,

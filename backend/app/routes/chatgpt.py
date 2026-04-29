@@ -32,7 +32,7 @@ limiter = Limiter(key_func=get_remote_address)
 class ParseTextPayload(BaseModel):
     text: str
     system_prompt: Optional[str] = None
-    model: str = "gpt-5.4-mini"
+    model: str = "gpt-5.4-nano"
     response_format: Optional[dict[str, Any]] = None
     temperature: float = 0.2
     max_tokens: int = 4000
@@ -41,7 +41,7 @@ class ParseTextPayload(BaseModel):
 class ParseUrlPayload(BaseModel):
     url: str
     system_prompt: Optional[str] = None
-    model: str = "gpt-5.4-mini"
+    model: str = "gpt-5.4-nano"
     response_format: Optional[dict[str, Any]] = None
     temperature: float = 0.2
     max_tokens: int = 4000
